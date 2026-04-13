@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+
+@layer base {
+  :root {
+    /* Tambola Theme Colors - Light Mode (if needed) */
+    --color-tambola-primary: 220 38 38;      /* Red #DC2626 */
+    --color-tambola-secondary: 139 69 19;     /* Brown #8B4513 */
+    --color-tambola-accent: 251 191 36;       /* Yellow #FBBF24 */
+    --color-tambola-dark: 44 24 16;           /* Dark Brown #2C1810 */
+    --color-tambola-light: 254 243 199;       /* Light Yellow #FEF3C7 */
+    --color-tambola-muted: 120 53 15;         /* Deep Brown #78350F */
+    --color-tambola-gold: 217 119 6;          /* Gold #D97706 */
+  }
+}
+
+@layer utilities {
+  /* Custom background gradients */
+  .bg-tambola-primary {
+    background: linear-gradient(135deg, #DC2626 0%, #8B4513 100%);
+  }
+  
+  .bg-tambola-dark {
+    background: linear-gradient(135deg, #2C1810 0%, #1A0F0A 100%);
+  }
+  
+  .bg-tambola-card {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(139, 69, 19, 0.1));
+    backdrop-filter: blur(10px);
+  }
+  
+  /* Custom text gradients */
+  .text-tambola-gradient {
+    background: linear-gradient(to right, #FBBF24, #F59E0B, #DC2626);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  /* Custom animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  /* Custom shadows */
+  .shadow-tambola {
+    box-shadow: 0 10px 40px rgba(251, 191, 36, 0.2);
+  }
+  
+  .shadow-tambola-hover {
+    box-shadow: 0 20px 60px rgba(251, 191, 36, 0.4);
+  }
+}
