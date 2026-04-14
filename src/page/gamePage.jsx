@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { THEME, CARD_STYLES, BUTTON_STYLES } from "../styles/constants/theme";
+import { THEME, CARD_STYLES, BUTTON_STYLES, BUTTON_STYLES_TWO } from "../styles/constants/theme";
 
 const tickets = [
   {
@@ -206,46 +206,46 @@ const tickets = [
 
 // Ticket Set Options with detailed descriptions
 const TICKET_SETS = [
-  { 
-    id: 1, 
-    name: "🎲 Beginner's Luck", 
-    tickets: [1, 2, 3], 
+  {
+    id: 1,
+    name: "🎲 Beginner's Luck",
+    tickets: [1, 2, 3],
     price: 299,
     description: "Perfect for first-time players! 3 tickets with balanced numbers",
     difficulty: "Easy",
     winChance: "Good"
   },
-  { 
-    id: 2, 
-    name: "⭐ Golden Chance", 
-    tickets: [4, 5, 6], 
+  {
+    id: 2,
+    name: "⭐ Golden Chance",
+    tickets: [4, 5, 6],
     price: 399,
     description: "Popular choice! Higher winning probability",
     difficulty: "Medium",
     winChance: "Better"
   },
-  { 
-    id: 3, 
-    name: "💎 Platinum Pro", 
-    tickets: [7, 8, 9], 
+  {
+    id: 3,
+    name: "💎 Platinum Pro",
+    tickets: [7, 8, 9],
     price: 499,
     description: "For serious players! Premium number combinations",
     difficulty: "Advanced",
     winChance: "Best"
   },
-  { 
-    id: 4, 
-    name: "👑 Royal Flush", 
-    tickets: [10, 11, 12], 
+  {
+    id: 4,
+    name: "👑 Royal Flush",
+    tickets: [10, 11, 12],
     price: 599,
     description: "VIP experience with lucky numbers",
     difficulty: "Pro",
     winChance: "Premium"
   },
-  { 
-    id: 5, 
-    name: "🎯 Target Master", 
-    tickets: [13, 14, 15], 
+  {
+    id: 5,
+    name: "🎯 Target Master",
+    tickets: [13, 14, 15],
     price: 699,
     description: "Strategic number placement for better odds",
     difficulty: "Expert",
@@ -350,7 +350,7 @@ const GamePage = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [searchAgent, setSearchAgent] = useState("");
   const [selectedAgent, setSelectedAgent] = useState(null);
-  
+
   // Form states
   const [playerName, setPlayerName] = useState("");
   const [playerPhone, setPlayerPhone] = useState("");
@@ -363,7 +363,7 @@ const GamePage = () => {
     gameTime.setHours(21);
     gameTime.setMinutes(0);
     gameTime.setSeconds(0);
-    
+
     setAvailableTickets(tickets.length);
   }, []);
 
@@ -414,13 +414,13 @@ const GamePage = () => {
     );
   });
 
- const handleContactAgent = (agent) => {
+  const handleContactAgent = (agent) => {
     // Open WhatsApp with predefined message
     const message = encodeURIComponent(
       `Hello ${agent.name},\n\nI'm interested in booking Tambola tickets. Can you please help me with the booking process?\n\nThank you!`
     );
     window.open(`https://wa.me/${agent.whatsapp}?text=${message}`, '_blank');
-    
+
     // Optional: Show confirmation
     setTimeout(() => {
       alert(`Connecting you to ${agent.name} via WhatsApp...`);
@@ -442,7 +442,7 @@ const GamePage = () => {
 
   const handleBookingSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!playerName || !playerPhone) {
       alert("Please fill in all required fields");
       return;
@@ -468,10 +468,10 @@ const GamePage = () => {
     };
 
     console.log("Booking Data:", bookingData);
-    
+
     // Show success message with booking details
     alert(`🎉 Booking Successful!\n\nThank you ${playerName}!\n\nTicket Type: ${getTicketTypeName()}\nTotal Amount: ₹${getTotalPrice()}\n\nYou will receive confirmation on ${playerPhone}\n\nGood luck for the game! 🍀`);
-    
+
     // Reset form and close modal
     setShowBookingModal(false);
     setPlayerName("");
@@ -503,7 +503,7 @@ const GamePage = () => {
   };
 
   const getTicketTypePrice = () => {
-    switch(selectedTicketType) {
+    switch (selectedTicketType) {
       case "random": return 50;
       case "halfsheet": return 200;
       case "fullsheet": return 350;
@@ -546,51 +546,50 @@ const GamePage = () => {
   };
 
   return (
-    <div className={`min-h-screen ${THEME.classes.bgGradient} text-white p-4 md:p-6 relative`}>
-      
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-60 h-60 bg-[#DC2626] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
-        <div className="absolute bottom-20 -left-20 w-72 h-72 bg-[#FBBF24] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse" style={{animationDelay: '1000ms'}}></div>
-      </div>
+    <div className={`min-h-screen bg-black text-white p-4 md:p-6 relative`}>
 
-      <div className="relative z-10 max-w-7xl mx-auto space-y-6">
-        
+      {/* Animated background elements */}
+
+      <div className="relative z-10 max-w-8xl mx-auto space-y-3">
+
         {/* HEADER with Gradient */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#DC2626] via-[#B91C1C] to-[#D97706] p-8 shadow-2xl border border-[#FBBF24]/30">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-[#FBBF24] rounded-full filter blur-3xl opacity-20"></div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-center bg-gradient-to-r from-[#FBBF24] to-[#FEF3C7] bg-clip-text text-transparent tracking-wider">
-            GET RICH WITH TAMBOLA
+        <div className="relative overflow-hidden rounded-b-3xl bg-linear-to-br from-[#4D4D4D] via-[#4A4A4A] to-[#303030] p-5">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-[#303030] rounded-full filter blur-3xl opacity-20"></div>
+          <h1 className="text-5xl md:text-6xl font-medium text-center bg-white bg-clip-text text-transparent tracking-wider">
+            GET RICH
           </h1>
-          <p className="text-center text-[#FDE68A] mt-2 text-lg">Your luck awaits tonight!</p>
+        </div>
+
+        <div className="overflow-hidden rounded-b-3xl bg-linear-to-br from-[#4D4D4D] via-[#4A4A4A] to-[#303030] p-2 md:p-3 relative">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-[#303030] rounded-full filter blur-3xl opacity-20"></div>
+          <h1 className="text-5xl md:text-2xl font-bold text-center bg-white bg-clip-text text-transparent tracking-wider">
+            Regular Player Link
+          </h1>
         </div>
 
         {/* TIMER SECTION - Enhanced Cards */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-[#DC2626]/20 to-[#8B4513]/20 backdrop-blur-lg rounded-2xl p-6 border border-[#FBBF24]/30 shadow-xl hover:shadow-[#FBBF24]/20 transition-all">
+          <div className="bg-[#4D4D4D] backdrop-blur-lg rounded-2xl p-6">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <span className="text-2xl">📅</span>
-              <p className="font-bold text-[#FDE68A]">Date</p>
+              <p className="font-bold text-[bg-white]">Date</p>
             </div>
             <p className="text-2xl font-bold text-center text-white">
               {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-[#DC2626]/20 to-[#8B4513]/20 backdrop-blur-lg rounded-2xl p-6 border border-[#FBBF24]/30 shadow-xl hover:shadow-[#FBBF24]/20 transition-all">
+          <div className="bg-[#4D4D4D] backdrop-blur-lg rounded-2xl p-6">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <span className="text-2xl">⏰</span>
-              <p className="font-bold text-[#FDE68A]">Countdown</p>
+              <p className="font-bold text-white">Countdown</p>
             </div>
-            <p className="text-2xl font-bold text-center text-[#FBBF24] font-mono">
+            <p className="text-2xl font-bold text-center text-white font-mono">
               {timeLeft}
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-[#DC2626]/20 to-[#8B4513]/20 backdrop-blur-lg rounded-2xl p-6 border border-[#FBBF24]/30 shadow-xl hover:shadow-[#FBBF24]/20 transition-all">
+          <div className="bg-[#4D4D4D] backdrop-blur-lg rounded-2xl p-6">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <span className="text-2xl">🕐</span>
-              <p className="font-bold text-[#FDE68A]">Game Time</p>
+              <p className="font-bold text-white">Game Time</p>
             </div>
             <p className="text-2xl font-bold text-center text-white">
               {formattedGameTime}
@@ -598,102 +597,155 @@ const GamePage = () => {
           </div>
         </div>
 
-        {/* SEARCH BAR - Enhanced */}
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-md">
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="🔍 Search by name or ticket number..."
-              className="w-full px-6 py-4 rounded-full bg-white/10 backdrop-blur-lg border-2 border-[#FBBF24]/30 text-white placeholder-white/60 outline-none focus:border-[#FBBF24] focus:shadow-lg focus:shadow-[#FBBF24]/30 transition-all"
-            />
-            {search && (
-              <button
-                onClick={() => setSearch("")}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white"
-              >
-                ✕
-              </button>
-            )}
+
+
+        {/* Tickets Container*/}
+        {/* OUTER CONTAINER */}
+        <div className="w-full bg-[#636363] p-2 rounded-3xl shadow-xl">
+          {/* INNER CARD */}
+          <div className="overflow-hidden rounded-3xl bg-[#848484] p-2 md:p-3 relative">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[#303030] rounded-full filter blur-3xl opacity-20"></div>
+            <h1 className="text-3xl md:text-4xl font-bold text-center bg-white bg-clip-text text-transparent tracking-wider">
+              TICKET FOR GAMES
+            </h1>
           </div>
-        </div>
+          {/* SEARCH BAR - Enhanced */}
+          <div className="w-full flex justify-center p-2 md:p-3 relative">
+            <div className="relative w-full sm:w-[90%] md:w-125 lg:w-150 p-2">
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="🔍 Search by name or ticket number..."
+                className="w-full px-6 py-3 rounded-full bg-white text-black placeholder-black"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-black"
+                >
+                  ✕
+                </button>
+              )}
 
-        {/* Available Tickets Badge */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-[#FDE68A]">Available Tickets</h2>
-          <span className="px-4 py-2 bg-gradient-to-r from-[#DC2626] to-[#D97706] rounded-full text-white font-bold shadow-lg">
-            {filteredTickets.length} Tickets Left
-          </span>
-        </div>
-
-        {/* TICKETS GRID - Enhanced Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
-          {filteredTickets.length > 0 ? (
-            filteredTickets.map((ticket) => (
-              <div
-                key={ticket.id}
-                className="group relative bg-gradient-to-br from-[#FBBF24] to-[#D97706] rounded-2xl p-5 shadow-2xl hover:shadow-[#FBBF24]/40 transform hover:scale-105 transition-all duration-300 border-2 border-[#FEF3C7]/50"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-[#FEF3C7] to-[#FBBF24] rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity"></div>
-                
-                <div className="relative z-10">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-bold text-[#2C1810] bg-white/30 backdrop-blur-sm px-4 py-1 rounded-full">
-                      Ticket #{ticket.id}
-                    </h3>
-                    <span className="text-sm font-semibold text-[#2C1810] bg-[#FEF3C7]/50 px-3 py-1 rounded-full">
-                      Win: {ticket.win}
-                    </span>
-                  </div>
-
-                  <div className="bg-white/40 backdrop-blur-sm rounded-xl p-3 mb-4 shadow-inner">
-                    <p className="text-[#2C1810]"><b>👤 Booked By:</b> {ticket.name}</p>
-                  </div>
-
-                  <div className="bg-white rounded-xl p-3 mb-4 shadow-lg">
-                    <div className="grid grid-cols-9 gap-1">
-                      {ticket.numbers.map((row, i) => (
-                        <React.Fragment key={i}>
-                          {row.map((num, j) => (
-                            <div
-                              key={`${i}-${j}`}
-                              className={`aspect-square flex items-center justify-center text-sm font-bold rounded
-                                ${num !== 0 
-                                  ? 'bg-gradient-to-br from-[#DC2626] to-[#B91C1C] text-white shadow-md border border-[#FBBF24]/30' 
-                                  : 'bg-gray-100 border border-gray-200'
-                                }`}
-                            >
-                              {num !== 0 ? num : ''}
-                            </div>
-                          ))}
-                        </React.Fragment>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={() => {
-                      setShowBookingModal(true);
-                      setSelectedTicketType("random");
-                    }}
-                    className={`${BUTTON_STYLES} w-full !py-3 text-lg`}
-                  >
-                    Buy Now 🎯
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-2xl text-[#FDE68A]">No tickets found</p>
-              <p className="text-white/60 mt-2">Try a different search term</p>
             </div>
-          )}
+          </div>
+          {/* TICKETS GRID - Enhanced Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24 p-2 md:p-4 relative">
+            {filteredTickets.length > 0 ? (
+              filteredTickets.map((ticket) => (
+                <div
+                  key={ticket.id}
+                  className="group relative bg-[#FFC107] rounded-3xl p-4 shadow-2xl hover:shadow-[#FBBF24]/40 transition-all duration-300"
+                >
+                  <div className="relative z-10">
+
+                    {/* TITLE */}
+                    <div className="overflow-hidden bg-linear-to-br from-[#FFD65C] via-[#FFD65C] to-[#FFD65C]">
+                      <div className="absolute top-0 right-0 w-40 h-40 bg-[#FFD65C] rounded-full filter blur-3xl opacity-20"></div>
+                      <h1 className="text-5xl md:text-2xl font-bold text-center bg-white bg-clip-text text-transparent tracking-wider">
+                        TNO:{ticket.id}
+                      </h1>
+                    </div>
+
+
+                    {/* MAIN CONTENT (LEFT + RIGHT) */}
+                    <div className="flex gap-4">
+
+                      {/* LEFT SIDE */}
+                      <div className="flex-1">
+
+                        {/* BOOKED INFO */}
+                        <div className="bg-white  text-black rounded-2xl p-3 mb-3 text-sm shadow">
+                          <p><b>Booked By:</b> {ticket.name}</p>
+                          <p><b>Agent Name:</b> -</p>
+                          <p><b>Won last Time?:</b> {ticket.win}</p>
+                        </div>
+
+
+
+                        {/* GRID */}
+                        <div className="bg-white p-2 rounded-2xl shadow-inner">
+                          <div className="grid grid-cols-9 gap-1">
+                            {ticket.numbers.map((row, i) => (
+                              <React.Fragment key={i}>
+                                {row.map((num, j) => (
+                                  <div
+                                    key={`${i}-${j}`}
+                                    className={`h-8 flex items-center justify-center text-xs font-bold rounded border
+                      ${num !== 0
+                                        ? "bg-gray-200 text-black"
+                                        : "bg-gray-100"
+                                      }`}
+                                  >
+                                    {num !== 0 ? num : ""}
+                                  </div>
+                                ))}
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* RIGHT SIDE */}
+                      <div className="w-[40%] flex flex-col justify-between">
+
+                        <p className="text-sm font-semibold text-[#2C1810]">
+                          Book the ticket. We have big big prize for this game.
+                        </p>
+
+                        <div className="flex flex-col gap-2 mt-3">
+                          <button className="bg-[#808080] text-white py-2 rounded-lg">
+                            Buy Now
+                          </button>
+
+                          <button className="bg-[#808080] text-white py-2 rounded-lg">
+                            Add Cart
+                          </button>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+
+
+
+                    {/* <button
+                      onClick={() => {
+                        setShowBookingModal(true);
+                        setSelectedTicketType("random");
+                      }}
+                      className={`${BUTTON_STYLES_TWO} w-full py-3! text-lg`}
+                    >
+                      Buy Now
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowBookingModal(true);
+                        setSelectedTicketType("random");
+                      }}
+                      className={`${BUTTON_STYLES_TWO} w-full py-3! text-lg`}
+                    >
+                      Add Cart
+                    </button> */}
+                  </div>
+                </div>
+              ))
+            ) :
+              (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-2xl text-[#FDE68A]">No tickets found</p>
+                  <p className="text-white/60 mt-2">Try a different search term</p>
+                </div>
+              )}
+          </div>
+
         </div>
       </div>
-  
 
- {/* FLOATING ACTION BUTTONS - FIXED onClick handler */}
+
+      {/* FLOATING ACTION BUTTONS - FIXED onClick handler */}
       <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
         {showFabMenu && (
           <div className="flex flex-col gap-3 mb-3 animate-in slide-in-from-bottom-2 duration-300">
@@ -732,10 +784,10 @@ const GamePage = () => {
         </button>
       </div>
 
-     {showAgentModal && (
+      {showAgentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-gradient-to-br from-[#2C1810] to-[#1A0F0A] rounded-3xl max-w-5xl w-full max-h-[85vh] overflow-hidden border-2 border-[#FBBF24]/50 shadow-2xl">
-            
+
             {/* Modal Header */}
             <div className="sticky top-0 bg-gradient-to-r from-[#DC2626] to-[#D97706] p-6 border-b-2 border-[#FBBF24]/50 z-10">
               <div className="flex justify-between items-center">
@@ -803,20 +855,18 @@ const GamePage = () => {
                     filteredAgents.map((agent) => (
                       <div
                         key={agent.id}
-                        className={`bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-5 border-2 transition-all ${
-                          agent.available 
-                            ? 'border-[#FBBF24]/30 hover:border-[#FBBF24] hover:shadow-lg hover:shadow-[#FBBF24]/20' 
-                            : 'border-gray-500/30 opacity-75'
-                        }`}
+                        className={`bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-5 border-2 transition-all ${agent.available
+                          ? 'border-[#FBBF24]/30 hover:border-[#FBBF24] hover:shadow-lg hover:shadow-[#FBBF24]/20'
+                          : 'border-gray-500/30 opacity-75'
+                          }`}
                       >
                         <div className="flex items-start gap-4">
                           <div className="relative">
                             <div className="w-16 h-16 bg-gradient-to-br from-[#DC2626] to-[#D97706] rounded-full flex items-center justify-center text-3xl border-2 border-[#FBBF24]/50">
                               {agent.avatar}
                             </div>
-                            <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
-                              agent.available ? 'bg-green-500' : 'bg-gray-500'
-                            }`}></div>
+                            <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${agent.available ? 'bg-green-500' : 'bg-gray-500'
+                              }`}></div>
                           </div>
 
                           <div className="flex-1">
@@ -827,7 +877,7 @@ const GamePage = () => {
                                 <span className="text-sm text-yellow-400">{agent.rating}</span>
                               </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                               <p className="text-white/70">
                                 <span className="text-white/50">Experience:</span> {agent.experience}
@@ -857,11 +907,10 @@ const GamePage = () => {
                             <button
                               onClick={() => handleContactAgent(agent)}
                               disabled={!agent.available}
-                              className={`px-4 py-2 rounded-xl font-semibold transition-all flex items-center gap-2 ${
-                                agent.available
-                                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg hover:shadow-green-500/30'
-                                  : 'bg-gray-500/50 text-gray-300 cursor-not-allowed'
-                              }`}
+                              className={`px-4 py-2 rounded-xl font-semibold transition-all flex items-center gap-2 ${agent.available
+                                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg hover:shadow-green-500/30'
+                                : 'bg-gray-500/50 text-gray-300 cursor-not-allowed'
+                                }`}
                             >
                               <span>💬</span> WhatsApp
                             </button>
@@ -897,9 +946,8 @@ const GamePage = () => {
                         <div className="w-24 h-24 bg-gradient-to-br from-[#DC2626] to-[#D97706] rounded-full flex items-center justify-center text-5xl border-3 border-[#FBBF24]">
                           {selectedAgent.avatar}
                         </div>
-                        <div className={`absolute -bottom-2 -right-2 w-6 h-6 rounded-full border-3 border-white ${
-                          selectedAgent.available ? 'bg-green-500' : 'bg-gray-500'
-                        }`}></div>
+                        <div className={`absolute -bottom-2 -right-2 w-6 h-6 rounded-full border-3 border-white ${selectedAgent.available ? 'bg-green-500' : 'bg-gray-500'
+                          }`}></div>
                       </div>
 
                       <div className="flex-1">
@@ -950,7 +998,7 @@ const GamePage = () => {
 
                     <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
                       <p className="text-sm text-blue-200">
-                        <span className="font-bold">💡 Tip:</span> WhatsApp is the fastest way to get a response. 
+                        <span className="font-bold">💡 Tip:</span> WhatsApp is the fastest way to get a response.
                         {selectedAgent.name} typically replies within {selectedAgent.responseTime}!
                       </p>
                     </div>
@@ -961,7 +1009,7 @@ const GamePage = () => {
 
             <div className="sticky bottom-0 bg-gradient-to-r from-[#2C1810] to-[#1A0F0A] p-4 border-t border-[#FBBF24]/30">
               <p className="text-center text-white/50 text-sm">
-                All agents are verified and experienced in Tambola games. 
+                All agents are verified and experienced in Tambola games.
                 Your privacy is protected.
               </p>
             </div>
@@ -973,7 +1021,7 @@ const GamePage = () => {
       {showBookingModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-gradient-to-br from-[#2C1810] to-[#1A0F0A] rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border-2 border-[#FBBF24]/50 shadow-2xl">
-            
+
             {/* Modal Header with Progress Bar */}
             <div className="sticky top-0 bg-gradient-to-r from-[#DC2626] to-[#D97706] p-6 rounded-t-3xl border-b-2 border-[#FBBF24]/50 z-10">
               <div className="flex justify-between items-center mb-4">
@@ -1017,17 +1065,15 @@ const GamePage = () => {
               <div className="flex items-center justify-between">
                 {[1, 2, 3, 4].map((step) => (
                   <div key={step} className="flex items-center">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
-                      currentStep >= step
-                        ? 'bg-[#FBBF24] text-[#2C1810] shadow-lg'
-                        : 'bg-white/20 text-white/60'
-                    }`}>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${currentStep >= step
+                      ? 'bg-[#FBBF24] text-[#2C1810] shadow-lg'
+                      : 'bg-white/20 text-white/60'
+                      }`}>
                       {step}
                     </div>
                     {step < 4 && (
-                      <div className={`w-12 md:w-20 h-1 mx-2 ${
-                        currentStep > step ? 'bg-[#FBBF24]' : 'bg-white/20'
-                      }`}></div>
+                      <div className={`w-12 md:w-20 h-1 mx-2 ${currentStep > step ? 'bg-[#FBBF24]' : 'bg-white/20'
+                        }`}></div>
                     )}
                   </div>
                 ))}
@@ -1042,7 +1088,7 @@ const GamePage = () => {
 
             {/* Modal Body with Steps */}
             <form onSubmit={handleBookingSubmit} className="p-6 space-y-6">
-              
+
               {/* STEP 1: Player Details */}
               {currentStep === 1 && (
                 <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
@@ -1051,7 +1097,7 @@ const GamePage = () => {
                       <span>👤</span> Step 1: Your Details
                     </h3>
                     <p className="text-white/80 mb-6">Please enter your information to book tickets</p>
-                    
+
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-[#FDE68A] mb-2 text-lg">
@@ -1067,7 +1113,7 @@ const GamePage = () => {
                         />
                         <p className="text-xs text-white/50 mt-1">This name will appear on your ticket</p>
                       </div>
-                      
+
                       <div>
                         <label className="block text-[#FDE68A] mb-2 text-lg">
                           Phone Number <span className="text-red-400">*</span>
@@ -1111,7 +1157,7 @@ const GamePage = () => {
                     <h3 className="text-2xl font-bold text-[#FBBF24] mb-4 flex items-center gap-2">
                       <span>🎟️</span> Step 2: Select Ticket Type
                     </h3>
-                    
+
                     {/* What are these? Info */}
                     <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 mb-6">
                       <p className="text-yellow-200 text-sm">
@@ -1123,11 +1169,10 @@ const GamePage = () => {
                       {/* Random Ticket */}
                       <div
                         onClick={() => setSelectedTicketType("random")}
-                        className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${
-                          selectedTicketType === "random"
-                            ? 'bg-gradient-to-br from-[#DC2626] to-[#D97706] border-[#FBBF24] shadow-xl scale-105'
-                            : 'bg-white/10 border-[#FBBF24]/30 hover:bg-white/20'
-                        }`}
+                        className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${selectedTicketType === "random"
+                          ? 'bg-gradient-to-br from-[#DC2626] to-[#D97706] border-[#FBBF24] shadow-xl scale-105'
+                          : 'bg-white/10 border-[#FBBF24]/30 hover:bg-white/20'
+                          }`}
                       >
                         <div className="text-4xl mb-3">🎲</div>
                         <div className="font-bold text-xl mb-2">Single Ticket</div>
@@ -1138,15 +1183,14 @@ const GamePage = () => {
                           <li>• Perfect for beginners</li>
                         </ul>
                       </div>
-                      
+
                       {/* Half Sheet */}
                       <div
                         onClick={() => setSelectedTicketType("halfsheet")}
-                        className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${
-                          selectedTicketType === "halfsheet"
-                            ? 'bg-gradient-to-br from-[#DC2626] to-[#D97706] border-[#FBBF24] shadow-xl scale-105'
-                            : 'bg-white/10 border-[#FBBF24]/30 hover:bg-white/20'
-                        }`}
+                        className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${selectedTicketType === "halfsheet"
+                          ? 'bg-gradient-to-br from-[#DC2626] to-[#D97706] border-[#FBBF24] shadow-xl scale-105'
+                          : 'bg-white/10 border-[#FBBF24]/30 hover:bg-white/20'
+                          }`}
                       >
                         <div className="text-4xl mb-3">📄</div>
                         <div className="font-bold text-xl mb-2">Half Sheet</div>
@@ -1157,15 +1201,14 @@ const GamePage = () => {
                           <li>• <span className="text-green-300">Best Value!</span></li>
                         </ul>
                       </div>
-                      
+
                       {/* Full Sheet */}
                       <div
                         onClick={() => setSelectedTicketType("fullsheet")}
-                        className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${
-                          selectedTicketType === "fullsheet"
-                            ? 'bg-gradient-to-br from-[#DC2626] to-[#D97706] border-[#FBBF24] shadow-xl scale-105'
-                            : 'bg-white/10 border-[#FBBF24]/30 hover:bg-white/20'
-                        }`}
+                        className={`cursor-pointer p-6 rounded-xl border-2 transition-all ${selectedTicketType === "fullsheet"
+                          ? 'bg-gradient-to-br from-[#DC2626] to-[#D97706] border-[#FBBF24] shadow-xl scale-105'
+                          : 'bg-white/10 border-[#FBBF24]/30 hover:bg-white/20'
+                          }`}
                       >
                         <div className="text-4xl mb-3">📋</div>
                         <div className="font-bold text-xl mb-2">Full Sheet</div>
@@ -1224,7 +1267,7 @@ const GamePage = () => {
                           <label className="block text-[#FDE68A] mb-4 text-lg">
                             How many {selectedTicketType === "random" ? "tickets" : "sheets"} would you like?
                           </label>
-                          
+
                           <div className="flex items-center justify-center gap-6">
                             <button
                               type="button"
@@ -1233,7 +1276,7 @@ const GamePage = () => {
                             >
                               -
                             </button>
-                            
+
                             <div className="text-center">
                               <input
                                 type="number"
@@ -1247,7 +1290,7 @@ const GamePage = () => {
                                 = {getTicketCount()} total ticket{getTicketCount() !== 1 ? 's' : ''}
                               </p>
                             </div>
-                            
+
                             <button
                               type="button"
                               onClick={() => setQuantity(Math.min(10, quantity + 1))}
@@ -1261,7 +1304,7 @@ const GamePage = () => {
                         {/* Value comparison */}
                         <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
                           <p className="text-blue-200 text-sm">
-                            <span className="font-bold">💰 Value Tip:</span> Buying more tickets increases your winning chances! 
+                            <span className="font-bold">💰 Value Tip:</span> Buying more tickets increases your winning chances!
                             {selectedTicketType === "random" && " Consider Half Sheet for better value (₹33 per ticket instead of ₹50)."}
                             {selectedTicketType === "halfsheet" && " Half Sheet is 33% cheaper per ticket than buying single tickets!"}
                             {selectedTicketType === "fullsheet" && " Full Sheet gives you the best value at just ₹29 per ticket!"}
@@ -1280,26 +1323,24 @@ const GamePage = () => {
                             ← Back to ticket types
                           </button>
                         </div>
-                        
+
                         <div className="space-y-3 max-h-96 overflow-y-auto p-2">
                           {TICKET_SETS.map((set) => (
                             <div
                               key={set.id}
                               onClick={() => handleSetSelection(set.id)}
-                              className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                                selectedSets.includes(set.id)
-                                  ? 'bg-gradient-to-r from-[#DC2626]/30 to-[#D97706]/30 border-[#FBBF24] shadow-lg'
-                                  : 'bg-white/5 border-[#FBBF24]/30 hover:bg-white/10'
-                              }`}
+                              className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${selectedSets.includes(set.id)
+                                ? 'bg-gradient-to-r from-[#DC2626]/30 to-[#D97706]/30 border-[#FBBF24] shadow-lg'
+                                : 'bg-white/5 border-[#FBBF24]/30 hover:bg-white/10'
+                                }`}
                             >
                               <div className="flex justify-between items-start">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-3 mb-2">
-                                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
-                                      selectedSets.includes(set.id)
-                                        ? 'bg-[#FBBF24] border-[#FBBF24]'
-                                        : 'border-[#FBBF24]/50'
-                                    }`}>
+                                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${selectedSets.includes(set.id)
+                                      ? 'bg-[#FBBF24] border-[#FBBF24]'
+                                      : 'border-[#FBBF24]/50'
+                                      }`}>
                                       {selectedSets.includes(set.id) && (
                                         <span className="text-[#2C1810] font-bold">✓</span>
                                       )}
@@ -1423,7 +1464,7 @@ const GamePage = () => {
                       <div className="flex items-start gap-2 text-sm text-white/70">
                         <input type="checkbox" required className="mt-1" />
                         <span>
-                          I agree to the terms and conditions. I understand that tickets are non-refundable 
+                          I agree to the terms and conditions. I understand that tickets are non-refundable
                           and subject to game rules.
                         </span>
                       </div>

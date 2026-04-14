@@ -25,13 +25,14 @@ export const THEME = {
   // Tailwind class strings
   classes: {
     // Backgrounds
-    bgGradient: 'bg-gradient-to-br from-[#2C1810] via-[#5C2D16] to-[#1A0F0A]',
+    bgGradient: 'bg-gradient-to-br from-[#4D4D4D] via-[#FFD65C] to-[#4D4D4D]',
     bgButton: 'bg-gradient-to-r from-[#DC2626] via-[#B91C1C] to-[#D97706]',
-    bgButtonHover: 'bg-gradient-to-r from-[#FBBF24] to-[#DC2626]',
-    bgCard: 'bg-gradient-to-br from-[#DC2626]/10 to-[#8B4513]/10',
+    bgButtonTwo: 'bg-gradient-to-r from-[#636363] via-[#636363] to-[#636363]',
+    bgButtonHover: 'bg-gradient-to-r from-[#F59E0B] to-[#F59E0B]',
+    bgCard: 'bg-gradient-to-br from-[#F59E0B]/10 to-[#F59E0B]/10',
     
     // Text
-    textGradient: 'bg-gradient-to-r from-[#FBBF24] via-[#F59E0B] to-[#DC2626] bg-clip-text text-transparent',
+    textGradient: 'bg-gradient-to-r from-[red] via-[red] to-[red] bg-clip-text text-transparent',
     textSubtitle: 'text-[#FDE68A]',
     textMuted: 'text-[#FCD34D]/60',
     
@@ -65,5 +66,8 @@ export const THEME = {
 export const CARD_STYLES = `${THEME.classes.bgCard} backdrop-blur-lg rounded-2xl p-5 ${THEME.classes.borderCard} ${THEME.classes.shadowCard} transition-all hover:scale-105`;
 
 export const BUTTON_STYLES = `group relative px-12 py-5 ${THEME.classes.bgButton} rounded-2xl text-xl font-bold ${THEME.classes.shadowButton} transform hover:scale-105 transition-all duration-300 overflow-hidden ${THEME.classes.borderButton}`;
+
+export const BUTTON_STYLES_TWO = `group relative px-12 py-5 ${THEME.classes.bgButtonTwo} rounded-2xl text-xl font-bold ${THEME.classes.shadowButton} transform hover:scale-105 transition-all duration-300 overflow-hidden ${THEME.classes.borderButton}`;
+
 
 export const TITLE_STYLES = `text-7xl md:text-8xl font-extrabold ${THEME.classes.textGradient} leading-tight drop-shadow-lg`;
