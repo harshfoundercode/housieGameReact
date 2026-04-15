@@ -89,7 +89,7 @@ const Home = () => {
         {/* Start Button - Responsive sizing */}
         <button
           onClick={() => navigate(ROUTES.GAME)}
-          className={`group relative ${isMobile ? 'px-8 py-4 text-lg' : 'px-10 md:px-12 py-4 md:py-5 text-lg md:text-xl'} bg-gradient-to-r from-[#008000] via-[#006400] to-[#FFC107] rounded-xl md:rounded-2xl font-bold shadow-2xl hover:shadow-[#FFC107]/40 transform hover:scale-105 transition-all duration-300 overflow-hidden border border-[#FFC107]/50`}
+          className={`group relative ${isMobile ? 'px-8 py-4 text-lg' : 'px-10 md:px-12 py-4 md:py-5 text-lg md:text-xl'} bg-linear-to-r from-[#008000] via-[#006400] to-[#FFC107] rounded-xl md:rounded-2xl font-bold shadow-2xl hover:shadow-[#FFC107]/40 transform hover:scale-105 transition-all duration-300 overflow-hidden border border-[#FFC107]/50`}
         >
           <span className="relative z-10 flex items-center gap-2 text-white">
             Start Playing Now
@@ -102,7 +102,7 @@ const Home = () => {
            {/* Start Button - GameLive homepage */}
         <button
           onClick={() => navigate(ROUTES.AFTERGAME)}
-          className={`group relative ${isMobile ? 'px-8 py-4 text-lg' : 'px-10 md:px-10 py-4 md:py-5 text-lg md:text-xl'} bg-gradient-to-r from-[#008000] via-[#006400] to-[#FFC107] rounded-xl md:rounded-2xl font-bold shadow-2xl hover:shadow-[#FFC107]/40 transform hover:scale-105 transition-all duration-300 overflow-hidden border border-[#FFC107]/50`}
+          className={`group relative ${isMobile ? 'px-8 py-4 text-lg' : 'px-10 md:px-10 py-4 md:py-5 text-lg md:text-xl'} bg-linear-to-r from-[#008000] via-[#006400] to-[#FFC107] rounded-xl md:rounded-2xl font-bold shadow-2xl hover:shadow-[#FFC107]/40 transform hover:scale-105 transition-all duration-300 overflow-hidden border border-[#FFC107]/50`}
         >
           <span className="relative z-10 flex items-center gap-2 text-white">
             Start Playing Now 2
