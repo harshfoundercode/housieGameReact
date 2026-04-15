@@ -353,7 +353,7 @@ const AfterGameLive = () => {
                 ].map((title, index) => (   
                   <div
                     key={index}
-                    className="bg-gradient-to-b from-yellow-400 to-yellow-600 rounded-2xl p-4 shadow-lg text-center"
+                    className="bg-linear-to-b from-yellow-400 to-yellow-600 rounded-2xl p-4 shadow-lg text-center"
                   >
                     <div className="bg-green-700 text-white py-1 rounded-full mb-3 text-sm font-semibold">
                       {title}
