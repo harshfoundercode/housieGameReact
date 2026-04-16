@@ -2,127 +2,158 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
 import { useIsMobile, useIsTablet } from "../styles/responsive_sizes";
+// Import your image asset
+import tambolaGame from "../assets/tambolaGame.jpeg"; // Apna path adjust karein
 
 const Home = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
 
-  // Dynamic classes based on screen size
-  const getTitleSize = () => {
-    if (isMobile) return "text-4xl";
-    if (isTablet) return "text-5xl md:text-6xl";
-    return "text-7xl md:text-8xl";
-  };
-
-  const getPadding = () => {
-    if (isMobile) return "p-4";
-    if (isTablet) return "p-6";
-    return "p-6 md:p-8";
-  };
-
-  const getLogoSize = () => {
-    if (isMobile) return "w-20 h-20 text-4xl";
-    if (isTablet) return "w-24 h-24 text-5xl";
-    return "w-28 h-28 text-5xl";
-  };
-
   return (
-    <div className={`min-h-screen bg-linear-to-br from-black via-[#1a1a1a] to-black text-white flex flex-col items-center justify-center ${getPadding()} relative overflow-hidden`}>
+    <div className="h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] flex items-center justify-center p-4 md:p-6 overflow-hidden relative">
       
-      {/* Animated background elements - Responsive sizing */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 md:-top-40 -right-20 md:-right-40 w-40 md:w-60 lg:w-80 h-40 md:h-60 lg:h-80 bg-[#008000] rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-20 md:-bottom-40 -left-20 md:-left-40 w-40 md:w-60 lg:w-80 h-40 md:h-60 lg:h-80 bg-[#FFC107] rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style={{animationDelay: '1000ms'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 md:w-72 lg:w-96 h-48 md:h-72 lg:h-96 bg-[#4D4D4D] rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-pulse" style={{animationDelay: '500ms'}}></div>
+      {/* Animated Grid Pattern Background */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, #FBEFA4 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }}></div>
       </div>
 
-      {/* Floating numbers - Hide on mobile */}
-      {!isMobile && (
-        <>
-          <div className="absolute top-10 left-10 text-4xl md:text-6xl font-bold text-[#008000] opacity-20 rotate-12">7</div>
-          <div className="absolute bottom-20 right-10 text-5xl md:text-8xl font-bold text-[#FFC107] opacity-20 -rotate-12">42</div>
-          <div className="absolute top-40 right-20 text-2xl md:text-4xl font-bold text-[#4D4D4D] opacity-20 rotate-45">23</div>
-          <div className="absolute bottom-40 left-20 text-3xl md:text-5xl font-bold text-[#FFC107] opacity-20 -rotate-45">88</div>
-        </>
-      )}
+      {/* Animated Orbital Circles */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] border border-[#FBEFA4]/20 rounded-full absolute animate-spin-slow"></div>
+        <div className="w-[400px] h-[400px] md:w-[700px] md:h-[700px] border border-[#FBEFA4]/10 rounded-full absolute animate-spin-slow" style={{animationDirection: 'reverse', animationDuration: '15s'}}></div>
+        <div className="w-[500px] h-[500px] md:w-[900px] md:h-[900px] border border-white/5 rounded-full absolute animate-spin-slow" style={{animationDuration: '20s'}}></div>
+      </div>
 
-      {/* Main content */}
-      <div className="relative z-10 text-center space-y-4 md:space-y-6 lg:space-y-8 max-w-full md:max-w-2xl px-4">
+      {/* Floating Particles */}
+      <div className="absolute inset-0">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1.5 h-1.5 md:w-2 md:h-2 bg-[#FBEFA4] rounded-full opacity-60 animate-pulse"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${i * 0.3}s`,
+              opacity: 0.2 + Math.random() * 0.5
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 w-full max-w-5xl h-full flex flex-col items-center justify-between py-6 md:py-8">
         
-        {/* Logo/Icon Section */}
-        <div className="flex justify-center mb-4 md:mb-6">
-          <div className={`${getLogoSize()} bg-linear-to-br from-[#FFC107] to-[#008000] rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform border-2 border-[#FFC107]/50`}>
-            <span>🎯</span>
+        {/* Top Section - Logo & Brand */}
+        <div className="flex flex-col items-center">
+          {/* Logo with Custom Image */}
+          <div className="relative group cursor-pointer mb-3">
+            <div className="absolute inset-0 bg-[#FBEFA4] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+            <div className="relative w-20 h-20 md:w-30 md:h-30 rounded-full flex items-center justify-center border-2 border-[#FBEFA4] shadow-xl overflow-hidden">
+              {/* Custom Image Asset */}
+              <img 
+                src={tambolaGame} 
+                alt="Tambola Dice" 
+                className="w-full h-full object-cover rounded-full"
+
+              />
+            </div>
+          </div>
+          
+          {/* Brand Name */}
+          <h2 className="text-[#FBEFA4] text-xs md:text-sm font-medium tracking-[0.3em] uppercase opacity-80">
+            Play & Win
+          </h2>
+        </div>
+
+        {/* Middle Section - Main Content */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full">
+          
+          {/* Main Title */}
+          <h1 className={`${isMobile ? 'text-6xl' : 'text-7xl md:text-8xl lg:text-9xl'} font-black text-white tracking-tight mb-3 text-center`}>
+            <span className="relative inline-block">
+              <span className="relative z-10 bg-gradient-to-r from-[#FBEFA4] via-[#FFF5C2] to-[#FBEFA4] bg-clip-text text-transparent">
+                TAMBOLA
+              </span>
+              <span className="absolute -bottom-2 left-0 right-0 h-3 md:h-4 bg-[#FBEFA4]/20 blur-md"></span>
+            </span>
+          </h1>
+          
+          {/* Tagline */}
+          <div className="flex items-center gap-2 md:gap-3 mb-8">
+            <span className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#FBEFA4]"></span>
+            <p className="text-white/70 text-sm md:text-base font-light tracking-wider">
+              The Classic Number Game Experience
+            </p>
+            <span className="w-8 h-[1px] bg-gradient-to-l from-transparent to-[#FBEFA4]"></span>
+          </div>
+
+          {/* Feature Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-8">
+            {['🎫 5 Cards Max', '🏆 Daily Prizes', '⚡ Live Results'].map((feature, i) => (
+              <span 
+                key={i}
+                className="bg-white/5 backdrop-blur-sm text-white/80 text-xs md:text-sm px-4 py-2 rounded-full border border-white/10 hover:border-[#FBEFA4]/40 hover:bg-white/10 transition-all duration-300"
+              >
+                {feature}
+              </span>
+            ))}
+          </div>
+
+        
+
+          {/* Buttons */}
+          <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} gap-3 md:gap-4 w-full max-w-md`}>
+            {/* Primary CTA */}
+            <button
+              onClick={() => navigate(ROUTES.GAME)}
+              className="group relative flex-1 bg-[#FBEFA4] hover:bg-[#FFE44D] text-[#004296] py-4 px-6 rounded-2xl font-bold text-base md:text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Play Now
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            </button>
+            
+            {/* Secondary CTA */}
+            <button
+              onClick={() => navigate(ROUTES.AFTERGAME)}
+              className="group flex-1 bg-transparent hover:bg-white/10 text-white border-2 border-white/30 hover:border-[#FBEFA4] py-4 px-6 rounded-2xl font-bold text-base md:text-lg transition-all duration-300"
+            >
+              <span className="flex items-center justify-center gap-2">
+                Live Draws
+                <span className="text-lg">📺</span>
+              </span>
+            </button>
           </div>
         </div>
 
-        {/* Title Section */}
-        <div className="space-y-2 md:space-y-3">
-          <h1 className={`${getTitleSize()} font-extrabold bg-linear-to-r from-[#FFC107] via-[#008000] to-[#4D4D4D] bg-clip-text text-transparent leading-tight drop-shadow-lg`}>
-            Tambola
-          </h1>
-          <p className="text-base md:text-xl lg:text-2xl text-[#FFC107]/80 font-light tracking-wide px-2">
-            The Ultimate Number Game Experience
+      
+
+        {/* Bottom Decoration */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+          <p className="text-white/20 text-[10px] tracking-widest">
+            ✦ PRESS PLAY TO BEGIN ✦
           </p>
         </div>
-
-        {/* Features Grid - Responsive */}
-        <div className={`grid ${isMobile ? 'grid-cols-1 gap-3' : 'grid-cols-3 gap-4 md:gap-5'} my-6 md:my-8 lg:my-10`}>
-          <div className="bg-linear-to-br from-[#008000]/10 to-[#4D4D4D]/10 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-5 border border-[#FFC107]/30 shadow-xl hover:shadow-[#FFC107]/20 transition-all hover:scale-105">
-            <div className="text-xl md:text-2xl lg:text-3xl mb-2 md:mb-3">🎲</div>
-            <p className="text-xs md:text-sm font-semibold text-[#FFC107]">Multiple Cards</p>
-            {!isMobile && <p className="text-xs text-[#4D4D4D]/70 mt-1">Play with friends</p>}
-          </div>
-          <div className="bg-linear-to-br from-[#008000]/10 to-[#4D4D4D]/10 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-5 border border-[#FFC107]/30 shadow-xl hover:shadow-[#FFC107]/20 transition-all hover:scale-105">
-            <div className="text-xl md:text-2xl lg:text-3xl mb-2 md:mb-3">🎯</div>
-            <p className="text-xs md:text-sm font-semibold text-[#FFC107]">Auto Caller</p>
-            {!isMobile && <p className="text-xs text-[#4D4D4D]/70 mt-1">Random numbers</p>}
-          </div>
-          <div className="bg-linear-to-br from-[#008000]/10 to-[#4D4D4D]/10 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 md:p-4 lg:p-5 border border-[#FFC107]/30 shadow-xl hover:shadow-[#FFC107]/20 transition-all hover:scale-105">
-            <div className="text-xl md:text-2xl lg:text-3xl mb-2 md:mb-3">🏆</div>
-            <p className="text-xs md:text-sm font-semibold text-[#FFC107]">Win Prizes</p>
-            {!isMobile && <p className="text-xs text-[#4D4D4D]/70 mt-1">Be the champion</p>}
-          </div>
-        </div>
-
-        {/* Start Button - Responsive sizing */}
-        <button
-          onClick={() => navigate(ROUTES.GAME)}
-          className={`group relative ${isMobile ? 'px-8 py-4 text-lg' : 'px-10 md:px-12 py-4 md:py-5 text-lg md:text-xl'} bg-linear-to-r from-[#008000] via-[#006400] to-[#FFC107] rounded-xl md:rounded-2xl font-bold shadow-2xl hover:shadow-[#FFC107]/40 transform hover:scale-105 transition-all duration-300 overflow-hidden border border-[#FFC107]/50`}
-        >
-          <span className="relative z-10 flex items-center gap-2 text-white">
-            Start Playing Now
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </span>
-          <div className="absolute inset-0 bg-linear-to-r from-[#FFC107] to-[#008000] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-        </button>
-
-           {/* Start Button - GameLive homepage */}
-        <button
-          onClick={() => navigate(ROUTES.AFTERGAME)}
-          className={`group relative ${isMobile ? 'px-8 py-4 text-lg' : 'px-10 md:px-10 py-4 md:py-5 text-lg md:text-xl'} bg-linear-to-r from-[#008000] via-[#006400] to-[#FFC107] rounded-xl md:rounded-2xl font-bold shadow-2xl hover:shadow-[#FFC107]/40 transform hover:scale-105 transition-all duration-300 overflow-hidden border border-[#FFC107]/50`}
-        >
-          <span className="relative z-10 flex items-center gap-2 text-white">
-            Start Playing Now 2
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </span>
-          <div className="absolute inset-0 bg-linear-to-r from-[#FFC107] to-[#008000] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-        </button>
-
-        {/* Footer text */}
-        <p className="text-[#4D4D4D] text-xs md:text-sm mt-6 md:mt-8 lg:mt-10 tracking-wider">
-          Press start to begin your Tambola journey ✦
-        </p>
       </div>
 
-      {/* Bottom decoration */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 md:h-1.5 bg-linear-to-r from-transparent via-[#FFC107] to-transparent shadow-lg shadow-[#FFC107]/50"></div>
-      
-      {/* Top decoration line */}
-      <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-[#008000] to-transparent"></div>
+      {/* CSS for slow spin */}
+      <style jsx>{`
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 12s linear infinite;
+        }
+      `}</style>
     </div>
   );
 };

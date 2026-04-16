@@ -1,4 +1,14 @@
+// import React, { useEffect, useState, useRef } from "react";
+// import { useNavigate } from "react-router-dom";
+// // Import your logo image
+// import Home from "../Home";
+
+
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes";
+// Import your logo image
+import logoImage from "../../assets/tambolaGame.jpeg";
 
 const tickets = [
   {
@@ -203,7 +213,7 @@ const tickets = [
   },
 ];
 
-// Ticket Set Options with detailed descriptions
+// Ticket Set Options
 const TICKET_SETS = [
   {
     id: 1,
@@ -336,8 +346,8 @@ const AGENTS = [
   }
 ];
 
-
 const GamePage = () => {
+  const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState("");
   const [search, setSearch] = useState("");
   const [showFabMenu, setShowFabMenu] = useState(false);
@@ -352,11 +362,9 @@ const GamePage = () => {
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
-
-  // Form states
+  const [quantity, setQuantity] = useState(1);
   const [playerName, setPlayerName] = useState("");
   const [playerPhone, setPlayerPhone] = useState("");
-  const [quantity, setQuantity] = useState(1);
 
   const gameTimeRef = useRef(new Date());
 
@@ -411,6 +419,12 @@ const GamePage = () => {
     hour12: true,
   });
 
+  const formattedDate = gameTimeRef.current.toLocaleDateString("en-IN", {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short'
+  });
+
   const filteredTickets = tickets.filter((ticket) => {
     const searchText = search.toLowerCase();
     return (
@@ -433,10 +447,6 @@ const GamePage = () => {
       `Hello ${agent.name},\n\nI'm interested in booking Tambola tickets. Can you please help me with the booking process?\n\nThank you!`
     );
     window.open(`https://wa.me/${agent.whatsapp}?text=${message}`, '_blank');
-
-    setTimeout(() => {
-      alert(`Connecting you to ${agent.name} via WhatsApp...`);
-    }, 500);
   };
 
   const handleCallAgent = (agent) => {
@@ -449,46 +459,6 @@ const GamePage = () => {
     } else {
       setSelectedSets([...selectedSets, setId]);
     }
-  };
-
-  const handleBookingSubmit = (e) => {
-    e.preventDefault();
-
-    if (!playerName || !playerPhone) {
-      alert("Please fill in all required fields");
-      return;
-    }
-
-    if (!selectedTicketType) {
-      alert("Please select a ticket type");
-      return;
-    }
-
-    if (selectedTicketType === "set" && selectedSets.length === 0) {
-      alert("Please select at least one ticket set");
-      return;
-    }
-
-    const bookingData = {
-      playerName,
-      playerPhone,
-      ticketType: selectedTicketType,
-      quantity: selectedTicketType !== "set" ? quantity : null,
-      selectedSets: selectedTicketType === "set" ? selectedSets : null,
-      timestamp: new Date().toISOString(),
-    };
-
-    console.log("Booking Data:", bookingData);
-
-    alert(`🎉 Booking Successful!\n\nThank you ${playerName}!\n\nTicket Type: ${getTicketTypeName()}\nTotal Amount: ₹${getTotalPrice()}\n\nYou will receive confirmation on ${playerPhone}\n\nGood luck for the game! 🍀`);
-
-    setShowBookingModal(false);
-    setPlayerName("");
-    setPlayerPhone("");
-    setSelectedSets([]);
-    setQuantity(1);
-    setSelectedTicketType("");
-    setCurrentStep(1);
   };
 
   const getTicketTypeName = () => {
@@ -554,6 +524,46 @@ const GamePage = () => {
     setCurrentStep(currentStep + 1);
   };
 
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+
+    if (!playerName || !playerPhone) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    if (!selectedTicketType) {
+      alert("Please select a ticket type");
+      return;
+    }
+
+    if (selectedTicketType === "set" && selectedSets.length === 0) {
+      alert("Please select at least one ticket set");
+      return;
+    }
+
+    const bookingData = {
+      playerName,
+      playerPhone,
+      ticketType: selectedTicketType,
+      quantity: selectedTicketType !== "set" ? quantity : null,
+      selectedSets: selectedTicketType === "set" ? selectedSets : null,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log("Booking Data:", bookingData);
+
+    alert(`🎉 Booking Successful!\n\nThank you ${playerName}!\n\nTicket Type: ${getTicketTypeName()}\nTotal Amount: ₹${getTotalPrice()}\n\nYou will receive confirmation on ${playerPhone}\n\nGood luck for the game! 🍀`);
+
+    setShowBookingModal(false);
+    setPlayerName("");
+    setPlayerPhone("");
+    setSelectedSets([]);
+    setQuantity(1);
+    setSelectedTicketType("");
+    setCurrentStep(1);
+  };
+
   return (
     <>
       <style>
@@ -567,11 +577,6 @@ const GamePage = () => {
             .header-title {
               font-size: 1.875rem !important;
               padding: 1rem !important;
-            }
-            
-            .regular-player-title {
-              font-size: 1.25rem !important;
-              padding: 0.5rem !important;
             }
             
             .timer-cards {
@@ -750,66 +755,78 @@ const GamePage = () => {
         `}
       </style>
 
-      <div className={`min-h-screen bg-black text-white game-container p-4 md:p-6 relative`}>
+      <div className={`min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative`}>
+        
         {/* Animated background elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, #FBEFA4 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
+
         <div className="relative z-10 max-w-8xl mx-auto space-y-3">
-          {/* HEADER with Gradient */}
-          <div className="relative overflow-hidden rounded-b-3xl bg-linear-to-br from-[#4D4D4D] via-[#4A4A4A] to-[#303030] p-3 md:p-5">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-[#303030] rounded-full filter blur-3xl opacity-20"></div>
-            <h1 className="header-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-center bg-white bg-clip-text text-transparent tracking-wider">
-              GET RICH
+          
+          {/* LOGO HEADER - Click to go Home (Replacing "GET RICH") */}
+          <div className="flex justify-center mb-2">
+            <div 
+              onClick={() => navigate(ROUTES.HOME)} 
+              className="relative group cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-[#FBEFA4] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+              <div className="relative w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-4 border-[#FBEFA4] shadow-xl overflow-hidden">
+                <img 
+                  src={logoImage} 
+                  alt="Tambola Logo" 
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* TICKET FOR GAMES Header */}
+          <div className="overflow-hidden rounded-b-3xl bg-gradient-to-r from-[#004296] to-[#003380] p-2 md:p-3 relative border border-[#FBEFA4]/30">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[#FBEFA4] rounded-full filter blur-3xl opacity-10"></div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-[#FBEFA4] via-white to-[#FBEFA4] bg-clip-text text-transparent tracking-wider">
+              TICKET FOR GAMES
             </h1>
           </div>
 
-          <div className="overflow-hidden rounded-b-3xl bg-linear-to-br from-[#4D4D4D] via-[#4A4A4A] to-[#303030] p-2 md:p-3 relative">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-[#303030] rounded-full filter blur-3xl opacity-20"></div>
-            <h1 className="regular-player-title text-xl sm:text-2xl md:text-3xl font-bold text-center bg-white bg-clip-text text-transparent tracking-wider">
-              Regular Player Link
-            </h1>
-          </div>
-
-          {/* TIMER SECTION - Responsive Cards */}
+          {/* TIMER SECTION - Single Row: Date | Game Time | Countdown */}
           <div className="timer-cards grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
-            <div className="timer-card bg-[#4D4D4D] backdrop-blur-lg rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6">
+            <div className="timer-card bg-[#004296]/60 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-[#FBEFA4]/30">
               <div className="flex items-center justify-center gap-2 mb-1 md:mb-2">
-                <p className="font-bold text-white text-sm sm:text-base">Date</p>
+                <span className="text-[#FBEFA4] text-lg">📅</span>
+                <p className="font-bold text-[#FBEFA4] text-sm sm:text-base">Date</p>
               </div>
               <p className="text-lg sm:text-xl md:text-2xl font-bold text-center text-white">
-                {isMobile 
-                  ? new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
-                  : new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-                }
+                {formattedDate}
               </p>
             </div>
 
-            <div className="timer-card bg-[#4D4D4D] backdrop-blur-lg rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6">
+            <div className="timer-card bg-[#004296]/60 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-[#FBEFA4]/30">
               <div className="flex items-center justify-center gap-2 mb-1 md:mb-2">
-                <p className="font-bold text-white text-sm sm:text-base">Countdown</p>
-              </div>
-              <p className="text-lg sm:text-xl md:text-2xl font-bold text-center text-white font-mono">
-                {timeLeft}
-              </p>
-            </div>
-
-            <div className="timer-card bg-[#4D4D4D] backdrop-blur-lg rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6">
-              <div className="flex items-center justify-center gap-2 mb-1 md:mb-2">
-                <p className="font-bold text-white text-sm sm:text-base">Game Time</p>
+                <span className="text-[#FBEFA4] text-lg">⏰</span>
+                <p className="font-bold text-[#FBEFA4] text-sm sm:text-base">Game Time</p>
               </div>
               <p className="text-lg sm:text-xl md:text-2xl font-bold text-center text-white">
                 {formattedGameTime}
               </p>
             </div>
+
+            <div className="timer-card bg-[#FBEFA4]/10 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border-2 border-[#FBEFA4]">
+              <div className="flex items-center justify-center gap-2 mb-1 md:mb-2">
+                <span className="text-[#FBEFA4] text-lg">⏱️</span>
+                <p className="font-bold text-[#FBEFA4] text-sm sm:text-base">Countdown</p>
+              </div>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-center text-[#FBEFA4] font-mono">
+                {timeLeft}
+              </p>
+            </div>
           </div>
 
           {/* Tickets Container */}
-          <div className="w-full bg-[#636363] p-2 md:p-3 rounded-2xl md:rounded-3xl shadow-xl">
-            {/* INNER CARD */}
-            <div className="overflow-hidden rounded-2xl md:rounded-3xl bg-[#848484] p-2 md:p-3 relative">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-[#303030] rounded-full filter blur-3xl opacity-20"></div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-white bg-clip-text text-transparent tracking-wider">
-                TICKET FOR GAMES
-              </h1>
-            </div>
+          <div className="w-full bg-[#004296]/40 backdrop-blur-sm p-2 md:p-3 rounded-2xl md:rounded-3xl shadow-xl border border-[#FBEFA4]/30">
             
             {/* SEARCH BAR - Responsive */}
             <div className="w-full flex justify-center p-2 md:p-3 relative">
@@ -818,12 +835,12 @@ const GamePage = () => {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="🔍 Search by name or ticket number..."
-                  className="search-input w-full px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white text-black placeholder-black text-sm sm:text-base"
+                  className="search-input w-full px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/10 backdrop-blur-sm text-white placeholder-white/50 border-2 border-[#FBEFA4]/40 text-sm sm:text-base outline-none focus:border-[#FBEFA4] transition-all"
                 />
                 {search && (
                   <button
                     onClick={() => setSearch("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-black"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#FBEFA4] hover:text-white bg-[#004296]/50 rounded-full w-6 h-6 flex items-center justify-center"
                   >
                     ✕
                   </button>
@@ -837,13 +854,12 @@ const GamePage = () => {
                 filteredTickets.map((ticket) => (
                   <div
                     key={ticket.id}
-                    className="ticket-card group relative bg-[#FFC107] rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-2xl hover:shadow-[#FBBF24]/40 transition-all duration-300"
+                    className="ticket-card group relative bg-white rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-[#FBEFA4] hover:border-[#FBEFA4] hover:scale-[1.02]"
                   >
                     <div className="relative z-10">
                       {/* TITLE */}
-                      <div className="overflow-hidden bg-linear-to-br from-[#FFD65C] via-[#FFD65C] to-[#FFD65C] mb-2 md:mb-3">
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-[#FFD65C] rounded-full filter blur-3xl opacity-20"></div>
-                        <h1 className="ticket-title text-xl sm:text-2xl font-bold text-center bg-white bg-clip-text text-transparent tracking-wider">
+                      <div className="overflow-hidden bg-gradient-to-r from-[#004296] to-[#003380] mb-2 md:mb-3 rounded-xl p-2 border border-[#FBEFA4]/30">
+                        <h1 className="ticket-title text-xl sm:text-2xl font-bold text-center text-[#FBEFA4] tracking-wider">
                           TNO:{ticket.id}
                         </h1>
                       </div>
@@ -853,14 +869,14 @@ const GamePage = () => {
                         {/* LEFT SIDE */}
                         <div className="flex-1">
                           {/* BOOKED INFO */}
-                          <div className="booked-info bg-white text-black rounded-xl md:rounded-2xl p-2 sm:p-3 mb-2 md:mb-3 text-xs sm:text-sm shadow">
-                            <p className="truncate"><b>Booked By:</b> {ticket.name}</p>
-                            <p><b>Agent Name:</b> -</p>
-                            <p><b>Won last Time?:</b> {ticket.win}</p>
+                          <div className="booked-info bg-[#FBEFA4]/10 text-gray-800 rounded-xl md:rounded-2xl p-2 sm:p-3 mb-2 md:mb-3 text-xs sm:text-sm shadow border border-[#FBEFA4]/30">
+                            <p className="truncate"><b className="text-[#004296]">Booked By:</b> {ticket.name}</p>
+                            <p><b className="text-[#004296]">Agent Name:</b> -</p>
+                            <p><b className="text-[#004296]">Won last Time?:</b> <span className="text-green-600 font-bold">{ticket.win}</span></p>
                           </div>
 
                           {/* GRID */}
-                          <div className="bg-white p-1 sm:p-2 rounded-xl md:rounded-2xl shadow-inner">
+                          <div className="bg-gray-50 p-1 sm:p-2 rounded-xl md:rounded-2xl shadow-inner border border-gray-200">
                             <div className="ticket-grid-numbers grid grid-cols-9 gap-0.5 sm:gap-1">
                               {ticket.numbers.map((row, i) => (
                                 <React.Fragment key={i}>
@@ -868,7 +884,9 @@ const GamePage = () => {
                                     <div
                                       key={`${i}-${j}`}
                                       className={`number-cell h-6 sm:h-7 md:h-8 flex items-center justify-center text-[0.625rem] sm:text-xs font-bold rounded border
-                                        ${num !== 0 ? "bg-gray-200 text-black" : "bg-gray-100"}`}
+                                        ${num !== 0 
+                                          ? "bg-gradient-to-br from-[#004296] to-[#003380] text-white border-[#FBEFA4]/40" 
+                                          : "bg-gray-200 text-gray-400"}`}
                                     >
                                       {num !== 0 ? num : ""}
                                     </div>
@@ -881,15 +899,15 @@ const GamePage = () => {
 
                         {/* RIGHT SIDE */}
                         <div className="ticket-right w-full sm:w-[40%] flex flex-col justify-between">
-                          <p className="text-xs sm:text-sm font-semibold text-[#2C1810] mb-2">
+                          <p className="text-xs sm:text-sm text-gray-700 mb-2 font-medium">
                             Book the ticket. We have big big prize for this game.
                           </p>
 
                           <div className="ticket-buttons flex flex-row sm:flex-col gap-2 mt-2">
-                            <button className="bg-[#808080] text-white py-1.5 sm:py-2 px-3 rounded-lg text-sm sm:text-base">
+                            <button className="bg-gradient-to-r from-[#004296] to-[#003380] hover:from-[#003380] hover:to-[#004296] text-white py-1.5 sm:py-2 px-3 rounded-lg text-sm sm:text-base font-semibold transition-all shadow-md border border-[#FBEFA4]/30">
                               Buy Now
                             </button>
-                            <button className="bg-[#808080] text-white py-1.5 sm:py-2 px-3 rounded-lg text-sm sm:text-base">
+                            <button className="bg-[#FBEFA4] hover:bg-[#FFE44D] text-[#004296] py-1.5 sm:py-2 px-3 rounded-lg text-sm sm:text-base font-semibold transition-all shadow-md">
                               Add Cart
                             </button>
                           </div>
@@ -900,7 +918,7 @@ const GamePage = () => {
                 ))
               ) : (
                 <div className="col-span-full text-center py-8 sm:py-12">
-                  <p className="text-lg sm:text-2xl text-[#FDE68A]">No tickets found</p>
+                  <p className="text-lg sm:text-2xl text-[#FBEFA4]">No tickets found</p>
                   <p className="text-white/60 text-sm sm:text-base mt-2">Try a different search term</p>
                 </div>
               )}
@@ -918,7 +936,7 @@ const GamePage = () => {
                   setShowBookingModal(true);
                   setCurrentStep(1);
                 }}
-                className="fab-menu-button flex items-center gap-2 sm:gap-3 bg-linear-to-r from-[#DC2626] to-[#B91C1C] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-2xl text-xs sm:text-sm"
+                className="fab-menu-button flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-[#004296] to-[#003380] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-xl text-xs sm:text-sm border-2 border-[#FBEFA4]"
               >
                 <span className="text-base sm:text-xl">🎫</span>
                 <span className="font-semibold">
@@ -931,7 +949,7 @@ const GamePage = () => {
                   setShowFabMenu(false);
                   setShowAgentModal(true);
                 }}
-                className="fab-menu-button flex items-center gap-2 sm:gap-3 bg-linear-to-r from-[#D97706] to-[#FBBF24] text-[#2C1810] px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-2xl text-xs sm:text-sm"
+                className="fab-menu-button flex items-center gap-2 sm:gap-3 bg-[#FBEFA4] text-[#004296] px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-xl text-xs sm:text-sm font-bold"
               >
                 <span className="text-base sm:text-xl">📞</span>
                 <span className="font-semibold">Contact Agent</span>
@@ -941,9 +959,9 @@ const GamePage = () => {
 
           <button
             onClick={() => setShowFabMenu(!showFabMenu)}
-            className="fab-button w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-linear-to-br from-[#FBBF24] to-[#D97706] rounded-full shadow-2xl flex items-center justify-center border-2 border-white/50"
+            className="fab-button w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full shadow-2xl flex items-center justify-center border-3 border-[#FBEFA4] hover:scale-110 transition-all"
           >
-            <span className={`text-xl sm:text-2xl md:text-3xl transition-transform duration-300 ${showFabMenu ? 'rotate-45' : ''}`}>
+            <span className={`text-xl sm:text-2xl md:text-3xl text-[#FBEFA4] transition-transform duration-300 ${showFabMenu ? 'rotate-45' : ''}`}>
               {showFabMenu ? '✕' : '🎯'}
             </span>
           </button>
@@ -952,12 +970,12 @@ const GamePage = () => {
         {/* AGENT MODAL - Responsive */}
         {showAgentModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
-            <div className="agent-modal bg-linear-to-br from-[#2C1810] to-[#1A0F0A] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-5xl max-h-[90vh] overflow-hidden border-2 border-[#FBBF24]/50 shadow-2xl">
+            <div className="agent-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-5xl max-h-[90vh] overflow-hidden border-2 border-[#FBEFA4]/50 shadow-2xl">
               {/* Modal Header */}
-              <div className="sticky top-0 bg-linear-to-r from-[#DC2626] to-[#D97706] p-4 sm:p-6 border-b-2 border-[#FBBF24]/50 z-10">
+              <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 border-b-2 border-[#FBEFA4]/50 z-10">
                 <div className="flex justify-between items-center">
                   <div>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white flex items-center gap-2 sm:gap-3">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FBEFA4] flex items-center gap-2 sm:gap-3">
                       <span>📞</span> Contact Our Agents
                     </h2>
                     <p className="text-white/80 text-xs sm:text-sm mt-1">Connect with our experienced agents for quick assistance</p>
@@ -968,7 +986,7 @@ const GamePage = () => {
                       setSelectedAgent(null);
                       setSearchAgent("");
                     }}
-                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center"
+                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all"
                   >
                     <span className="text-lg sm:text-2xl">✕</span>
                   </button>
@@ -981,7 +999,7 @@ const GamePage = () => {
                     placeholder="🔍 Search by name, language, or specialization..."
                     value={searchAgent}
                     onChange={(e) => setSearchAgent(e.target.value)}
-                    className="w-full px-3 sm:px-5 py-2 sm:py-3 text-sm sm:text-base rounded-xl bg-white/10 border border-[#FBBF24]/30 text-white placeholder-white/50 outline-none"
+                    className="w-full px-3 sm:px-5 py-2 sm:py-3 text-sm sm:text-base rounded-xl bg-white/10 border border-[#FBEFA4]/30 text-white placeholder-white/50 outline-none focus:border-[#FBEFA4]"
                   />
                   {searchAgent && (
                     <button
@@ -997,7 +1015,7 @@ const GamePage = () => {
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-3 sm:mt-4">
                   <div className="bg-white/10 rounded-lg p-1.5 sm:p-2 text-center">
                     <p className="text-[0.625rem] sm:text-xs text-white/60">Total Agents</p>
-                    <p className="text-base sm:text-xl font-bold text-[#FBBF24]">{AGENTS.length}</p>
+                    <p className="text-base sm:text-xl font-bold text-[#FBEFA4]">{AGENTS.length}</p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-1.5 sm:p-2 text-center">
                     <p className="text-[0.625rem] sm:text-xs text-white/60">Available Now</p>
@@ -1007,7 +1025,7 @@ const GamePage = () => {
                   </div>
                   <div className="bg-white/10 rounded-lg p-1.5 sm:p-2 text-center">
                     <p className="text-[0.625rem] sm:text-xs text-white/60">Avg Response</p>
-                    <p className="text-base sm:text-xl font-bold text-[#FBBF24]">{"< 5 min"}</p>
+                    <p className="text-base sm:text-xl font-bold text-[#FBEFA4]">{"< 5 min"}</p>
                   </div>
                 </div>
               </div>
@@ -1020,13 +1038,13 @@ const GamePage = () => {
                       filteredAgents.map((agent) => (
                         <div
                           key={agent.id}
-                          className={`agent-card bg-linear-to-br from-white/10 to-white/5 rounded-xl p-3 sm:p-4 md:p-5 border-2 ${
-                            agent.available ? 'border-[#FBBF24]/30' : 'border-gray-500/30 opacity-75'
+                          className={`agent-card bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-3 sm:p-4 md:p-5 border-2 ${
+                            agent.available ? 'border-[#FBEFA4]/30' : 'border-gray-500/30 opacity-75'
                           }`}
                         >
                           <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
                             <div className="relative">
-                              <div className="w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-linear-to-br from-[#DC2626] to-[#D97706] rounded-full flex items-center justify-center text-2xl sm:text-3xl border-2 border-[#FBBF24]/50">
+                              <div className="w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-2xl sm:text-3xl border-2 border-[#FBEFA4]/50">
                                 {agent.avatar}
                               </div>
                               <div className={`absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white ${
@@ -1038,8 +1056,8 @@ const GamePage = () => {
                               <div className="flex items-center gap-2 mb-1">
                                 <h3 className="text-base sm:text-lg md:text-xl font-bold text-white">{agent.name}</h3>
                                 <div className="flex items-center gap-1 bg-yellow-500/20 px-2 py-0.5 rounded-full">
-                                  <span className="text-yellow-400 text-xs sm:text-sm">★</span>
-                                  <span className="text-xs sm:text-sm text-yellow-400">{agent.rating}</span>
+                                  <span className="text-[#FBEFA4] text-xs sm:text-sm">★</span>
+                                  <span className="text-xs sm:text-sm text-[#FBEFA4]">{agent.rating}</span>
                                 </div>
                               </div>
 
@@ -1074,7 +1092,7 @@ const GamePage = () => {
                                 disabled={!agent.available}
                                 className={`flex-1 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 ${
                                   agent.available
-                                    ? 'bg-linear-to-r from-green-500 to-green-600 text-white'
+                                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700'
                                     : 'bg-gray-500/50 text-gray-300 cursor-not-allowed'
                                 }`}
                               >
@@ -1082,7 +1100,7 @@ const GamePage = () => {
                               </button>
                               <button
                                 onClick={() => setSelectedAgent(agent)}
-                                className="flex-1 px-3 sm:px-4 py-2 bg-white/10 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2"
+                                className="flex-1 px-3 sm:px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 text-white"
                               >
                                 <span>👁️</span> View
                               </button>
@@ -1101,15 +1119,15 @@ const GamePage = () => {
                   <div className="space-y-4 sm:space-y-6">
                     <button
                       onClick={() => setSelectedAgent(null)}
-                      className="text-[#FBBF24] hover:underline flex items-center gap-2 text-sm sm:text-base"
+                      className="text-[#FBEFA4] hover:text-white flex items-center gap-2 text-sm sm:text-base"
                     >
                       ← Back to all agents
                     </button>
 
-                    <div className="bg-linear-to-br from-white/10 to-white/5 rounded-xl p-4 sm:p-6 border border-[#FBBF24]/30">
+                    <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
                       <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                         <div className="relative">
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-linear-to-br from-[#DC2626] to-[#D97706] rounded-full flex items-center justify-center text-4xl sm:text-5xl border-3 border-[#FBBF24]">
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-4xl sm:text-5xl border-3 border-[#FBEFA4]">
                             {selectedAgent.avatar}
                           </div>
                           <div className={`absolute -bottom-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 border-white ${
@@ -1121,8 +1139,8 @@ const GamePage = () => {
                           <div className="flex items-center gap-2 sm:gap-3 mb-2">
                             <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">{selectedAgent.name}</h3>
                             <div className="flex items-center gap-1 bg-yellow-500/20 px-2 sm:px-3 py-1 rounded-full">
-                              <span className="text-yellow-400 text-base sm:text-lg">★</span>
-                              <span className="text-yellow-400 text-sm sm:text-base">{selectedAgent.rating}</span>
+                              <span className="text-[#FBEFA4] text-base sm:text-lg">★</span>
+                              <span className="text-[#FBEFA4] text-sm sm:text-base">{selectedAgent.rating}</span>
                               <span className="text-white/50 text-xs sm:text-sm">({selectedAgent.totalBookings} bookings)</span>
                             </div>
                           </div>
@@ -1151,13 +1169,13 @@ const GamePage = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6">
                         <button
                           onClick={() => handleCallAgent(selectedAgent)}
-                          className="p-3 sm:p-4 bg-linear-to-r from-blue-500 to-blue-600 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3"
+                          className="p-3 sm:p-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 text-white"
                         >
                           <span className="text-xl sm:text-2xl">📞</span> Call Now
                         </button>
                         <button
                           onClick={() => handleContactAgent(selectedAgent)}
-                          className="p-3 sm:p-4 bg-linear-to-r from-green-500 to-green-600 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3"
+                          className="p-3 sm:p-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 text-white"
                         >
                           <span className="text-xl sm:text-2xl">💬</span> WhatsApp
                         </button>
@@ -1174,7 +1192,7 @@ const GamePage = () => {
                 )}
               </div>
 
-              <div className="sticky bottom-0 bg-linear-to-r from-[#2C1810] to-[#1A0F0A] p-3 sm:p-4 border-t border-[#FBBF24]/30">
+              <div className="sticky bottom-0 bg-gradient-to-r from-[#004296] to-[#003380] p-3 sm:p-4 border-t border-[#FBEFA4]/30">
                 <p className="text-center text-white/50 text-xs sm:text-sm">
                   All agents are verified and experienced in Tambola games.
                   Your privacy is protected.
@@ -1187,15 +1205,15 @@ const GamePage = () => {
         {/* ENHANCED BOOKING MODAL - Responsive */}
         {showBookingModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
-            <div className="booking-modal bg-linear-to-br from-[#2C1810] to-[#1A0F0A] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBBF24]/50 shadow-2xl">
+            <div className="booking-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
               {/* Modal Header with Progress Bar */}
-              <div className="sticky top-0 bg-linear-to-r from-[#DC2626] to-[#D97706] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBBF24]/50 z-10">
+              <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
                 <div className="flex justify-between items-center mb-3 sm:mb-4">
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Book Your Tickets</h2>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FBEFA4]">Book Your Tickets</h2>
                     <button
                       onClick={() => setShowHelp(!showHelp)}
-                      className="w-7 h-7 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center"
+                      className="w-7 h-7 sm:w-8 sm:h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center"
                       title="How to book tickets?"
                     >
                       <span className="text-base sm:text-lg">❓</span>
@@ -1207,7 +1225,7 @@ const GamePage = () => {
                       setCurrentStep(1);
                       setSelectedTicketType("");
                     }}
-                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center"
+                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
                   >
                     <span className="text-xl sm:text-2xl">✕</span>
                   </button>
@@ -1215,15 +1233,15 @@ const GamePage = () => {
 
                 {/* Help Box */}
                 {showHelp && (
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 text-xs sm:text-sm">
-                    <h3 className="font-bold text-[#FBBF24] mb-2">📖 How to Book Tickets:</h3>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-3 sm:mb-4 text-xs sm:text-sm border border-[#FBEFA4]/30">
+                    <h3 className="font-bold text-[#FBEFA4] mb-2">📖 How to Book Tickets:</h3>
                     <ol className="list-decimal list-inside space-y-1 text-white/90">
                       <li>Enter your name and phone number</li>
                       <li>Choose your ticket type (Single, Half Sheet, or Full Sheet)</li>
                       <li>Select quantity or choose from special ticket sets</li>
                       <li>Review your order and confirm booking</li>
                     </ol>
-                    <p className="mt-2 text-[#FDE68A]">💡 Tip: Half Sheet and Full Sheet give better value and more winning chances!</p>
+                    <p className="mt-2 text-[#FBEFA4]">💡 Tip: Half Sheet and Full Sheet give better value and more winning chances!</p>
                   </div>
                 )}
 
@@ -1233,14 +1251,14 @@ const GamePage = () => {
                     <div key={step} className="flex items-center">
                       <div className={`step-number w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-base transition-all ${
                         currentStep >= step
-                          ? 'bg-[#FBBF24] text-[#2C1810] shadow-lg'
+                          ? 'bg-[#FBEFA4] text-[#004296] shadow-lg'
                           : 'bg-white/20 text-white/60'
                       }`}>
                         {step}
                       </div>
                       {step < 4 && (
                         <div className={`w-8 sm:w-12 md:w-20 h-1 mx-1 sm:mx-2 ${
-                          currentStep > step ? 'bg-[#FBBF24]' : 'bg-white/20'
+                          currentStep > step ? 'bg-[#FBEFA4]' : 'bg-white/20'
                         }`}></div>
                       )}
                     </div>
@@ -1259,15 +1277,15 @@ const GamePage = () => {
                 {/* STEP 1: Player Details */}
                 {currentStep === 1 && (
                   <div className="space-y-4 sm:space-y-6">
-                    <div className="bg-linear-to-r from-[#DC2626]/10 to-[#D97706]/10 rounded-xl p-4 sm:p-6 border border-[#FBBF24]/30">
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBBF24] mb-3 sm:mb-4 flex items-center gap-2">
+                    <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
                         <span>👤</span> Step 1: Your Details
                       </h3>
                       <p className="text-white/80 text-sm sm:text-base mb-4 sm:mb-6">Please enter your information to book tickets</p>
 
                       <div className="form-grid grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <div>
-                          <label className="block text-[#FDE68A] mb-2 text-base sm:text-lg">
+                          <label className="block text-[#FBEFA4] mb-2 text-base sm:text-lg">
                             Full Name <span className="text-red-400">*</span>
                           </label>
                           <input
@@ -1275,14 +1293,14 @@ const GamePage = () => {
                             value={playerName}
                             onChange={(e) => setPlayerName(e.target.value)}
                             placeholder="e.g., Raj Kumar"
-                            className="w-full px-3 sm:px-4 py-2 sm:py-4 rounded-xl bg-white/10 border-2 border-[#FBBF24]/30 text-white placeholder-white/40 outline-none text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-4 rounded-xl bg-white/10 border-2 border-[#FBEFA4]/30 text-white placeholder-white/40 outline-none focus:border-[#FBEFA4] text-sm sm:text-base"
                             required
                           />
                           <p className="text-[0.625rem] sm:text-xs text-white/50 mt-1">This name will appear on your ticket</p>
                         </div>
 
                         <div>
-                          <label className="block text-[#FDE68A] mb-2 text-base sm:text-lg">
+                          <label className="block text-[#FBEFA4] mb-2 text-base sm:text-lg">
                             Phone Number <span className="text-red-400">*</span>
                           </label>
                           <input
@@ -1290,7 +1308,7 @@ const GamePage = () => {
                             value={playerPhone}
                             onChange={(e) => setPlayerPhone(e.target.value)}
                             placeholder="e.g., 9876543210"
-                            className="w-full px-3 sm:px-4 py-2 sm:py-4 rounded-xl bg-white/10 border-2 border-[#FBBF24]/30 text-white placeholder-white/40 outline-none text-sm sm:text-base"
+                            className="w-full px-3 sm:px-4 py-2 sm:py-4 rounded-xl bg-white/10 border-2 border-[#FBEFA4]/30 text-white placeholder-white/40 outline-none focus:border-[#FBEFA4] text-sm sm:text-base"
                             required
                           />
                           <p className="text-[0.625rem] sm:text-xs text-white/50 mt-1">We'll send booking confirmation via SMS/WhatsApp</p>
@@ -1308,7 +1326,7 @@ const GamePage = () => {
                       <button
                         type="button"
                         onClick={handleNextStep}
-                        className="px-6 sm:px-8 py-2 sm:py-3 bg-linear-to-r from-green-500 to-green-600 rounded-xl text-white font-bold text-sm sm:text-base"
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white font-bold text-sm sm:text-base"
                       >
                         Next: Choose Ticket Type →
                       </button>
@@ -1317,7 +1335,7 @@ const GamePage = () => {
                 )}
 
                 {/* Additional steps would follow same responsive pattern */}
-                {/* For brevity, other steps follow the same responsive structure with text-sm sm:text-base, p-4 sm:p-6, etc. */}
+                {/* For brevity, other steps follow the same responsive structure */}
                 
               </form>
             </div>
@@ -1325,7 +1343,7 @@ const GamePage = () => {
         )}
 
         {/* Bottom decoration */}
-        <div className="fixed bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-linear-to-r from-transparent via-[#FBBF24] to-transparent shadow-lg shadow-[#FBBF24]/50"></div>
+        <div className="fixed bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-[#FBEFA4] to-transparent shadow-lg shadow-[#FBEFA4]/50"></div>
       </div>
     </>
   );
