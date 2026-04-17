@@ -1,18 +1,18 @@
 // import React, { useEffect, useState, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { ROUTES } from "../../routes/routes";
-// // Import your logo image
 // import logoImage from "../../assets/tambolaGame.jpeg";
+// import TambolaCaller from "./tambola_board";
+// import AnimatedTambolaCaller from "./AnimatedTambolaCaller"; // ← ADD THIS IMPORT
 
 
 // const AfterGameLive = () => {
 //   const navigate = useNavigate();
-//   const [timeLeft, setTimeLeft] = useState("");
 //   const [searchQuery, setSearchQuery] = useState("");
 //   const [selectedWinner, setSelectedWinner] = useState(null);
 //   const [isMobile, setIsMobile] = useState(false);
-
-//   const gameTimeRef = useRef(new Date());
+//   const [showCaller, setShowCaller] = useState(true); // Toggle between caller and board
+//   const [callerType, setCallerType] = useState("animated"); // ← ADD THIS: "animated" or "classic"
 
 //   // Check screen size
 //   useEffect(() => {
@@ -23,51 +23,6 @@
 //     window.addEventListener('resize', checkScreenSize);
 //     return () => window.removeEventListener('resize', checkScreenSize);
 //   }, []);
-
-//   // Set game time once (21:00)
-//   useEffect(() => {
-//     const gameTime = gameTimeRef.current;
-//     gameTime.setHours(21);
-//     gameTime.setMinutes(0);
-//     gameTime.setSeconds(0);
-//     gameTime.setMilliseconds(0);
-//   }, []);
-
-//   // Countdown Timer
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       const now = new Date();
-//       const diff = gameTimeRef.current - now;
-
-//       if (diff <= 0) {
-//         setTimeLeft("Game Live 🔴");
-//         clearInterval(interval);
-//         return;
-//       }
-
-//       const hours = Math.floor(diff / (1000 * 60 * 60));
-//       const minutes = Math.floor((diff / (1000 * 60)) % 60);
-//       const seconds = Math.floor((diff / 1000) % 60);
-
-//       setTimeLeft(
-//         `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
-//       );
-//     }, 1000);
-
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   const formattedGameTime = gameTimeRef.current.toLocaleTimeString("en-IN", {
-//     hour: "2-digit",
-//     minute: "2-digit",
-//     hour12: true,
-//   });
-
-//   const formattedDate = gameTimeRef.current.toLocaleDateString("en-IN", {
-//     weekday: 'short',
-//     day: 'numeric',
-//     month: 'short'
-//   });
 
 //   // Generate numbers 1-90
 //   const numbers = Array.from({ length: 90 }, (_, i) => i + 1);
@@ -120,7 +75,7 @@
 
 //       <div className="relative z-10 max-w-7xl mx-auto space-y-3">
         
-//         {/* LOGO HEADER - Click to go Home (Replacing "GET RICH") */}
+//         {/* LOGO HEADER - Click to go Home */}
 //         <div className="flex justify-center mb-2">
 //           <div 
 //             onClick={() => navigate(ROUTES.HOME)} 
@@ -137,79 +92,98 @@
 //           </div>
 //         </div>
 
-//         {/* TIMER SECTION - Single Row: Date | Game Time | Countdown */}
-//         <div className="timer-row flex items-center justify-center gap-3 md:gap-6 bg-[#004296]/60 backdrop-blur-sm rounded-2xl p-3 md:p-4 border-2 border-[#FBEFA4]/40">
-//           <div className="flex items-center gap-2 bg-[#004296]/50 px-4 md:px-6 py-2 md:py-3 rounded-xl border border-[#FBEFA4]/40">
-//             <span className="text-[#FBEFA4] text-lg md:text-xl">📅</span>
-//             <div>
-//               <p className="text-[#FBEFA4]/70 text-[10px] md:text-xs font-medium">Date</p>
-//               <p className="text-[#FBEFA4] font-bold text-sm md:text-base">{formattedDate}</p>
-//             </div>
-//           </div>
-
-//           <div className="w-[2px] h-8 bg-gradient-to-b from-transparent via-[#FBEFA4] to-transparent"></div>
-
-//           <div className="flex items-center gap-2 bg-[#004296]/50 px-4 md:px-6 py-2 md:py-3 rounded-xl border border-[#FBEFA4]/40">
-//             <span className="text-[#FBEFA4] text-lg md:text-xl">⏰</span>
-//             <div>
-//               <p className="text-[#FBEFA4]/70 text-[10px] md:text-xs font-medium">Game Time</p>
-//               <p className="text-[#FBEFA4] font-bold text-sm md:text-base">{formattedGameTime}</p>
-//             </div>
-//           </div>
-
-//           <div className="w-[2px] h-8 bg-gradient-to-b from-transparent via-[#FBEFA4] to-transparent"></div>
-
-//           <div className="flex items-center gap-2 bg-[#FBEFA4] px-4 md:px-6 py-2 md:py-3 rounded-xl border-2 border-[#FBEFA4] shadow-md">
-//             <span className="text-[#004296] text-lg md:text-xl">⏱️</span>
-//             <div>
-//               <p className="text-[#004296]/70 text-[10px] md:text-xs font-medium">Countdown</p>
-//               <p className="text-[#004296] font-bold text-sm md:text-base font-mono">{timeLeft}</p>
-//             </div>
-//           </div>
+//         {/* Toggle Button - Switch between Caller and Board */}
+//         <div className="flex justify-center mb-2">
+//           <button
+//             onClick={() => setShowCaller(!showCaller)}
+//             className="bg-[#004296] text-[#FBEFA4] px-6 py-2 rounded-full font-semibold border-2 border-[#FBEFA4] hover:bg-[#003380] transition-all"
+//           >
+//             {showCaller ? "📊 Show Number Board" : "🎲 Show Tambola Caller"}
+//           </button>
 //         </div>
 
-//         {/* NUMBER BOARD SECTION */}
-//         <div className="overflow-hidden rounded-2xl bg-[#FBEFA4] p-2 md:p-5 border-2 border-[#004296]/30">
-//           <div className="w-full max-w-4xl mx-auto mt-6">
-//             {/* GAME OVER BADGE */}
-//             <div className="flex justify-center mb-4 relative">
-//               <div className="absolute top-1/2 w-full h-0.5 bg-[#004296] shadow-lg"></div>
-//               <h2 className="relative z-10 bg-[#004296] text-[#FBEFA4] text-xl md:text-2xl font-bold px-6 py-2 rounded shadow-lg border-4 border-[#FBEFA4]">
-//                 GAME IS OVER
-//               </h2>
-//             </div>
+//         {/* CONDITIONAL RENDERING: Tambola Caller OR Number Board */}
+//         {showCaller ? (
+//           <TambolaCaller />
+//         ) : (
+//           <>
+//             {/* TIMER SECTION - Single Row: Date | Game Time | Countdown */}
+//             <div className="timer-row flex items-center justify-center gap-3 md:gap-6 bg-[#004296]/60 backdrop-blur-sm rounded-2xl p-3 md:p-4 border-2 border-[#FBEFA4]/40">
+//               <div className="flex items-center gap-2 bg-[#004296]/50 px-4 md:px-6 py-2 md:py-3 rounded-xl border border-[#FBEFA4]/40">
+//                 <span className="text-[#FBEFA4] text-lg md:text-xl">📅</span>
+//                 <div>
+//                   <p className="text-[#FBEFA4]/70 text-[10px] md:text-xs font-medium">Date</p>
+//                   <p className="text-[#FBEFA4] font-bold text-sm md:text-base">
+//                     {new Date().toLocaleDateString("en-IN", { weekday: 'short', day: 'numeric', month: 'short' })}
+//                   </p>
+//                 </div>
+//               </div>
 
-//             {/* GRID */}
-//             <div className="px-2 sm:px-4 md:px-10 lg:px-20">
-//               <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-1 sm:gap-2">
-//                 {numbers.map((num) => {
-//                   const isCalled = calledNumbers.has(num);
-//                   return (
-//                     <div
-//                       key={num}
-//                       className={`
-//                         flex items-center justify-center 
-//                         font-bold 
-//                         border-2 sm:border-3 border-[#004296]
-//                         rounded-3xl
-//                         shadow-md sm:shadow-lg
-//                         transition-all
-//                         ${isCalled ? "bg-[#004296] text-[#FBEFA4]" : "bg-white text-[#004296]"}
-//                       `}
-//                       style={{ height: "35px" }}
-//                     >
-//                       <span className="text-[10px] sm:text-sm md:text-base">{num}</span>
-//                     </div>
-//                   );
-//                 })}
+//               <div className="w-[2px] h-8 bg-gradient-to-b from-transparent via-[#FBEFA4] to-transparent"></div>
+
+//               <div className="flex items-center gap-2 bg-[#004296]/50 px-4 md:px-6 py-2 md:py-3 rounded-xl border border-[#FBEFA4]/40">
+//                 <span className="text-[#FBEFA4] text-lg md:text-xl">⏰</span>
+//                 <div>
+//                   <p className="text-[#FBEFA4]/70 text-[10px] md:text-xs font-medium">Game Time</p>
+//                   <p className="text-[#FBEFA4] font-bold text-sm md:text-base">09:00 PM</p>
+//                 </div>
+//               </div>
+
+//               <div className="w-[2px] h-8 bg-gradient-to-b from-transparent via-[#FBEFA4] to-transparent"></div>
+
+//               <div className="flex items-center gap-2 bg-[#FBEFA4] px-4 md:px-6 py-2 md:py-3 rounded-xl border-2 border-[#FBEFA4] shadow-md">
+//                 <span className="text-[#004296] text-lg md:text-xl">⏱️</span>
+//                 <div>
+//                   <p className="text-[#004296]/70 text-[10px] md:text-xs font-medium">Countdown</p>
+//                   <p className="text-[#004296] font-bold text-sm md:text-base font-mono">00:00:00</p>
+//                 </div>
 //               </div>
 //             </div>
 
-//             <div className="px-4 md:px-23">
-//               <div className="mt-4 h-5 bg-[#004296] rounded-full border-4 border-[#FBEFA4]"></div>
+//             {/* NUMBER BOARD SECTION */}
+//             <div className="overflow-hidden rounded-2xl bg-[#FBEFA4] p-2 md:p-5 border-2 border-[#004296]/30">
+//               <div className="w-full max-w-4xl mx-auto mt-6">
+//                 {/* GAME OVER BADGE */}
+//                 <div className="flex justify-center mb-4 relative">
+//                   <div className="absolute top-1/2 w-full h-0.5 bg-[#004296] shadow-lg"></div>
+//                   <h2 className="relative z-10 bg-[#004296] text-[#FBEFA4] text-xl md:text-2xl font-bold px-6 py-2 rounded shadow-lg border-4 border-[#FBEFA4]">
+//                     GAME IS OVER
+//                   </h2>
+//                 </div>
+
+//                 {/* GRID */}
+//                 <div className="px-2 sm:px-4 md:px-10 lg:px-20">
+//                   <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-1 sm:gap-2">
+//                     {numbers.map((num) => {
+//                       const isCalled = calledNumbers.has(num);
+//                       return (
+//                         <div
+//                           key={num}
+//                           className={`
+//                             flex items-center justify-center 
+//                             font-bold 
+//                             border-2 sm:border-3 border-[#004296]
+//                             rounded-3xl
+//                             shadow-md sm:shadow-lg
+//                             transition-all
+//                             ${isCalled ? "bg-[#004296] text-[#FBEFA4]" : "bg-white text-[#004296]"}
+//                           `}
+//                           style={{ height: "35px" }}
+//                         >
+//                           <span className="text-[10px] sm:text-sm md:text-base">{num}</span>
+//                         </div>
+//                       );
+//                     })}
+//                   </div>
+//                 </div>
+
+//                 <div className="px-4 md:px-23">
+//                   <div className="mt-4 h-5 bg-[#004296] rounded-full border-4 border-[#FBEFA4]"></div>
+//                 </div>
+//               </div>
 //             </div>
-//           </div>
-//         </div>
+//           </>
+//         )}
 
 //         {/* PLAYER RANKING */}
 //         <div className="w-full max-w-7xl mx-auto mt-8">
@@ -345,18 +319,21 @@
 // };
 
 // export default AfterGameLive;
+
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
 import logoImage from "../../assets/tambolaGame.jpeg";
 import TambolaCaller from "./tambola_board";
+import AnimatedTambolaCaller from "./animated_tambola_controller";
 
 const AfterGameLive = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedWinner, setSelectedWinner] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [showCaller, setShowCaller] = useState(true); // Toggle between caller and board
+  const [showCaller, setShowCaller] = useState(true);
+  const [callerType, setCallerType] = useState("animated"); // ← ADD THIS: "animated" or "classic"
 
   // Check screen size
   useEffect(() => {
@@ -407,7 +384,7 @@ const AfterGameLive = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white p-4 md:p-6 relative">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a2e] via-[#1a0a3e] to-[#0a0a2e] text-white p-4 md:p-6 relative">
       
       {/* Animated background pattern */}
       <div className="absolute inset-0 opacity-10">
@@ -420,13 +397,13 @@ const AfterGameLive = () => {
       <div className="relative z-10 max-w-7xl mx-auto space-y-3">
         
         {/* LOGO HEADER - Click to go Home */}
-        <div className="flex justify-center mb-2">
+        <div className="flex justify-between items-center mb-2">
           <div 
             onClick={() => navigate(ROUTES.HOME)} 
             className="relative group cursor-pointer"
           >
             <div className="absolute inset-0 bg-[#FBEFA4] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
-            <div className="relative w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-4 border-[#FBEFA4] shadow-xl overflow-hidden">
+            <div className="relative w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-3 border-[#FBEFA4] shadow-xl overflow-hidden">
               <img 
                 src={logoImage} 
                 alt="Tambola Logo" 
@@ -434,24 +411,65 @@ const AfterGameLive = () => {
               />
             </div>
           </div>
+          
+          <h1 className="text-xl md:text-2xl font-bold">
+            <span className="text-[#FBEFA4]">TAMBOLA</span>
+            <span className="text-white/60 ml-2">LIVE GAME</span>
+          </h1>
+          
+          <div className="w-12"></div>
         </div>
 
-        {/* Toggle Button - Switch between Caller and Board */}
-        <div className="flex justify-center mb-2">
+        {/* Toggle Buttons - Switch between Caller Types */}
+        <div className="flex justify-center gap-3 mb-2">
           <button
-            onClick={() => setShowCaller(!showCaller)}
-            className="bg-[#004296] text-[#FBEFA4] px-6 py-2 rounded-full font-semibold border-2 border-[#FBEFA4] hover:bg-[#003380] transition-all"
+            onClick={() => {
+              setShowCaller(true);
+              setCallerType("animated");
+            }}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all border-2 ${
+              showCaller && callerType === "animated"
+                ? "bg-[#FBEFA4] text-[#004296] border-[#FBEFA4]"
+                : "bg-transparent text-white/60 border-white/20 hover:border-[#FBEFA4]/50"
+            }`}
           >
-            {showCaller ? "📊 Show Number Board" : "🎲 Show Tambola Caller"}
+            🎲 3D Animated Caller
+          </button>
+          <button
+            onClick={() => {
+              setShowCaller(true);
+              setCallerType("classic");
+            }}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all border-2 ${
+              showCaller && callerType === "classic"
+                ? "bg-[#FBEFA4] text-[#004296] border-[#FBEFA4]"
+                : "bg-transparent text-white/60 border-white/20 hover:border-[#FBEFA4]/50"
+            }`}
+          >
+            📋 Classic Caller
+          </button>
+          <button
+            onClick={() => setShowCaller(false)}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all border-2 ${
+              !showCaller
+                ? "bg-[#FBEFA4] text-[#004296] border-[#FBEFA4]"
+                : "bg-transparent text-white/60 border-white/20 hover:border-[#FBEFA4]/50"
+            }`}
+          >
+            📊 Number Board
           </button>
         </div>
 
-        {/* CONDITIONAL RENDERING: Tambola Caller OR Number Board */}
+        {/* CONDITIONAL RENDERING */}
         {showCaller ? (
-          <TambolaCaller />
+          callerType === "animated" ? (
+            <AnimatedTambolaCaller />
+          ) : (
+            <TambolaCaller />
+          )
         ) : (
           <>
-            {/* TIMER SECTION - Single Row: Date | Game Time | Countdown */}
+            {/* TIMER SECTION - Single Row */}
             <div className="timer-row flex items-center justify-center gap-3 md:gap-6 bg-[#004296]/60 backdrop-blur-sm rounded-2xl p-3 md:p-4 border-2 border-[#FBEFA4]/40">
               <div className="flex items-center gap-2 bg-[#004296]/50 px-4 md:px-6 py-2 md:py-3 rounded-xl border border-[#FBEFA4]/40">
                 <span className="text-[#FBEFA4] text-lg md:text-xl">📅</span>
@@ -487,7 +505,6 @@ const AfterGameLive = () => {
             {/* NUMBER BOARD SECTION */}
             <div className="overflow-hidden rounded-2xl bg-[#FBEFA4] p-2 md:p-5 border-2 border-[#004296]/30">
               <div className="w-full max-w-4xl mx-auto mt-6">
-                {/* GAME OVER BADGE */}
                 <div className="flex justify-center mb-4 relative">
                   <div className="absolute top-1/2 w-full h-0.5 bg-[#004296] shadow-lg"></div>
                   <h2 className="relative z-10 bg-[#004296] text-[#FBEFA4] text-xl md:text-2xl font-bold px-6 py-2 rounded shadow-lg border-4 border-[#FBEFA4]">
@@ -495,7 +512,6 @@ const AfterGameLive = () => {
                   </h2>
                 </div>
 
-                {/* GRID */}
                 <div className="px-2 sm:px-4 md:px-10 lg:px-20">
                   <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-1 sm:gap-2">
                     {numbers.map((num) => {
@@ -533,7 +549,7 @@ const AfterGameLive = () => {
         <div className="w-full max-w-7xl mx-auto mt-8">
           <div className="bg-[#004296]/60 backdrop-blur-sm rounded-3xl p-4 shadow-xl border-2 border-[#FBEFA4]/30">
             <h2 className="text-center text-[#FBEFA4] text-2xl md:text-3xl font-normal mb-4">
-              Player Ranking
+              🏆 Player Ranking
             </h2>
 
             <div className="flex gap-4 overflow-x-auto pb-4">
@@ -556,7 +572,7 @@ const AfterGameLive = () => {
           <div className="bg-[#004296]/40 backdrop-blur-sm rounded-3xl shadow-xl border-2 border-[#FBEFA4]/30">
             <div className="bg-gradient-to-r from-[#004296] to-[#003380] rounded-3xl p-4 shadow-xl border-b-2 border-[#FBEFA4]/30">
               <h2 className="text-[#FBEFA4] text-xl md:text-2xl font-semibold text-center">
-                TICKETS FOR GAMES
+                🔍 TICKETS FOR GAMES
               </h2>
             </div>
 
@@ -582,7 +598,7 @@ const AfterGameLive = () => {
         <div className="w-full max-w-7xl mx-auto mt-6">
           <div className="bg-[#004296]/60 backdrop-blur-sm rounded-3xl p-4 shadow-xl border-2 border-[#FBEFA4]/30">
             <h2 className="text-center text-[#FBEFA4] text-2xl md:text-3xl font-semibold mb-6">
-              Winner List
+              🎉 Winner List
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -633,7 +649,6 @@ const AfterGameLive = () => {
               Booked By: {selectedWinner.name}
             </div>
 
-            {/* Tambola Ticket Grid */}
             <div className="bg-[#FBEFA4] p-3 rounded-2xl">
               <div className="grid grid-cols-9 gap-1">
                 {generateSampleTicket().flat().map((num, i) => {

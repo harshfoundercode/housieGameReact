@@ -1,15 +1,7 @@
-// import React, { useEffect, useState, useRef } from "react";
-// import { useNavigate } from "react-router-dom";
-// // Import your logo image
-// import Home from "../Home";
-
-
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
-// Import your logo image
 import logoImage from "../../assets/tambolaGame.jpeg";
-import CustomTicketBuilder from "./custom_ticket_making";
 
 const tickets = [
   {
@@ -368,7 +360,7 @@ const GamePage = () => {
   const [playerPhone, setPlayerPhone] = useState("");
 
   const [showCustomBuilder, setShowCustomBuilder] = useState(false);
-const [customTicketData, setCustomTicketData] = useState(null);
+  const [customTicketData, setCustomTicketData] = useState(null);
   const gameTimeRef = useRef(new Date());
 
   // Media Query Detection
@@ -466,15 +458,15 @@ const [customTicketData, setCustomTicketData] = useState(null);
 
 
   const getTicketTypeName = () => {
-  const types = {
-    random: "Random Single Ticket",
-    halfsheet: "Half Sheet (6 Tickets)",
-    fullsheet: "Full Sheet (12 Tickets)",
-    custom: customTicketData ? "Custom Ticket (15 Numbers)" : "Custom Ticket",
-    set: `${selectedSets.length} Set${selectedSets.length > 1 ? 's' : ''} Selected`
+    const types = {
+      random: "Random Single Ticket",
+      halfsheet: "Half Sheet (6 Tickets)",
+      fullsheet: "Full Sheet (12 Tickets)",
+      custom: customTicketData ? "Custom Ticket (15 Numbers)" : "Custom Ticket",
+      set: `${selectedSets.length} Set${selectedSets.length > 1 ? 's' : ''} Selected`
+    };
+    return types[selectedTicketType] || "Not Selected";
   };
-  return types[selectedTicketType] || "Not Selected";
-};
 
   const getTicketTypeDescription = () => {
     const descriptions = {
@@ -505,14 +497,14 @@ const [customTicketData, setCustomTicketData] = useState(null);
     return getTicketTypePrice() * quantity;
   };
 
- const getTicketCount = () => {
-  if (selectedTicketType === "random") return quantity;
-  if (selectedTicketType === "halfsheet") return quantity * 6;
-  if (selectedTicketType === "fullsheet") return quantity * 12;
-  if (selectedTicketType === "custom") return 1;
-  if (selectedTicketType === "set") return selectedSets.length * 3;
-  return 0;
-};
+  const getTicketCount = () => {
+    if (selectedTicketType === "random") return quantity;
+    if (selectedTicketType === "halfsheet") return quantity * 6;
+    if (selectedTicketType === "fullsheet") return quantity * 12;
+    if (selectedTicketType === "custom") return 1;
+    if (selectedTicketType === "set") return selectedSets.length * 3;
+    return 0;
+  };
 
   const handleNextStep = () => {
     if (currentStep === 1 && (!playerName || !playerPhone)) {
@@ -530,48 +522,48 @@ const [customTicketData, setCustomTicketData] = useState(null);
     setCurrentStep(currentStep + 1);
   };
 
- const handleBookingSubmit = (e) => {
-  e.preventDefault();
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
 
-  if (!playerName || !playerPhone) {
-    alert("Please fill in all required fields");
-    return;
-  }
+    if (!playerName || !playerPhone) {
+      alert("Please fill in all required fields");
+      return;
+    }
 
-  if (!selectedTicketType) {
-    alert("Please select a ticket type");
-    return;
-  }
+    if (!selectedTicketType) {
+      alert("Please select a ticket type");
+      return;
+    }
 
-  if (selectedTicketType === "set" && selectedSets.length === 0) {
-    alert("Please select at least one ticket set");
-    return;
-  }
+    if (selectedTicketType === "set" && selectedSets.length === 0) {
+      alert("Please select at least one ticket set");
+      return;
+    }
 
-  const bookingData = {
-    playerName,
-    playerPhone,
-    ticketType: selectedTicketType,
-    quantity: selectedTicketType !== "set" && selectedTicketType !== "custom" ? quantity : null,
-    selectedSets: selectedTicketType === "set" ? selectedSets : null,
-    customTicket: selectedTicketType === "custom" ? customTicketData : null,
-    timestamp: new Date().toISOString(),
+    const bookingData = {
+      playerName,
+      playerPhone,
+      ticketType: selectedTicketType,
+      quantity: selectedTicketType !== "set" && selectedTicketType !== "custom" ? quantity : null,
+      selectedSets: selectedTicketType === "set" ? selectedSets : null,
+      customTicket: selectedTicketType === "custom" ? customTicketData : null,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log("Booking Data:", bookingData);
+
+    alert(`🎉 Booking Successful!\n\nThank you ${playerName}!\n\nTicket Type: ${getTicketTypeName()}\nTotal Amount: ₹${getTotalPrice()}\n\nYou will receive confirmation on ${playerPhone}\n\nGood luck for the game! 🍀`);
+
+    // Reset states
+    setShowBookingModal(false);
+    setPlayerName("");
+    setPlayerPhone("");
+    setSelectedSets([]);
+    setQuantity(1);
+    setSelectedTicketType("");
+    setCustomTicketData(null);
+    setCurrentStep(1);
   };
-
-  console.log("Booking Data:", bookingData);
-
-  alert(`🎉 Booking Successful!\n\nThank you ${playerName}!\n\nTicket Type: ${getTicketTypeName()}\nTotal Amount: ₹${getTotalPrice()}\n\nYou will receive confirmation on ${playerPhone}\n\nGood luck for the game! 🍀`);
-
-  // Reset states
-  setShowBookingModal(false);
-  setPlayerName("");
-  setPlayerPhone("");
-  setSelectedSets([]);
-  setQuantity(1);
-  setSelectedTicketType("");
-  setCustomTicketData(null);
-  setCurrentStep(1);
-};
 
   return (
     <>
@@ -1019,7 +1011,6 @@ const [customTicketData, setCustomTicketData] = useState(null);
         )}
 
         {/* ENHANCED BOOKING MODAL - Responsive */}
-        {/* ENHANCED BOOKING MODAL - Responsive */}
         {showBookingModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
             <div className="booking-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
@@ -1154,79 +1145,69 @@ const [customTicketData, setCustomTicketData] = useState(null);
                 )}
 
                 {/* STEP 2: Choose Ticket Type */}
-               {/* STEP 2: Choose Ticket Type */}
-{currentStep === 2 && (
-  <div className="space-y-4 sm:space-y-6">
-    <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
-      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
-        <span>🎫</span> Step 2: Choose Ticket Type
-      </h3>
+                {currentStep === 2 && (
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
+                        <span>🎫</span> Step 2: Choose Ticket Type
+                      </h3>
 
-      <div className="ticket-types-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {[
-          { id: 'random', name: 'Single Ticket', price: 50, tickets: 1, icon: '🎲' },
-          { id: 'halfsheet', name: 'Half Sheet', price: 200, tickets: 6, icon: '📄' },
-          { id: 'fullsheet', name: 'Full Sheet', price: 350, tickets: 12, icon: '📋' },
-          { id: 'custom', name: 'Custom Ticket', price: 50, tickets: 1, icon: '✏️' },
-        ].map((type) => (
-          <div
-            key={type.id}
-            onClick={() => {
-              if (type.id === 'custom') {
-                setShowCustomBuilder(true);
-                setShowBookingModal(false);
-              } else {
-                setSelectedTicketType(type.id);
-              }
-            }}
-            className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
-              selectedTicketType === type.id
-                ? 'border-[#FBEFA4] bg-[#FBEFA4]/10'
-                : 'border-white/20 bg-white/5 hover:border-[#FBEFA4]/50'
-            }`}
-          >
-            <div className="text-3xl mb-2">{type.icon}</div>
-            <h4 className="text-lg font-bold text-white">{type.name}</h4>
-            <p className="text-[#FBEFA4] font-bold text-xl mt-1">₹{type.price}</p>
-            <p className="text-white/60 text-sm">{type.tickets} ticket{type.tickets > 1 ? 's' : ''}</p>
-          </div>
-        ))}
-      </div>
+                      <div className="ticket-types-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        {[
+                          { id: 'random', name: 'Single Ticket', price: 50, tickets: 1, icon: '🎲' },
+                          { id: 'halfsheet', name: 'Half Sheet', price: 200, tickets: 6, icon: '📄' },
+                          { id: 'fullsheet', name: 'Full Sheet', price: 350, tickets: 12, icon: '📋' },
+                        ].map((type) => (
+                          <div
+                            key={type.id}
+                            onClick={() => {
+                              setSelectedTicketType(type.id);
 
-      {selectedTicketType && selectedTicketType !== 'custom' && (
-        <div className="mt-4 p-4 bg-[#FBEFA4]/10 rounded-xl border border-[#FBEFA4]/30">
-          <p className="text-white/90 text-sm">{getTicketTypeDescription()}</p>
-        </div>
-      )}
-    </div>
+                            }}
+                            className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${selectedTicketType === type.id
+                              ? 'border-[#FBEFA4] bg-[#FBEFA4]/10'
+                              : 'border-white/20 bg-white/5 hover:border-[#FBEFA4]/50'
+                              }`}
+                          >
+                            <div className="text-3xl mb-2">{type.icon}</div>
+                            <h4 className="text-lg font-bold text-white">{type.name}</h4>
+                            <p className="text-[#FBEFA4] font-bold text-xl mt-1">₹{type.price}</p>
+                            <p className="text-white/60 text-sm">{type.tickets} ticket{type.tickets > 1 ? 's' : ''}</p>
+                          </div>
+                        ))}
+                      </div>
 
-    <div className="flex justify-between">
-      <button
-        type="button"
-        onClick={() => setCurrentStep(1)}
-        className="px-6 sm:px-8 py-2 sm:py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-bold text-sm sm:text-base"
-      >
-        ← Back
-      </button>
-      
-      {/* Only show Next button if NOT custom ticket type */}
-      {selectedTicketType !== 'custom' && (
-        <button
-          type="button"
-          onClick={handleNextStep}
-          disabled={!selectedTicketType}
-          className={`px-6 sm:px-8 py-2 sm:py-3 rounded-xl text-white font-bold text-sm sm:text-base ${
-            selectedTicketType 
-              ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700' 
-              : 'bg-gray-500 cursor-not-allowed'
-          }`}
-        >
-          Next: Select Quantity →
-        </button>
-      )}
-    </div>
-  </div>
-)}
+                      {selectedTicketType && selectedTicketType !== 'custom' && (
+                        <div className="mt-4 p-4 bg-[#FBEFA4]/10 rounded-xl border border-[#FBEFA4]/30">
+                          <p className="text-white/90 text-sm">{getTicketTypeDescription()}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentStep(1)}
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-bold text-sm sm:text-base"
+                      >
+                        ← Back
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleNextStep}
+                        disabled={!selectedTicketType}
+                        className={`px-6 sm:px-8 py-2 sm:py-3 rounded-xl text-white font-bold text-sm sm:text-base ${selectedTicketType
+                          ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                          : 'bg-gray-500 cursor-not-allowed'
+                          }`}
+                      >
+                        Next: Select Quantity →
+                      </button>
+
+                    </div>
+                  </div>
+                )}
 
 
 
@@ -1371,28 +1352,7 @@ const [customTicketData, setCustomTicketData] = useState(null);
           </div>
         )}
 
-         {/* CUSTOM TICKET BUILDER MODAL */}
-    {showCustomBuilder && (
-      <CustomTicketBuilder
-        onClose={() => {
-          setShowCustomBuilder(false);
-          setShowBookingModal(true);
-        }}
-        onTicketCreated={(customTicket) => {
-          // Handle the custom ticket
-          console.log("Custom Ticket Created:", customTicket);
-          
-          // Add to cart or directly proceed
-          setSelectedTicketType('custom');
-          setCustomTicketData(customTicket);
-          setShowCustomBuilder(false);
-          setShowBookingModal(true);
-          
-          // Optional: Directly go to step 4 (review)
-          setCurrentStep(4);
-        }}
-      />
-    )}
+
         {/* Bottom decoration */}
         <div className="fixed bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-[#FBEFA4] to-transparent shadow-lg shadow-[#FBEFA4]/50"></div>
       </div>
