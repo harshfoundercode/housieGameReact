@@ -288,3 +288,189 @@
     font-size: 16px !important;
   }
 }
+
+/* Mobile Styles (max-width: 640px) */
+@media (max-width: 640px) {
+  .game-container {
+    padding: 0.75rem !important;
+  }
+
+  .header-title {
+    font-size: 1.875rem !important;
+    padding: 1rem !important;
+  }
+
+  .timer-cards {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .timer-card {
+    padding: 0.75rem !important;
+  }
+
+  .timer-card p:first-child {
+    font-size: 0.875rem !important;
+  }
+
+  .timer-card p:last-child {
+    font-size: 1.125rem !important;
+  }
+
+  .tickets-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding: 0.5rem !important;
+  }
+
+  .ticket-card {
+    padding: 0.75rem !important;
+  }
+
+  .ticket-title {
+    font-size: 1.25rem !important;
+  }
+
+  .ticket-content {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .ticket-right {
+    width: 100% !important;
+  }
+
+  .ticket-buttons {
+    flex-direction: row !important;
+    gap: 0.5rem !important;
+  }
+
+  .ticket-buttons button {
+    flex: 1 !important;
+    padding: 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  .search-container {
+    width: 100% !important;
+  }
+
+  .search-input {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  .fab-button {
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+
+  .fab-menu-button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .agent-modal {
+    max-width: 95% !important;
+    max-height: 90vh !important;
+  }
+
+  .agent-card {
+    flex-direction: column !important;
+  }
+
+  .agent-actions {
+    flex-direction: row !important;
+    width: 100% !important;
+  }
+
+  .booking-modal {
+    max-width: 95% !important;
+    padding: 0.75rem !important;
+  }
+
+  .progress-steps {
+    font-size: 0.75rem !important;
+  }
+
+  .step-number {
+    width: 2rem !important;
+    height: 2rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .ticket-types-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Tablet Styles (min-width: 641px and max-width: 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .game-container {
+    padding: 1rem !important;
+  }
+
+  .header-title {
+    font-size: 2.5rem !important;
+  }
+
+  .tickets-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  .timer-cards {
+    gap: 0.75rem !important;
+  }
+
+  .timer-card {
+    padding: 1rem !important;
+  }
+
+  .ticket-types-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Desktop Styles (min-width: 1025px) */
+@media (min-width: 1025px) {
+  .tickets-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Touch-friendly adjustments for all mobile devices */
+@media (hover: none) and (pointer: coarse) {
+
+  button,
+  [role="button"] {
+    min-height: 44px !important;
+  }
+
+  input {
+    font-size: 16px !important;
+  }
+}
+
+/* Prevent content overflow on small screens */
+@media (max-width: 480px) {
+  .ticket-grid-numbers {
+    gap: 0.125rem !important;
+  }
+
+  .number-cell {
+    height: 1.75rem !important;
+    font-size: 0.625rem !important;
+  }
+
+  .booked-info {
+    font-size: 0.75rem !important;
+    padding: 0.5rem !important;
+  }
+}

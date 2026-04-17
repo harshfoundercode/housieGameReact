@@ -374,7 +374,7 @@ const GamePage = () => {
       setIsMobile(window.innerWidth < 640);
       setIsTablet(window.innerWidth >= 640 && window.innerWidth < 1024);
     };
-    
+
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
@@ -564,199 +564,11 @@ const GamePage = () => {
     setCurrentStep(1);
   };
 
+  
   return (
     <>
-      <style>
-        {`
-          /* Mobile Styles (max-width: 640px) */
-          @media (max-width: 640px) {
-            .game-container {
-              padding: 0.75rem !important;
-            }
-            
-            .header-title {
-              font-size: 1.875rem !important;
-              padding: 1rem !important;
-            }
-            
-            .timer-cards {
-              grid-template-columns: 1fr !important;
-              gap: 0.5rem !important;
-            }
-            
-            .timer-card {
-              padding: 0.75rem !important;
-            }
-            
-            .timer-card p:first-child {
-              font-size: 0.875rem !important;
-            }
-            
-            .timer-card p:last-child {
-              font-size: 1.125rem !important;
-            }
-            
-            .tickets-grid {
-              grid-template-columns: 1fr !important;
-              gap: 1rem !important;
-              padding: 0.5rem !important;
-            }
-            
-            .ticket-card {
-              padding: 0.75rem !important;
-            }
-            
-            .ticket-title {
-              font-size: 1.25rem !important;
-            }
-            
-            .ticket-content {
-              flex-direction: column !important;
-              gap: 0.75rem !important;
-            }
-            
-            .ticket-right {
-              width: 100% !important;
-            }
-            
-            .ticket-buttons {
-              flex-direction: row !important;
-              gap: 0.5rem !important;
-            }
-            
-            .ticket-buttons button {
-              flex: 1 !important;
-              padding: 0.5rem !important;
-              font-size: 0.875rem !important;
-            }
-            
-            .search-container {
-              width: 100% !important;
-            }
-            
-            .search-input {
-              padding: 0.5rem 1rem !important;
-              font-size: 0.875rem !important;
-            }
-            
-            .fab-button {
-              width: 3rem !important;
-              height: 3rem !important;
-            }
-            
-            .fab-menu-button {
-              padding: 0.5rem 1rem !important;
-              font-size: 0.75rem !important;
-            }
-            
-            .agent-modal {
-              max-width: 95% !important;
-              max-height: 90vh !important;
-            }
-            
-            .agent-card {
-              flex-direction: column !important;
-            }
-            
-            .agent-actions {
-              flex-direction: row !important;
-              width: 100% !important;
-            }
-            
-            .booking-modal {
-              max-width: 95% !important;
-              padding: 0.75rem !important;
-            }
-            
-            .progress-steps {
-              font-size: 0.75rem !important;
-            }
-            
-            .step-number {
-              width: 2rem !important;
-              height: 2rem !important;
-              font-size: 0.875rem !important;
-            }
-            
-            .form-grid {
-              grid-template-columns: 1fr !important;
-              gap: 1rem !important;
-            }
-            
-            .ticket-types-grid {
-              grid-template-columns: 1fr !important;
-              gap: 0.75rem !important;
-            }
-          }
-
-          /* Tablet Styles (min-width: 641px and max-width: 1024px) */
-          @media (min-width: 641px) and (max-width: 1024px) {
-            .game-container {
-              padding: 1rem !important;
-            }
-            
-            .header-title {
-              font-size: 2.5rem !important;
-            }
-            
-            .tickets-grid {
-              grid-template-columns: repeat(2, 1fr) !important;
-              gap: 1rem !important;
-            }
-            
-            .timer-cards {
-              gap: 0.75rem !important;
-            }
-            
-            .timer-card {
-              padding: 1rem !important;
-            }
-            
-            .ticket-types-grid {
-              grid-template-columns: repeat(2, 1fr) !important;
-            }
-          }
-
-          /* Desktop Styles (min-width: 1025px) */
-          @media (min-width: 1025px) {
-            .tickets-grid {
-              grid-template-columns: repeat(3, 1fr) !important;
-            }
-          }
-
-          /* Touch-friendly adjustments for all mobile devices */
-          @media (hover: none) and (pointer: coarse) {
-            button, 
-            [role="button"] {
-              min-height: 44px !important;
-            }
-            
-            input {
-              font-size: 16px !important;
-            }
-          }
-
-          /* Prevent content overflow on small screens */
-          @media (max-width: 480px) {
-            .ticket-grid-numbers {
-              gap: 0.125rem !important;
-            }
-            
-            .number-cell {
-              height: 1.75rem !important;
-              font-size: 0.625rem !important;
-            }
-            
-            .booked-info {
-              font-size: 0.75rem !important;
-              padding: 0.5rem !important;
-            }
-          }
-        `}
-      </style>
-
       <div className={`min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative`}>
-        
+
         {/* Animated background elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -766,18 +578,18 @@ const GamePage = () => {
         </div>
 
         <div className="relative z-10 max-w-8xl mx-auto space-y-3">
-          
+
           {/* LOGO HEADER - Click to go Home (Replacing "GET RICH") */}
           <div className="flex justify-center mb-2">
-            <div 
-              onClick={() => navigate(ROUTES.HOME)} 
+            <div
+              onClick={() => navigate(ROUTES.HOME)}
               className="relative group cursor-pointer"
             >
               <div className="absolute inset-0 bg-[#FBEFA4] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
               <div className="relative w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-4 border-[#FBEFA4] shadow-xl overflow-hidden">
-                <img 
-                  src={logoImage} 
-                  alt="Tambola Logo" 
+                <img
+                  src={logoImage}
+                  alt="Tambola Logo"
                   className="w-full h-full object-cover rounded-full"
                 />
               </div>
@@ -827,7 +639,7 @@ const GamePage = () => {
 
           {/* Tickets Container */}
           <div className="w-full bg-[#004296]/40 backdrop-blur-sm p-2 md:p-3 rounded-2xl md:rounded-3xl shadow-xl border border-[#FBEFA4]/30">
-            
+
             {/* SEARCH BAR - Responsive */}
             <div className="w-full flex justify-center p-2 md:p-3 relative">
               <div className="search-container relative w-full sm:w-[90%] md:w-125 lg:w-150 p-2">
@@ -847,7 +659,7 @@ const GamePage = () => {
                 )}
               </div>
             </div>
-            
+
             {/* TICKETS GRID - Responsive */}
             <div className="tickets-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 pb-16 sm:pb-20 md:pb-24 p-2 md:p-4 relative">
               {filteredTickets.length > 0 ? (
@@ -884,8 +696,8 @@ const GamePage = () => {
                                     <div
                                       key={`${i}-${j}`}
                                       className={`number-cell h-6 sm:h-7 md:h-8 flex items-center justify-center text-[0.625rem] sm:text-xs font-bold rounded border
-                                        ${num !== 0 
-                                          ? "bg-gradient-to-br from-[#004296] to-[#003380] text-white border-[#FBEFA4]/40" 
+                                        ${num !== 0
+                                          ? "bg-gradient-to-br from-[#004296] to-[#003380] text-white border-[#FBEFA4]/40"
                                           : "bg-gray-200 text-gray-400"}`}
                                     >
                                       {num !== 0 ? num : ""}
@@ -1038,18 +850,16 @@ const GamePage = () => {
                       filteredAgents.map((agent) => (
                         <div
                           key={agent.id}
-                          className={`agent-card bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-3 sm:p-4 md:p-5 border-2 ${
-                            agent.available ? 'border-[#FBEFA4]/30' : 'border-gray-500/30 opacity-75'
-                          }`}
+                          className={`agent-card bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-3 sm:p-4 md:p-5 border-2 ${agent.available ? 'border-[#FBEFA4]/30' : 'border-gray-500/30 opacity-75'
+                            }`}
                         >
                           <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
                             <div className="relative">
                               <div className="w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-2xl sm:text-3xl border-2 border-[#FBEFA4]/50">
                                 {agent.avatar}
                               </div>
-                              <div className={`absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white ${
-                                agent.available ? 'bg-green-500' : 'bg-gray-500'
-                              }`}></div>
+                              <div className={`absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white ${agent.available ? 'bg-green-500' : 'bg-gray-500'
+                                }`}></div>
                             </div>
 
                             <div className="flex-1">
@@ -1090,11 +900,10 @@ const GamePage = () => {
                               <button
                                 onClick={() => handleContactAgent(agent)}
                                 disabled={!agent.available}
-                                className={`flex-1 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 ${
-                                  agent.available
+                                className={`flex-1 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 ${agent.available
                                     ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700'
                                     : 'bg-gray-500/50 text-gray-300 cursor-not-allowed'
-                                }`}
+                                  }`}
                               >
                                 <span>💬</span> WhatsApp
                               </button>
@@ -1130,9 +939,8 @@ const GamePage = () => {
                           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-4xl sm:text-5xl border-3 border-[#FBEFA4]">
                             {selectedAgent.avatar}
                           </div>
-                          <div className={`absolute -bottom-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 border-white ${
-                            selectedAgent.available ? 'bg-green-500' : 'bg-gray-500'
-                          }`}></div>
+                          <div className={`absolute -bottom-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 border-white ${selectedAgent.available ? 'bg-green-500' : 'bg-gray-500'
+                            }`}></div>
                         </div>
 
                         <div className="flex-1">
@@ -1203,9 +1011,11 @@ const GamePage = () => {
         )}
 
         {/* ENHANCED BOOKING MODAL - Responsive */}
+        {/* ENHANCED BOOKING MODAL - Responsive */}
         {showBookingModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
             <div className="booking-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
+
               {/* Modal Header with Progress Bar */}
               <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
                 <div className="flex justify-between items-center mb-3 sm:mb-4">
@@ -1224,6 +1034,8 @@ const GamePage = () => {
                       setShowBookingModal(false);
                       setCurrentStep(1);
                       setSelectedTicketType("");
+                      setSelectedSets([]);
+                      setQuantity(1);
                     }}
                     className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
                   >
@@ -1249,17 +1061,15 @@ const GamePage = () => {
                 <div className="progress-steps flex items-center justify-between">
                   {[1, 2, 3, 4].map((step) => (
                     <div key={step} className="flex items-center">
-                      <div className={`step-number w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-base transition-all ${
-                        currentStep >= step
+                      <div className={`step-number w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-base transition-all ${currentStep >= step
                           ? 'bg-[#FBEFA4] text-[#004296] shadow-lg'
                           : 'bg-white/20 text-white/60'
-                      }`}>
+                        }`}>
                         {step}
                       </div>
                       {step < 4 && (
-                        <div className={`w-8 sm:w-12 md:w-20 h-1 mx-1 sm:mx-2 ${
-                          currentStep > step ? 'bg-[#FBEFA4]' : 'bg-white/20'
-                        }`}></div>
+                        <div className={`w-8 sm:w-12 md:w-20 h-1 mx-1 sm:mx-2 ${currentStep > step ? 'bg-[#FBEFA4]' : 'bg-white/20'
+                          }`}></div>
                       )}
                     </div>
                   ))}
@@ -1274,6 +1084,7 @@ const GamePage = () => {
 
               {/* Modal Body with Steps */}
               <form onSubmit={handleBookingSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+
                 {/* STEP 1: Player Details */}
                 {currentStep === 1 && (
                   <div className="space-y-4 sm:space-y-6">
@@ -1334,9 +1145,198 @@ const GamePage = () => {
                   </div>
                 )}
 
-                {/* Additional steps would follow same responsive pattern */}
-                {/* For brevity, other steps follow the same responsive structure */}
-                
+                {/* STEP 2: Choose Ticket Type */}
+                {currentStep === 2 && (
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
+                        <span>🎫</span> Step 2: Choose Ticket Type
+                      </h3>
+
+                      <div className="ticket-types-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                        {[
+                          { id: 'random', name: 'Single Ticket', price: 50, tickets: 1, icon: '🎲' },
+                          { id: 'halfsheet', name: 'Half Sheet', price: 200, tickets: 6, icon: '📄' },
+                          { id: 'fullsheet', name: 'Full Sheet', price: 350, tickets: 12, icon: '📋' },
+                        ].map((type) => (
+                          <div
+                            key={type.id}
+                            onClick={() => setSelectedTicketType(type.id)}
+                            className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${selectedTicketType === type.id
+                                ? 'border-[#FBEFA4] bg-[#FBEFA4]/10'
+                                : 'border-white/20 bg-white/5 hover:border-[#FBEFA4]/50'
+                              }`}
+                          >
+                            <div className="text-3xl mb-2">{type.icon}</div>
+                            <h4 className="text-lg font-bold text-white">{type.name}</h4>
+                            <p className="text-[#FBEFA4] font-bold text-xl mt-1">₹{type.price}</p>
+                            <p className="text-white/60 text-sm">{type.tickets} ticket{type.tickets > 1 ? 's' : ''}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {selectedTicketType && (
+                        <div className="mt-4 p-4 bg-[#FBEFA4]/10 rounded-xl border border-[#FBEFA4]/30">
+                          <p className="text-white/90 text-sm">{getTicketTypeDescription()}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentStep(1)}
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-bold text-sm sm:text-base"
+                      >
+                        ← Back
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNextStep}
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white font-bold text-sm sm:text-base"
+                      >
+                        Next: Select Quantity →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 3: Select Quantity or Sets */}
+                {currentStep === 3 && (
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
+                        <span>🔢</span> Step 3: Select Quantity
+                      </h3>
+
+                      {selectedTicketType !== 'set' ? (
+                        <div>
+                          <label className="block text-[#FBEFA4] mb-2 text-base sm:text-lg">How many?</label>
+                          <div className="flex items-center gap-4">
+                            <button
+                              type="button"
+                              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                              className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full text-white text-xl font-bold"
+                            >
+                              -
+                            </button>
+                            <span className="text-2xl font-bold text-white">{quantity}</span>
+                            <button
+                              type="button"
+                              onClick={() => setQuantity(quantity + 1)}
+                              className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full text-white text-xl font-bold"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <p className="text-white/60 text-sm mt-2">Total Tickets: {getTicketCount()}</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="text-white/80 mb-4">Choose from our special ticket sets:</p>
+                          <div className="grid gap-3">
+                            {TICKET_SETS.map((set) => (
+                              <div
+                                key={set.id}
+                                onClick={() => handleSetSelection(set.id)}
+                                className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${selectedSets.includes(set.id)
+                                    ? 'border-[#FBEFA4] bg-[#FBEFA4]/10'
+                                    : 'border-white/20 bg-white/5 hover:border-[#FBEFA4]/50'
+                                  }`}
+                              >
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <h4 className="text-lg font-bold text-white">{set.name}</h4>
+                                    <p className="text-white/60 text-sm">{set.description}</p>
+                                    <p className="text-white/50 text-xs mt-1">Difficulty: {set.difficulty} | Win Chance: {set.winChance}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="text-[#FBEFA4] font-bold text-xl">₹{set.price}</p>
+                                    <p className="text-white/60 text-sm">{set.tickets.length} tickets</p>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentStep(2)}
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-bold text-sm sm:text-base"
+                      >
+                        ← Back
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNextStep}
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white font-bold text-sm sm:text-base"
+                      >
+                        Next: Review →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 4: Review & Confirm */}
+                {currentStep === 4 && (
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
+                        <span>✅</span> Step 4: Review & Confirm
+                      </h3>
+
+                      <div className="space-y-3">
+                        <div className="flex justify-between py-2 border-b border-white/20">
+                          <span className="text-white/70">Player Name:</span>
+                          <span className="text-white font-bold">{playerName}</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-white/20">
+                          <span className="text-white/70">Phone Number:</span>
+                          <span className="text-white font-bold">{playerPhone}</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-white/20">
+                          <span className="text-white/70">Ticket Type:</span>
+                          <span className="text-white font-bold">{getTicketTypeName()}</span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-white/20">
+                          <span className="text-white/70">Total Tickets:</span>
+                          <span className="text-white font-bold">{getTicketCount()}</span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-[#FBEFA4] text-lg font-bold">Total Amount:</span>
+                          <span className="text-[#FBEFA4] text-xl font-bold">₹{getTotalPrice()}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
+                        <p className="text-xs sm:text-sm text-green-200">
+                          By confirming, you agree to our terms and conditions. Payment will be collected by your assigned agent.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setCurrentStep(3)}
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-white/20 hover:bg-white/30 rounded-xl text-white font-bold text-sm sm:text-base"
+                      >
+                        ← Back
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#FBEFA4] to-[#FFE44D] hover:from-[#FFE44D] hover:to-[#FBEFA4] rounded-xl text-[#004296] font-bold text-sm sm:text-base"
+                      >
+                        Confirm Booking 🎉
+                      </button>
+                    </div>
+                  </div>
+                )}
+
               </form>
             </div>
           </div>
