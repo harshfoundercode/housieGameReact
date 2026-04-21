@@ -567,7 +567,7 @@ const GamePage = () => {
 
   return (
     <>
-      <div className={`min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative`}>
+      <div className={`min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative`}>
 
         {/* Animated background elements */}
         <div className="absolute inset-0 opacity-10">
@@ -586,7 +586,7 @@ const GamePage = () => {
               className="relative group cursor-pointer"
             >
               <div className="absolute inset-0 bg-[#FBEFA4] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
-              <div className="relative w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-4 border-[#FBEFA4] shadow-xl overflow-hidden">
+              <div className="relative w-20 h-20 md:w-24 md:h-24 bg-linear-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-4 border-[#FBEFA4] shadow-xl overflow-hidden">
                 <img
                   src={logoImage}
                   alt="Tambola Logo"
@@ -597,9 +597,9 @@ const GamePage = () => {
           </div>
 
           {/* TICKET FOR GAMES Header */}
-          <div className="overflow-hidden rounded-b-3xl bg-gradient-to-r from-[#004296] to-[#003380] p-2 md:p-3 relative border border-[#FBEFA4]/30">
+          <div className="overflow-hidden rounded-b-3xl bg-linear-to-r from-[#004296] to-[#003380] p-2 md:p-3 relative border border-[#FBEFA4]/30">
             <div className="absolute top-0 right-0 w-40 h-40 bg-[#FBEFA4] rounded-full filter blur-3xl opacity-10"></div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-[#FBEFA4] via-white to-[#FBEFA4] bg-clip-text text-transparent tracking-wider">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-linear-to-r from-[#FBEFA4] via-white to-[#FBEFA4] bg-clip-text text-transparent tracking-wider">
               TICKET FOR GAMES
             </h1>
           </div>
@@ -670,7 +670,7 @@ const GamePage = () => {
                   >
                     <div className="relative z-10">
                       {/* TITLE */}
-                      <div className="overflow-hidden bg-gradient-to-r from-[#004296] to-[#003380] mb-2 md:mb-3 rounded-xl p-2 border border-[#FBEFA4]/30">
+                      <div className="overflow-hidden bg-linear-to-r from-[#004296] to-[#003380] mb-2 md:mb-3 rounded-xl p-2 border border-[#FBEFA4]/30">
                         <h1 className="ticket-title text-xl sm:text-2xl font-bold text-center text-[#FBEFA4] tracking-wider">
                           TNO:{ticket.id}
                         </h1>
@@ -697,7 +697,7 @@ const GamePage = () => {
                                       key={`${i}-${j}`}
                                       className={`number-cell h-6 sm:h-7 md:h-8 flex items-center justify-center text-[0.625rem] sm:text-xs font-bold rounded border
                                         ${num !== 0
-                                          ? "bg-gradient-to-br from-[#004296] to-[#003380] text-white border-[#FBEFA4]/40"
+                                          ? "bg-linear-to-brrom-[#004296] to-[#003380] text-white border-[#FBEFA4]/40"
                                           : "bg-gray-200 text-gray-400"}`}
                                     >
                                       {num !== 0 ? num : ""}
@@ -716,7 +716,7 @@ const GamePage = () => {
                           </p>
 
                           <div className="ticket-buttons flex flex-row sm:flex-col gap-2 mt-2">
-                            <button className="bg-gradient-to-r from-[#004296] to-[#003380] hover:from-[#003380] hover:to-[#004296] text-white py-1.5 sm:py-2 px-3 rounded-lg text-sm sm:text-base font-semibold transition-all shadow-md border border-[#FBEFA4]/30">
+                            <button className="bg-linear-to-r from-[#004296] to-[#003380] hover:from-[#003380] hover:to-[#004296] text-white py-1.5 sm:py-2 px-3 rounded-lg text-sm sm:text-base font-semibold transition-all shadow-md border border-[#FBEFA4]/30">
                               Buy Now
                             </button>
                             <button className="bg-[#FBEFA4] hover:bg-[#FFE44D] text-[#004296] py-1.5 sm:py-2 px-3 rounded-lg text-sm sm:text-base font-semibold transition-all shadow-md">
@@ -748,7 +748,7 @@ const GamePage = () => {
                   setShowBookingModal(true);
                   setCurrentStep(1);
                 }}
-                className="fab-menu-button flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-[#004296] to-[#003380] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-xl text-xs sm:text-sm border-2 border-[#FBEFA4]"
+                className="fab-menu-button flex items-center gap-2 sm:gap-3 bg-linear-to-r from-[#004296] to-[#003380] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-xl text-xs sm:text-sm border-2 border-[#FBEFA4]"
               >
                 <span className="text-base sm:text-xl">🎫</span>
                 <span className="font-semibold">
@@ -771,7 +771,7 @@ const GamePage = () => {
 
           <button
             onClick={() => setShowFabMenu(!showFabMenu)}
-            className="fab-button w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full shadow-2xl flex items-center justify-center border-3 border-[#FBEFA4] hover:scale-110 transition-all"
+            className="fab-button w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-linear-to-br from-[#004296] to-[#003380] rounded-full shadow-2xl flex items-center justify-center border-3 border-[#FBEFA4] hover:scale-110 transition-all"
           >
             <span className={`text-xl sm:text-2xl md:text-3xl text-[#FBEFA4] transition-transform duration-300 ${showFabMenu ? 'rotate-45' : ''}`}>
               {showFabMenu ? '✕' : '🎯'}
@@ -782,9 +782,9 @@ const GamePage = () => {
         {/* AGENT MODAL - Responsive */}
         {showAgentModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
-            <div className="agent-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-5xl max-h-[90vh] overflow-hidden border-2 border-[#FBEFA4]/50 shadow-2xl">
+            <div className="agent-modal bg-linear-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-5xl max-h-[90vh] overflow-hidden border-2 border-[#FBEFA4]/50 shadow-2xl">
               {/* Modal Header */}
-              <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 border-b-2 border-[#FBEFA4]/50 z-10">
+              <div className="sticky top-0 bg-linear-to-r from-[#004296] to-[#003380] p-4 sm:p-6 border-b-2 border-[#FBEFA4]/50 z-10">
                 <div className="flex justify-between items-center">
                   <div>
                     <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FBEFA4] flex items-center gap-2 sm:gap-3">
