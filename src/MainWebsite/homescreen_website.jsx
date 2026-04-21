@@ -23,9 +23,10 @@ const HomeScreenWebsite = () => {
             {/* {WIN WORTHY OFFERS} */}
             <OffersCarousel />
 
+            {/* {TODAYS WINNERS} */}
             <TodaysWinner />
 
-
+             <div className="pb-8"></div>
         </div>
     );
 };

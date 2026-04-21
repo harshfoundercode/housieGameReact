@@ -1,18 +1,221 @@
-import React from "react";
+// import React from "react";
 
+// const TodaysWinner = () => {
+//     return (
+//         <section className="py-6 md:py-8 lg:py-10 px-4">
+//             {/* Responsive Container with Tailwind */}
+//             <div className="
+//                 mx-auto
+//                 max-w-full px-2
+//                 sm:max-w-xl
+//                 md:max-w-2xl
+//                 lg:max-w-3xl
+//                 xl:max-w-4xl
+//             ">
+                
+//                 {/* Section Header - Tailwind Responsive */}
+//                 <div className="text-center mb-4 sm:mb-5 md:mb-6">
+//                     <h2 className="
+//                         font-bold text-[#004296] inline-block relative
+//                         text-xl
+//                         sm:text-2xl
+//                         md:text-3xl
+//                     ">
+//                         Today's Winners
+//                         <span className="
+//                             absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#FBEFA4] rounded-full
+//                             w-12 h-0.5
+//                             sm:w-14 sm:h-1
+//                             md:w-16
+//                         "></span>
+//                     </h2>
+//                 </div>
+
+//                 {/* Winner Image Container - Tailwind Responsive */}
+//                 <div className="
+//                     mx-auto overflow-hidden
+//                     max-w-full shadow-md rounded-lg
+//                     sm:max-w-xl sm:shadow-lg sm:rounded-xl
+//                     md:max-w-2xl
+//                     lg:max-w-4xl lg:shadow-xl lg:rounded-2xl
+//                 ">
+//                     <img
+//                         src={"src/assets/winnerbg.png"}
+//                         alt="Today's Winners"
+//                         className="w-full h-auto object-cover"
+//                     />
+//                 </div>
+
+//                 {/* View All Button - Hidden on Mobile (Tailwind) */}
+//                 <div className="hidden sm:block text-center mt-6">
+//                     <button className="
+//                         bg-[#004296] text-white rounded-full font-medium 
+//                         hover:bg-[#003380] transition-all shadow-md
+//                         px-4 py-1.5 text-xs
+//                         sm:px-5 sm:py-2 sm:text-sm
+//                         md:px-6 md:py-2.5 md:text-base
+//                     ">
+//                         View All Winners →
+//                     </button>
+//                 </div>
+//             </div>
+//         </section>
+//     );
+// };
+
+// export default TodaysWinner;
+
+import React, { useState } from "react";
 
 const TodaysWinner = () => {
+    // Winner data - 12 winners (2 rows x 6 columns)
+    const winners = [
+        { id: 1, name: "Rajesh Kumar", rank: 1, tno: "TN-001", phone: "9876543210", prize: "₹50,000", icon: "🏆" },
+        { id: 2, name: "Priya Sharma", rank: 2, tno: "TN-045", phone: "9876543211", prize: "₹25,000", icon: "🥈" },
+        { id: 3, name: "Amit Patel", rank: 3, tno: "TN-078", phone: "9876543212", prize: "₹10,000", icon: "🥉" },
+        { id: 4, name: "Neha Gupta", rank: 4, tno: "TN-112", phone: "9876543213", prize: "₹5,000", icon: "⭐" },
+        { id: 5, name: "Suresh Reddy", rank: 5, tno: "TN-156", phone: "9876543214", prize: "₹2,500", icon: "⭐" },
+        { id: 6, name: "Anjali Singh", rank: 6, tno: "TN-189", phone: "9876543215", prize: "₹1,000", icon: "⭐" },
+        { id: 7, name: "Vikram Malhotra", rank: 7, tno: "TN-234", phone: "9876543216", prize: "₹500", icon: "🎲" },
+        { id: 8, name: "Meera Iyer", rank: 8, tno: "TN-267", phone: "9876543217", prize: "₹500", icon: "🎲" },
+        { id: 9, name: "Rahul Nair", rank: 9, tno: "TN-298", phone: "9876543218", prize: "₹250", icon: "🎲" },
+        { id: 10, name: "Kavita Menon", rank: 10, tno: "TN-345", phone: "9876543219", prize: "₹250", icon: "🎲" },
+        { id: 11, name: "Arjun Kapoor", rank: 11, tno: "TN-378", phone: "9876543220", prize: "₹100", icon: "🎯" },
+        { id: 12, name: "Zara Sheikh", rank: 12, tno: "TN-401", phone: "9876543221", prize: "₹100", icon: "🎯" },
+    ];
+
+    // Function to mask phone number
+    const maskPhone = (phone) => {
+        return phone.slice(0, 4) + "****" + phone.slice(-2);
+    };
 
     return (
-         <div className="pt-20 md:pt-24 ">
+        <section className="py-6 md:py-8 lg:py-10 px-4">
+            <div className="
+                mx-auto
+                max-w-full px-2
+                sm:max-w-xl
+                md:max-w-3xl
+                lg:max-w-5xl
+                xl:max-w-6xl
+            ">
+                
+                {/* Section Header */}
+                <div className="text-center mb-4 sm:mb-5 md:mb-6">
+                    <h2 className="
+                        font-bold text-[#004296] inline-block relative
+                        text-xl
+                        sm:text-2xl
+                        md:text-3xl
+                    ">
+                        Today's Winners
+                        <span className="
+                            absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#FBEFA4] rounded-full
+                            w-12 h-0.5
+                            sm:w-14 sm:h-1
+                            md:w-16
+                        "></span>
+                    </h2>
+                </div>
 
-            <div className="relative w-full">
-                <span className="overflow-hidden">
+                {/* Winner Image Container */}
+                <div className="
+                    mx-auto overflow-hidden
+                    max-w-full shadow-md rounded-lg
+                    sm:max-w-xl sm:shadow-lg sm:rounded-xl
+                    md:max-w-2xl
+                    lg:max-w-4xl lg:shadow-xl lg:rounded-2xl
+                    mb-8
+                ">
                     <img
-                        src="src\assets\winnerbg.png"
+                        src={"src/assets/winnerbg.png"}
+                        alt="Today's Winners"
                         className="w-full h-auto object-cover"
                     />
+                </div>
+
+                {/* Winners Grid - 2 Rows x 6 Columns */}
+                <div className="mt-8">
+                    <h3 className="text-center text-[#004296] font-bold text-lg md:text-xl mb-4">
+                        🏅 Winner Leaderboard 🏅
+                    </h3>
+                    
+                    {/* Desktop Grid - 2x6 */}
+                    <div className="hidden lg:grid lg:grid-cols-6 gap-3">
+                        {winners.slice(0, 6).map((winner) => (
+                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
+                        ))}
+                    </div>
+                    <div className="hidden lg:grid lg:grid-cols-6 gap-3 mt-3">
+                        {winners.slice(6, 12).map((winner) => (
+                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
+                        ))}
+                    </div>
+
+                    {/* Tablet Grid - 3x4 */}
+                    <div className="hidden md:grid lg:hidden grid-cols-3 gap-3">
+                        {winners.map((winner) => (
+                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
+                        ))}
+                    </div>
+
+                    {/* Mobile Grid - 1x12 */}
+                    <div className="grid md:hidden grid-cols-1 gap-3">
+                        {winners.slice(0, 6).map((winner) => (
+                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
+                        ))}
+                    </div>
+                </div>
+
+                {/* View All Button */}
+                <div className="text-center mt-6">
+                    <button className="
+                        bg-[#004296] text-white rounded-full font-medium 
+                        hover:bg-[#003380] transition-all shadow-md
+                        px-6 py-2.5 text-sm
+                        md:px-8 md:py-3 md:text-base
+                    ">
+                        View All Winners →
+                    </button>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// Winner Card Component
+const WinnerCard = ({ winner, maskPhone }) => {
+    return (
+        <div className="
+            bg-white rounded-xl shadow-md hover:shadow-lg 
+            transition-all duration-300 p-3 
+            border border-gray-100 hover:border-[#FBEFA4]
+        ">
+            {/* Icon and Rank */}
+            <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl">{winner.icon}</span>
+                <span className="bg-[#004296] text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    Rank #{winner.rank}
                 </span>
+            </div>
+            
+            {/* Name */}
+            <h4 className="font-bold text-gray-800 text-sm md:text-base truncate">
+                {winner.name}
+            </h4>
+            
+            {/* TNO and Prize */}
+            <div className="flex items-center justify-between mt-1">
+                <span className="text-gray-500 text-xs">{winner.tno}</span>
+                <span className="text-[#004296] font-bold text-xs md:text-sm">
+                    {winner.prize}
+                </span>
+            </div>
+            
+            {/* Phone - Half Hidden */}
+            <div className="mt-2 flex items-center gap-1 text-gray-400 text-xs">
+                <span>📱</span>
+                <span className="font-mono">{maskPhone(winner.phone)}</span>
             </div>
         </div>
     );
