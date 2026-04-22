@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import Home from "./page/Home";
 import { ROUTES } from "./routes/routes";
 import GamePage from "./page/BeforeGameLive/gamePage";
@@ -13,31 +13,29 @@ import Register from "./MainWebsite/AuthComponents/register_screen";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter >
       <Routes>
         {/* Main Website Landing Page - Opens First */}
         <Route path="/" element={<HomeScreenWebsite />} />
         <Route path={ROUTES.HomeScreenWebsite} element={<HomeScreenWebsite />} />
         <Route path={ROUTES.RULES} element={<RulesAndTerms />} />
-         <Route path={ROUTES.CANCELATIONREFUNDPOLICY} element={<CancellationRefundPolicy />} />
-         <Route path={ROUTES.PRIVACYPOLICY} element={<PrivacyPolicy />} />
-         <Route path={ROUTES.FAQS} element={<FAQs />} />
-         <Route path={ROUTES.LOGIN} element={<Login />} />
-         <Route path = {ROUTES.REGISTER} element = {<Register />} />
-  
+        <Route path={ROUTES.CANCELATIONREFUNDPOLICY} element={<CancellationRefundPolicy />} />
+        <Route path={ROUTES.PRIVACYPOLICY} element={<PrivacyPolicy />} />
+        <Route path={ROUTES.FAQS} element={<FAQs />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
 
-    
-        
+
         {/* Game Routes - Accessible via navigation from website */}
         <Route path="/app" element={<Navigate to={ROUTES.HOME} />} />
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.GAME} element={<GamePage />} />
         <Route path={ROUTES.AFTERGAME} element={<AfterGameLive />} />
-        
+
         {/* Catch all - Redirect to landing page */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter >
   );
 }
 

@@ -19,7 +19,6 @@ const Footer = () => {
         { name: "Privacy Policy", path: ROUTES.PRIVACYPOLICY},
         { name: "FAQs", path: ROUTES.FAQS},
     ];
-
      
     
     // Scroll to section function
