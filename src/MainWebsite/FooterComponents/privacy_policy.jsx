@@ -60,7 +60,7 @@ const PrivacyPolicy = () => {
             <Navbar />
             
             {/* Header Banner */}
-            <section className="pt-24 md:pt-28 pb-8 px-4 bg-gradient-to-br from-[#004296] to-[#003380]">
+            <section className="pt-24 md:pt-28 pb-8 px-4 bg-linear-to-br from-[#004296] to-[#003380]">
                 <div className="max-w-4xl mx-auto text-center">
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">
                         Privacy <span className="text-[#FBEFA4]">Policy</span>

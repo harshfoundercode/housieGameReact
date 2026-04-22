@@ -11,7 +11,7 @@ const Home = () => {
   const isTablet = useIsTablet();
 
   return (
-    <div className="h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] flex items-center justify-center p-4 md:p-6 overflow-hidden relative">
+    <div className="h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] flex items-center justify-center p-4 md:p-6 overflow-hidden relative">
       
       {/* Animated Grid Pattern Background */}
       <div className="absolute inset-0 opacity-10">
@@ -23,9 +23,9 @@ const Home = () => {
 
       {/* Animated Orbital Circles */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] border border-[#FBEFA4]/20 rounded-full absolute animate-spin-slow"></div>
-        <div className="w-[400px] h-[400px] md:w-[700px] md:h-[700px] border border-[#FBEFA4]/10 rounded-full absolute animate-spin-slow" style={{animationDirection: 'reverse', animationDuration: '15s'}}></div>
-        <div className="w-[500px] h-[500px] md:w-[900px] md:h-[900px] border border-white/5 rounded-full absolute animate-spin-slow" style={{animationDuration: '20s'}}></div>
+        <div className="w-75 h-75 md:w-125 md:h-125 border border-[#FBEFA4]/20 rounded-full absolute animate-spin-slow"></div>
+        <div className="w-100 h-100 md:w-175 md:h-175 border border-[#FBEFA4]/10 rounded-full absolute animate-spin-slow" style={{animationDirection: 'reverse', animationDuration: '15s'}}></div>
+        <div className="w-125 h-125 md:w-225 md:h-225 border border-white/5 rounded-full absolute animate-spin-slow" style={{animationDuration: '20s'}}></div>
       </div>
 
       {/* Floating Particles */}
@@ -75,7 +75,7 @@ const Home = () => {
           {/* Main Title */}
           <h1 className={`${isMobile ? 'text-6xl' : 'text-7xl md:text-8xl lg:text-9xl'} font-black text-white tracking-tight mb-3 text-center`}>
             <span className="relative inline-block">
-              <span className="relative z-10 bg-gradient-to-r from-[#FBEFA4] via-[#FFF5C2] to-[#FBEFA4] bg-clip-text text-transparent">
+              <span className="relative z-10 bg-linear-to-r from-[#FBEFA4] via-[#FFF5C2] to-[#FBEFA4] bg-clip-text text-transparent">
                 TAMBOLA
               </span>
               <span className="absolute -bottom-2 left-0 right-0 h-3 md:h-4 bg-[#FBEFA4]/20 blur-md"></span>
@@ -84,11 +84,11 @@ const Home = () => {
           
           {/* Tagline */}
           <div className="flex items-center gap-2 md:gap-3 mb-8">
-            <span className="w-8 h-[1px] bg-gradient-to-r from-transparent to-[#FBEFA4]"></span>
+            <span className="w-8 h-px bg-linear-to-r from-transparent to-[#FBEFA4]"></span>
             <p className="text-white/70 text-sm md:text-base font-light tracking-wider">
               The Classic Number Game Experience
             </p>
-            <span className="w-8 h-[1px] bg-gradient-to-l from-transparent to-[#FBEFA4]"></span>
+            <span className="w-8 h-px bg-linear-to-l from-transparent to-[#FBEFA4]"></span>
           </div>
 
           {/* Feature Pills */}
@@ -118,7 +118,7 @@ const Home = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
             </button>
             
             {/* Secondary CTA */}

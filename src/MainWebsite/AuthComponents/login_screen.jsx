@@ -393,10 +393,10 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] flex flex-col lg:flex-row">
+        <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] flex flex-col lg:flex-row">
             
             {/* LEFT PANEL - Image with Content (Same as Register) */}
-            <div className="hidden lg:flex lg:w-[450px] xl:w-[550px] 2xl:w-[600px] h-screen sticky top-0 relative overflow-hidden">
+            <div className="hidden lg:flex lg:w-112.5 xl:w-137.5 2xl:w-150 h-screen sticky top-0 overflow-hidden">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0" style={{
@@ -555,7 +555,7 @@ const Login = () => {
                                 type="button"
                                 onClick={handleVerifyOTP}
                                 disabled={loading}
-                                className="w-full py-3 sm:py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50"
+                                className="w-full py-3 sm:py-3.5 rounded-xl font-bold text-white bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50"
                             >
                                 {loading ? "Verifying..." : "Verify & Login →"}
                             </button>

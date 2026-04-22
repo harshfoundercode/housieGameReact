@@ -71,7 +71,7 @@ const OffersCarousel = () => {
     const totalDots = offers.length - slidesPerView + 1;
 
     return (
-        <section className="pt-4 sm:pt-5 pb-6 sm:pb-8 md:pb-10 lg:pb-12 px-3 sm:px-4 bg-gradient-to-br from-[#f0f4ff] to-white">
+        <section className="pt-4 sm:pt-5 pb-6 sm:pb-8 md:pb-10 lg:pb-12 px-3 sm:px-4 bg-linear-to-br from-[#f0f4ff] to-white">
             <div className="max-w-7xl mx-auto">
 
                 {/* Section Header - Responsive */}

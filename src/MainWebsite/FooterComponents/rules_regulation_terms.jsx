@@ -97,7 +97,7 @@ const RulesAndTerms = () => {
                         <div className="space-y-3">
                             {dosAndDonts.map((item, index) => (
                                 <div key={index} className="flex gap-3">
-                                    <span className="text-[#004296] font-bold min-w-[28px]">
+                                    <span className="text-[#004296] font-bold min-w-7">
                                         {String(index + 1).padStart(2, '0')}
                                     </span>
                                     <p className="text-gray-600 text-sm md:text-base">
@@ -119,7 +119,7 @@ const RulesAndTerms = () => {
                         <div className="space-y-3">
                             {rulesGuidelines.slice(0, showMoreRules ? rulesGuidelines.length : 8).map((item, index) => (
                                 <div key={index} className="flex gap-3">
-                                    <span className="text-[#004296] font-bold min-w-[28px]">
+                                    <span className="text-[#004296] font-bold min-w-7">
                                         {index + 1}.
                                     </span>
                                     <p className="text-gray-600 text-sm md:text-base">
@@ -144,7 +144,7 @@ const RulesAndTerms = () => {
                         <div className="space-y-3">
                             {termsConditions.slice(0, showMoreTerms ? termsConditions.length : 6).map((item, index) => (
                                 <div key={index} className="flex gap-3">
-                                    <span className="text-[#004296] font-bold min-w-[28px]">
+                                    <span className="text-[#004296] font-bold min-w-7">
                                         {index + 1}.
                                     </span>
                                     <p className="text-gray-600 text-sm md:text-base">

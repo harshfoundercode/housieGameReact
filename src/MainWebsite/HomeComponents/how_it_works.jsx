@@ -81,7 +81,7 @@ const HowItWorks = () => {
                             />
                             
                             {/* Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#004296]/80 via-[#004296]/20 to-transparent"></div>
+                            <div className="absolute inset-0 bg-linear-to-t from-[#004296]/80 via-[#004296]/20 to-transparent"></div>
                             
                             {/* Play Button - Responsive Size */}
                             <div className="absolute inset-0 flex items-center justify-center">

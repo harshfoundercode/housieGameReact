@@ -2,7 +2,7 @@ import React from "react";
 
 const ReferAndEarn = () => {
     return (
-        <section className="w-full bg-gradient-to-r from-[#3d366d] to-[#b10b00] py-14 px-4 relative overflow-hidden">
+        <section className="w-full bg-linear-to-r from-[#3d366d] to-[#b10b00] py-14 px-4 relative overflow-hidden">
             
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">

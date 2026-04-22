@@ -67,7 +67,7 @@ const Footer = () => {
                     {/* Column 1 - Logo & About */}
                     <div className="text-center sm:text-left">
                         <div className="flex items-center gap-2 justify-center sm:justify-start mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#004296] to-[#0066cc] rounded-xl flex items-center justify-center shadow-lg">
+                            <div className="w-10 h-10 bg-linear-to-br from-[#004296] to-[#0066cc] rounded-xl flex items-center justify-center shadow-lg">
                                 <img src={logoImage} alt="Tambola" className="w-full h-full object-cover rounded-xl" />
                             </div>
                             <h3 className="text-xl font-bold">
