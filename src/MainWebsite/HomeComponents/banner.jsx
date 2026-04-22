@@ -9,14 +9,18 @@ const Banner = () => {
                     src={BannerLogo}
                     alt="Tambola Banner"
                     className="
-                        w-full
-                        h-80.5
+                       
+
+                 w-full
+                        h-62.5
                         xs:h-[300px]
-                        sm:h-90.5
+                        sm:h-87.5
                         md:h-75
                         lg:h-87.5
                         xl:h-100
                         2xl:h-112.5
+                        object-cover
+                        object-center
                     "
                 />
                 
