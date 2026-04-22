@@ -160,7 +160,7 @@ const Navbar = () => {
                             <div className="grid grid-cols-2 gap-3 mt-4">
                                 <button
                                     onClick={() => {
-                                        navigate('/login');
+                                        navigate(ROUTES.LOGIN);
                                         setIsMobileMenuOpen(false);
                                     }}
                                     className="py-3 rounded-xl text-center text-[#004296] font-medium bg-gray-100 hover:bg-gray-200 transition-all"
@@ -169,7 +169,7 @@ const Navbar = () => {
                                 </button>
                                 <button
                                     onClick={() => {
-                                        navigate('/register');
+                                        navigate(ROUTES.REGISTER);
                                         setIsMobileMenuOpen(false);
                                     }}
                                     className="py-3 rounded-xl text-center bg-[#004296] text-white font-semibold hover:bg-[#003380] transition-all shadow-md"

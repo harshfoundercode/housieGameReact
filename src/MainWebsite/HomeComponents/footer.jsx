@@ -58,7 +58,7 @@ const Footer = () => {
             <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[#004296] rounded-full blur-3xl opacity-10"></div>
 
             {/* Top Border Gradient */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#FBEFA4] to-transparent"></div>
+            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-[#FBEFA4] to-transparent"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 py-10 md:py-12">
                 
