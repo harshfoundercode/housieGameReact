@@ -1,19 +1,26 @@
 import React from "react";
-import bannerImage from "../../assets/Banner.jpg"; 
+import BannerLogo from '../../assets/Banner.jpg';
 
 const Banner = () => {
-
     return (
-        <div className="pt-18 md:pt-18 ">
-            <div className="relative w-full">
-                <span className="overflow-hidden">
-                    <img
-                        src={bannerImage}
-                        className="w-full h-auto object-cover"
-                    />
-                </span>
+        <section className="pt-16 sm:pt-20 md:pt-24 lg:pt-28">
+            <div className="w-full">
+                <img
+                    src={BannerLogo}
+                    alt="Tambola Banner"
+                    className="
+                        w-full h-auto
+                        max-h-[200px]
+                        sm:max-h-[300px]
+                        md:max-h-[400px]
+                        lg:max-h-[500px]
+                        xl:max-h-[600px]
+                        object-contain
+                        sm:object-cover
+                    "
+                />
             </div>
-        </div>
+        </section>
     );
 };
 
