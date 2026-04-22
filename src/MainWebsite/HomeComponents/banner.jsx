@@ -1,5 +1,5 @@
 import React from "react";
-
+import bannerImage from "../../assets/Banner.jpg"; 
 
 const Banner = () => {
 
@@ -9,7 +9,7 @@ const Banner = () => {
             <div className="relative w-full">
                 <span className="overflow-hidden">
                     <img
-                        src="src\assets\Banner.jpg"
+                        src={bannerImage}
                         className="w-full h-auto object-cover"
                     />
                 </span>
