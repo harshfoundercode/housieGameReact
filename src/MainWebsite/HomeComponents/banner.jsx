@@ -4,21 +4,22 @@ import BannerLogo from '../../assets/Banner.jpg';
 const Banner = () => {
     return (
         <section className="pt-16 sm:pt-20 md:pt-24 lg:pt-28">
-            <div className="w-full">
+            <div className="relative w-full">
                 <img
                     src={BannerLogo}
                     alt="Tambola Banner"
                     className="
-                        w-full h-auto
-                        max-h-[200px]
-                        sm:max-h-[300px]
-                        md:max-h-[400px]
-                        lg:max-h-[500px]
-                        xl:max-h-[600px]
-                        object-contain
-                        sm:object-cover
+                        w-full
+                        h-80.5
+                        xs:h-[300px]
+                        sm:h-90.5
+                        md:h-75
+                        lg:h-87.5
+                        xl:h-100
+                        2xl:h-112.5
                     "
                 />
+                
             </div>
         </section>
     );
