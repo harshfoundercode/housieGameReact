@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
+import logoImage from "../../assets/tambolaGame.jpeg"; 
 
 
 const Navbar = () => {
@@ -71,7 +72,7 @@ const Navbar = () => {
                         <div className="relative">
                             <div className="relative w-10 h-10 md:w-11 md:h-11 bg-linear-to-br from-[#004296] to-[#0066cc] rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-all overflow-hidden">
                                 <img
-                                    src={"src/assets/tambolaGame.jpeg"}
+                                    src={logoImage}
                                     alt="Tambola"
                                     className="w-full h-full object-cover"
                                 />
