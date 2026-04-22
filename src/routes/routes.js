@@ -18,14 +18,22 @@
 
 // src/routes/routes.js
 export const ROUTES = {
+    // Website Routes
     HomeScreenWebsite: "/",
-    RULES: "/MainWebsite/FooterComponents/rules_regulation_terms",
-    CANCELATIONREFUNDPOLICY: "/MainWebsite/FooterComponents/cancellation_refund_policy",
-    PRIVACYPOLICY: "/MainWebsite/FooterComponents/privacy_policy",
-    FAQS: "/MainWebsite/FooterComponents/faqs",
-    LOGIN: "/MainWebsite/AuthComponents/login_screen",
-    REGISTER: "/MainWebsite/AuthComponents/register_screen",
-    HOME: "/page/Home",
-    GAME: "/page/BeforeGameLive/gamePage",
-    AFTERGAME: "/page/AfterGameLive/afterGameLive",
+    ReferalGuide:"referal_guide",
+    
+    // Auth Routes
+    LOGIN: "/login",
+    REGISTER: "/register",
+    
+    // Policy Routes
+    RULES: "/rules",
+    CANCELATIONREFUNDPOLICY: "/cancellation-refund",
+    PRIVACYPOLICY: "/privacy-policy",
+    FAQS: "/faqs",
+    
+    // Game Routes
+    HOME: "/home",
+    GAME: "/game",
+    AFTERGAME: "/aftergame",
 };

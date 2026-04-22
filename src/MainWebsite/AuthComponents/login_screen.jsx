@@ -571,15 +571,6 @@ const Login = () => {
                             </div>
                         </div>
 
-                        {/* Continue as Guest Button */}
-                        <button
-                            type="button"
-                            onClick={handleGuestLogin}
-                            className="w-full py-3 sm:py-3.5 rounded-xl font-semibold text-[#004296] bg-white border-2 border-[#004296] hover:bg-[#004296] hover:text-white shadow-md hover:shadow-lg transition-all text-sm sm:text-base"
-                        >
-                            Continue as Guest
-                        </button>
-
                         {/* Register Link */}
                         <p className="text-center text-gray-500 text-xs sm:text-sm mt-5">
                             Don't have an account?{" "}

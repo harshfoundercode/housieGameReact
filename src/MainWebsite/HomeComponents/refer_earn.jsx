@@ -1,6 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes";
+
 
 const ReferAndEarn = () => {
+        const navigate = useNavigate();
+
     return (
         <section className="w-full bg-linear-to-r from-[#3d366d] to-[#b10b00] py-14 px-4 relative overflow-hidden">
             
@@ -86,7 +91,7 @@ const ReferAndEarn = () => {
 
                         {/* CTA Button */}
                         <div className="pt-4">
-                            <button className="
+                            {/* <button className="
                                 w-full sm:w-auto
                                 bg-[#FBEFA4] text-[#3d366d] 
                                 px-6 py-3 rounded-full font-bold text-base
@@ -97,7 +102,18 @@ const ReferAndEarn = () => {
                                 <span>🤝</span>
                                 Start Referring Now
                                 <span>→</span>
-                            </button>
+                                  type="button"
+                                        onClick={() => navigate(ROUTES.HomeScreenWebsite)}
+                            </button> */}
+
+
+                             <button
+                            type="button"
+                            onClick={() => navigate(ROUTES.ReferalGuide)}
+                            className="w-full py-3 sm:py-3.5 rounded-xl font-semibold text-[#004296] bg-white border-2 border-[#004296] hover:bg-[#004296] hover:text-white shadow-md hover:shadow-lg transition-all text-sm sm:text-base"
+                        >
+                            Already have an account? Login
+                        </button>
                         </div>
                     </div>
                 </div>

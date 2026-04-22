@@ -54,23 +54,27 @@ import PrivacyPolicy from "./MainWebsite/FooterComponents/privacy_policy";
 import FAQs from "./MainWebsite/FooterComponents/faqs";
 import Login from "./MainWebsite/AuthComponents/login_screen";
 import Register from "./MainWebsite/AuthComponents/register_screen";
+import ReferralGuide from "./MainWebsite/HomeComponents/referal_guide";
 
 function App() {
   return (
     <HashRouter>
       <Routes>
-        {/* Public Website Routes */}
-        <Route path="/" element={<HomeScreenWebsite />} />
+        {/* Main Website - Home */}
         <Route path={ROUTES.HomeScreenWebsite} element={<HomeScreenWebsite />} />
+         <Route path={ROUTES.ReferalGuide} element={<ReferralGuide />} />
+        
+        {/* Auth Routes */}
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
+        
+        {/* Policy Routes */}
         <Route path={ROUTES.RULES} element={<RulesAndTerms />} />
         <Route path={ROUTES.CANCELATIONREFUNDPOLICY} element={<CancellationRefundPolicy />} />
         <Route path={ROUTES.PRIVACYPOLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTES.FAQS} element={<FAQs />} />
-        <Route path={ROUTES.LOGIN} element={<Login />} />
-        <Route path={ROUTES.REGISTER} element={<Register />} />
 
         {/* Game Routes */}
-        <Route path="/app" element={<Navigate to={ROUTES.HOME} />} />
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.GAME} element={<GamePage />} />
         <Route path={ROUTES.AFTERGAME} element={<AfterGameLive />} />

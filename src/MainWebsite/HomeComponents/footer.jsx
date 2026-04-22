@@ -1,25 +1,20 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logoImage from "../../assets/tambolaGame.jpeg";
 import { ROUTES } from "../../routes/routes";
 import LiveResultTable from "./live_result_table";
 import TodaysWinner from "./todays_winners";
 import HowItWorks from "./how_it_works";
+import RulesAndTerms from "../FooterComponents/rules_regulation_terms";
+import CancellationRefundPolicy from "../FooterComponents/cancellation_refund_policy";
+import PrivacyPolicy from "../FooterComponents/privacy_policy";
+import FAQs from "../FooterComponents/faqs";
 
 const Footer = () => {
-    const navigate = useNavigate();
     const currentYear = new Date().getFullYear();
 
-    // Policy Links
-    const policyLinks = [
-        { name: "Rules & Regulations", path: ROUTES.RULES},
-        { name: "Terms & Conditions", path: ROUTES.RULES },
-        { name: "Cancellation & Refund", path: ROUTES.CANCELATIONREFUNDPOLICY},
-        { name: "Shipping & Delivery", path: "/shipping" },
-        { name: "Privacy Policy", path: ROUTES.PRIVACYPOLICY},
-        { name: "FAQs", path: ROUTES.FAQS},
-    ];
-     
+    
+    
     
     // Scroll to section function
     const scrollToSection = (sectionId) => {
@@ -38,6 +33,16 @@ const Footer = () => {
         { name: "Live Draws", sectionId: "live-draws" },
         { name: "Winners", sectionId: "winners" },
         { name: "How to Play", sectionId: "how-it-works" },
+    ];
+
+    // Policy Links - Using ROUTES paths
+    const policyLinks = [
+        { name: "Rules & Regulations", path: ROUTES.RULES },
+        { name: "Terms & Conditions", path: ROUTES.RULES },
+        { name: "Cancellation & Refund", path: ROUTES.CANCELATIONREFUNDPOLICY },
+        { name: "Shipping & Delivery", path: "/shipping" },
+        { name: "Privacy Policy", path: ROUTES.PRIVACYPOLICY },
+        { name: "FAQs", path: ROUTES.FAQS },
     ];
 
 
@@ -111,9 +116,12 @@ const Footer = () => {
                         <ul className="space-y-2">
                             {policyLinks.map((link, i) => (
                                 <li key={i}>
-                                    <a href={link.path} className="text-white/60 hover:text-[#FBEFA4] text-sm transition-colors">
+                                    <Link 
+                                        to={link.path} 
+                                        className="text-white/60 hover:text-[#FBEFA4] text-sm transition-colors"
+                                    >
                                         {link.name}
-                                    </a>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
