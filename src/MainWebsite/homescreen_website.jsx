@@ -14,30 +14,42 @@ const HomeScreenWebsite = () => {
         <div className="min-h-screen bg-white">
 
             {/* Navbar */}
-            <Navbar />
+            <section id="home">
+                <Navbar />
+            </section>
+
 
             {/* {BANNER} */}
             <Banner />
 
             {/* {LIVE RESULT TABLE} */}
-            <LiveResultTable />
+
+            <section id="live-draws">
+                <LiveResultTable />
+            </section>
+
 
             {/* {WIN WORTHY OFFERS} */}
             <OffersCarousel />
 
             {/* {TODAYS WINNERS} */}
-            <TodaysWinner />
+            <section id="winners">
+                <TodaysWinner />
+            </section>
 
+            {/* HOW IT WORKS Section */}
+            <section id="how-it-works">
+                <HowItWorks />
+            </section>
 
-            {/* {How it works} */}
-            <HowItWorks />
+            {/* REFER & EARN Section */}
+            <section id="refer-earn">
+                <ReferAndEarn />
+            </section>
 
-           {/* {refer and earn} */}
-            <ReferAndEarn />
-        
             {/* {FOOTER} */}
             <Footer />
-             
+
         </div>
     );
 };

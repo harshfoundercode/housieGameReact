@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import WinnerBg from "../../assets/winnerbg.png";
 
 const TodaysWinner = () => {
-    // Winner data - 12 winners (2 rows x 6 columns)
+    // Winner data - 12 winners
     const winners = [
         { id: 1, name: "Rajesh Kumar", rank: 1, tno: "TN-001", phone: "9876543210", prize: "₹50,000", icon: "🏆" },
         { id: 2, name: "Priya Sharma", rank: 2, tno: "TN-045", phone: "9876543211", prize: "₹25,000", icon: "🥈" },
@@ -24,31 +24,32 @@ const TodaysWinner = () => {
     };
 
     return (
-        <section className="py-6 md:py-8 lg:py-10 px-4">
+        <section className="py-6 sm:py-8 md:py-10 lg:py-12 px-3 sm:px-4">
             
-            {/* Section Header */}
-            <div className="text-center mb-6 sm:mb-5 md:mb-10">
+            {/* Section Header - Responsive */}
+            <div className="text-center mb-4 sm:mb-5 md:mb-8 lg:mb-10">
                 <h2 className="
                     font-bold text-[#004296] inline-block relative
-                    text-2xl md:text-3xl lg:text-4xl
+                    text-xl sm:text-2xl md:text-3xl lg:text-4xl
                 ">
                     Today's Winners
                     <span className="
                         absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#FBEFA4] rounded-full
-                        w-12 h-0.5
-                        sm:w-14 sm:h-1
-                        md:w-16
+                        w-10 h-0.5
+                        sm:w-12 sm:h-0.5
+                        md:w-14 md:h-1
+                        lg:w-16
                     "></span>
                 </h2>
             </div>
 
-            {/* Winner Image Container - FULL WIDTH (Badi Width) */}
+            {/* Winner Image Container - Responsive Width */}
             <div className="
                 mx-auto overflow-hidden
-                w-7xl shadow-md rounded-lg
+                w-full shadow-md rounded-lg
                 sm:shadow-lg sm:rounded-xl
                 lg:shadow-xl lg:rounded-2xl
-                mb-8
+                mb-6 sm:mb-8
             ">
                 <img
                     src={WinnerBg}
@@ -57,75 +58,87 @@ const TodaysWinner = () => {
                 />
             </div>
 
-            {/* Winners Grid - LIMITED WIDTH (Choti Width) */}
+            {/* Winners Grid Container - Responsive Max Width */}
             <div className="
                 mx-auto
-                max-w-full px-2
-                sm:max-w-2xl
-                md:max-w-4xl
-                lg:max-w-6xl
-                xl:max-w-7xl
+                max-w-full px-1
+                sm:max-w-xl sm:px-2
+                md:max-w-3xl
+                lg:max-w-5xl
+                xl:max-w-6xl
+                2xl:max-w-7xl
             ">
-                <div className="mt-12">
+                <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12">
                    
-
-                    {/* Desktop Grid - 2x6 */}
-                    <div className="hidden lg:grid lg:grid-cols-6 gap-3 mt-12">
+                    {/* Mobile Grid - 1 column (shows first 6 winners) */}
+                    <div className="grid grid-cols-1 gap-2 sm:gap-3 md:hidden">
                         {winners.slice(0, 6).map((winner) => (
                             <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
                         ))}
                     </div>
-                    <div className="hidden lg:grid lg:grid-cols-6 gap-3 mt-3">
+
+                    {/* Tablet Grid - 2 columns (shows all 12 winners) */}
+                    <div className="hidden md:grid lg:hidden grid-cols-2 gap-3">
+                        {winners.map((winner) => (
+                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
+                        ))}
+                    </div>
+
+                    {/* Desktop Grid - 3 columns (shows first 6 in row 1) */}
+                    <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-3">
+                        {winners.slice(0, 6).map((winner) => (
+                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
+                        ))}
+                    </div>
+                    
+                    {/* Desktop Grid - 3 columns (shows next 6 in row 2) */}
+                    <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-3 mt-3">
                         {winners.slice(6, 12).map((winner) => (
                             <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
                         ))}
                     </div>
 
-
-                    {/* Mobile Grid - 1x12 */}
-                    <div className="grid md:hidden grid-cols-1 gap-3">
-                        {winners.slice(0, 6).map((winner) => (
-                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
-                        ))}
-                    </div>
+            
                 </div>
             </div>
         </section>
     );
 };
 
-// Winner Card Component
+// Winner Card Component - Responsive
 const WinnerCard = ({ winner, maskPhone }) => {
     return (
         <div className="
-            bg-white rounded-xl shadow-md hover:shadow-lg 
-            transition-all duration-300 p-3 
+            bg-white rounded-lg sm:rounded-xl 
+            shadow-sm sm:shadow-md hover:shadow-lg 
+            transition-all duration-300 
+            p-2 sm:p-3 
             border border-gray-100 hover:border-[#FBEFA4]
         ">
             {/* Icon and Rank */}
-            <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">{winner.icon}</span>
-                <span className="bg-[#004296] text-white text-xs font-bold px-2 py-0.5 rounded-full">
+            <div className="flex items-center justify-between mb-1 sm:mb-2">
+                <span className="text-xl sm:text-2xl">{winner.icon}</span>
+                <span className="bg-[#004296] text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full">
                     Rank #{winner.rank}
                 </span>
             </div>
 
             {/* Name */}
-            <h4 className="font-bold text-gray-800 text-sm md:text-base truncate">
+            <h4 className="font-bold text-gray-800 text-xs sm:text-sm md:text-base truncate">
                 {winner.name}
             </h4>
 
             {/* TNO and Prize */}
             <div className="flex items-center justify-between mt-1">
-                <span className="text-gray-500 text-xs">{winner.tno}</span>
-                <span className="text-[#004296] font-bold text-xs md:text-sm">
+                <span className="text-gray-500 text-[10px] sm:text-xs">{winner.tno}</span>
+                <span className="text-[#004296] font-bold text-xs sm:text-sm md:text-base">
                     {winner.prize}
                 </span>
             </div>
 
             {/* Phone - Half Hidden */}
-            <div className="mt-2 flex items-center gap-1 text-gray-400 text-xs">
-                <span>📱</span>
+            <div className="mt-1.5 sm:mt-2 flex items-center gap-1 text-gray-400 text-[10px] sm:text-xs">
+                <span className="hidden xs:inline">📱</span>
                 <span className="font-mono">{maskPhone(winner.phone)}</span>
             </div>
         </div>

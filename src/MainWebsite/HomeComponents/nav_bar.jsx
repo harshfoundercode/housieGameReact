@@ -34,8 +34,8 @@ const Navbar = () => {
     const navItems = [
         { name: "Home", path: ROUTES.HomeScreenWebsite},
         { name: "Result", path: ROUTES.GAME },
-        { name: "Rules", path: ROUTES.AFTERGAME },
-        { name: "FAQs", path: "#faqs" },
+        { name: "Rules", path: ROUTES.RULES},
+        { name: "FAQs", path: ROUTES.FAQS },
     ];
 
     const isActive = (path) => {
@@ -108,13 +108,13 @@ const Navbar = () => {
                     {/* Right Side - Auth Buttons */}
                     <div className="hidden md:flex items-center gap-3">
                         <button
-                            onClick={() => navigate('/login')}
+                            onClick={() => navigate(ROUTES.LOGIN)}
                             className="text-gray-600 hover:text-[#004296] text-sm font-medium transition-colors px-3 py-2"
                         >
                             Login
                         </button>
                         <button
-                            onClick={() => navigate('/register')}
+                            onClick={() => navigate(ROUTES.REGISTER)}
                             className="bg-[#004296] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#003380] transition-all shadow-md hover:shadow-lg border border-[#004296]"
                         >
                             Register

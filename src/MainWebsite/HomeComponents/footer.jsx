@@ -1,6 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import logoImage from "../../assets/tambolaGame.jpeg";
+import { ROUTES } from "../../routes/routes";
+import LiveResultTable from "./live_result_table";
+import TodaysWinner from "./todays_winners";
+import HowItWorks from "./how_it_works";
 
 const Footer = () => {
     const navigate = useNavigate();
@@ -8,24 +12,38 @@ const Footer = () => {
 
     // Policy Links
     const policyLinks = [
-        { name: "Rules & Regulations", path: "/rules" },
-        { name: "Terms & Conditions", path: "/terms" },
-        { name: "Cancellation & Refund", path: "/cancellation" },
+        { name: "Rules & Regulations", path: ROUTES.RULES},
+        { name: "Terms & Conditions", path: ROUTES.RULES },
+        { name: "Cancellation & Refund", path: ROUTES.CANCELATIONREFUNDPOLICY},
         { name: "Shipping & Delivery", path: "/shipping" },
-        { name: "Privacy Policy", path: "/privacy" },
+        { name: "Privacy Policy", path: ROUTES.PRIVACYPOLICY},
+        { name: "FAQs", path: ROUTES.FAQS},
     ];
 
-    // Quick Links
+     
+    
+    // Scroll to section function
+    const scrollToSection = (sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    };
+
+    // Quick Links with section IDs
     const quickLinks = [
-        { name: "Home", path: "/" },
-        { name: "Live Draws", path: "/live" },
-        { name: "Winners", path: "/winners" },
-        { name: "How to Play", path: "/how-to-play" },
-        { name: "FAQs", path: "/faqs" },
+        { name: "Home", sectionId: "home" },
+        { name: "Live Draws", sectionId: "live-draws" },
+        { name: "Winners", sectionId: "winners" },
+        { name: "How to Play", sectionId: "how-it-works" },
     ];
+
 
     return (
-        <footer className="w-full bg-gradient-to-br from-[#001a33] via-[#002266] to-[#001a4d] text-white relative overflow-hidden">
+        <footer className="w-full bg-linear-to-br from-[#001a33] via-[#002266] to-[#001a4d] text-white relative overflow-hidden">
             
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
@@ -75,11 +93,14 @@ const Footer = () => {
                     <div className="text-center sm:text-left">
                         <h4 className="text-[#FBEFA4] font-bold text-base mb-4">Quick Links</h4>
                         <ul className="space-y-2">
-                            {quickLinks.map((link, i) => (
+                           {quickLinks.map((link, i) => (
                                 <li key={i}>
-                                    <a href={link.path} className="text-white/60 hover:text-[#FBEFA4] text-sm transition-colors">
+                                    <button
+                                        onClick={() => scrollToSection(link.sectionId)}
+                                        className="text-white/60 hover:text-[#FBEFA4] text-sm transition-colors"
+                                    >
                                         {link.name}
-                                    </a>
+                                    </button>
                                 </li>
                             ))}
                         </ul>

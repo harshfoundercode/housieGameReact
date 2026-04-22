@@ -4,6 +4,12 @@ import { ROUTES } from "./routes/routes";
 import GamePage from "./page/BeforeGameLive/gamePage";
 import AfterGameLive from "./page/AfterGameLive/afterGameLive";
 import HomeScreenWebsite from "./MainWebsite/homescreen_website";
+import RulesAndTerms from "./MainWebsite/FooterComponents/rules_regulation_terms";
+import CancellationRefundPolicy from "./MainWebsite/FooterComponents/cancellation_refund_policy";
+import PrivacyPolicy from "./MainWebsite/FooterComponents/privacy_policy";
+import FAQs from "./MainWebsite/FooterComponents/faqs";
+import Login from "./MainWebsite/AuthComponents/login_screen";
+import Register from "./MainWebsite/AuthComponents/register_screen";
 
 function App() {
   return (
@@ -12,6 +18,15 @@ function App() {
         {/* Main Website Landing Page - Opens First */}
         <Route path="/" element={<HomeScreenWebsite />} />
         <Route path={ROUTES.HomeScreenWebsite} element={<HomeScreenWebsite />} />
+        <Route path={ROUTES.RULES} element={<RulesAndTerms />} />
+         <Route path={ROUTES.CANCELATIONREFUNDPOLICY} element={<CancellationRefundPolicy />} />
+         <Route path={ROUTES.PRIVACYPOLICY} element={<PrivacyPolicy />} />
+         <Route path={ROUTES.FAQS} element={<FAQs />} />
+         <Route path={ROUTES.LOGIN} element={<Login />} />
+         <Route path = {ROUTES.REGISTER} element = {<Register />} />
+  
+
+    
         
         {/* Game Routes - Accessible via navigation from website */}
         <Route path="/app" element={<Navigate to={ROUTES.HOME} />} />
