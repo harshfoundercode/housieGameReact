@@ -1,269 +1,475 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Routes } from "react-router-dom";
 import tambolaLogo from "../../assets/tambolaGame.jpeg";
+import { ROUTES } from "../../routes/routes";
 
 const Register = () => {
     const navigate = useNavigate();
+    
+    // Step tracking: 1 = phone/checkboxes, 2 = name fields, 3 = OTP
+    const [step, setStep] = useState(1);
+    
     const [formData, setFormData] = useState({
         phone: "",
-        otp: "",
+        referralCode: "",
+        firstName: "",
+        lastName: "",
     });
-    const [otpSent, setOtpSent] = useState(false);
+    
+    const [checkboxes, setCheckboxes] = useState({
+        ageConfirm: false,
+        stateConfirm: false,
+        termsAgree: false,
+    });
+    
+    const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const testimonials = [
-        {
-            id: 1,
-            title: "Rahul won ₹50,000",
-            thumbnail: "https://img.youtube.com/vi/5yMfIQSsHJg/mqdefault.jpg",
-            videoUrl: "https://www.youtube.com/watch?v=5yMfIQSsHJg"
-        },
-        {
-            id: 2,
-            title: "Priya's First Win",
-            thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-            videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        },
-        {
-            id: 3,
-            title: "How Tambola Works",
-            thumbnail: "https://img.youtube.com/vi/5yMfIQSsHJg/mqdefault.jpg",
-            videoUrl: "https://www.youtube.com/watch?v=5yMfIQSsHJg"
-        },
-    ];
+    // Check if all checkboxes are checked
+    const allChecked = checkboxes.ageConfirm && checkboxes.stateConfirm && checkboxes.termsAgree;
 
-    // FIXED: Proper onChange handler
     const handlePhoneChange = (e) => {
         const value = e.target.value;
-        // Only allow numbers
         if (value === '' || /^[0-9]+$/.test(value)) {
-            setFormData({
-                ...formData,
-                phone: value,
-            });
+            setFormData({ ...formData, phone: value });
         }
         setError("");
     };
 
-    const handleOTPChange = (e) => {
-        const value = e.target.value;
-        // Only allow numbers
-        if (value === '' || /^[0-9]+$/.test(value)) {
-            setFormData({
-                ...formData,
-                otp: value,
-            });
-        }
+    const handleReferralChange = (e) => {
+        setFormData({ ...formData, referralCode: e.target.value.toUpperCase() });
+    };
+
+    const handleNameChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
         setError("");
     };
 
-    const handleSendOTP = () => {
+    const handleCheckboxChange = (field) => {
+        setCheckboxes({ ...checkboxes, [field]: !checkboxes[field] });
+        setError("");
+    };
+
+    // Step 1 → Step 2: Validate and proceed to name fields
+    const handleProceedToName = () => {
         if (!formData.phone || formData.phone.length < 10) {
             setError("Please enter a valid 10-digit phone number");
             return;
         }
+        if (!checkboxes.ageConfirm) {
+            setError("Please confirm you are over 18 years old");
+            return;
+        }
+        if (!checkboxes.stateConfirm) {
+            setError("Please confirm you are from a lottery authorised state");
+            return;
+        }
+        if (!checkboxes.termsAgree) {
+            setError("Please agree to the Terms & Conditions");
+            return;
+        }
+        setError("");
+        setStep(2);
+    };
+
+    // Step 2 → Step 3: Validate name and send OTP
+    const handleSendOTP = () => {
+        if (!formData.firstName || formData.firstName.trim() === "") {
+            setError("Please enter your first name");
+            return;
+        }
+        if (!formData.lastName || formData.lastName.trim() === "") {
+            setError("Please enter your last name");
+            return;
+        }
+
         setLoading(true);
         setTimeout(() => {
-            setOtpSent(true);
+            setStep(3);
             setLoading(false);
             setError("");
         }, 1000);
     };
 
     const handleVerifyOTP = () => {
-        if (!formData.otp || formData.otp.length < 4) {
+        if (!otp || otp.length < 4) {
             setError("Please enter a valid OTP");
             return;
         }
         setLoading(true);
         setTimeout(() => {
-            alert("Login successful! Welcome to Tambola!");
+            alert(`Welcome ${formData.firstName}! Registration successful!`);
             setLoading(false);
             navigate("/");
         }, 1500);
     };
 
-    const handleGuestLogin = () => {
-        navigate("/");
+    // Go back to previous step
+    const handleBack = () => {
+        setStep(step - 1);
+        setError("");
+    };
+
+    // Change phone number (from OTP screen)
+    const handleChangePhone = () => {
+        setStep(1);
+        setOtp("");
+        setError("");
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#f0f4ff] to-white flex flex-col lg:flex-row">
+        <div className="min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] flex flex-col lg:flex-row">
             
-            {/* LEFT PANEL - Image (Hidden on mobile, visible on lg+) */}
-            <div className="hidden lg:block lg:w-[450px] xl:w-[550px] 2xl:w-[600px] h-screen sticky top-0 relative overflow-hidden">
-                <img
-                    src={tambolaLogo}
-                    alt="Tambola Login"
-                    className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#004296]/50 via-[#002266]/40 to-[#001133]/70"></div>
+            {/* LEFT PANEL - Static Image & Content (Same as Login) */}
+            <div className="hidden lg:flex lg:w-[450px] xl:w-[550px] 2xl:w-[600px] h-screen sticky top-0 relative overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute inset-0" style={{
+                        backgroundImage: `radial-gradient(circle at 2px 2px, #FBEFA4 1px, transparent 1px)`,
+                        backgroundSize: '40px 40px'
+                    }}></div>
+                </div>
                 
-                <div className="absolute inset-0 flex flex-col justify-end p-8 xl:p-10">
-                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 xl:p-8 border border-white/20">
-                        <h2 className="text-3xl xl:text-4xl 2xl:text-5xl font-bold text-white mb-3">
-                            Play <span className="text-[#FBEFA4]">Tambola</span>
-                        </h2>
-                        <p className="text-white/80 text-sm xl:text-base mb-4">
-                            Join millions of players and win exciting prizes daily!
-                        </p>
-                        <div className="flex items-center gap-3 text-white/60 text-sm">
-                            <span>🏆 10,000+ Winners</span>
-                            <span>•</span>
-                            <span>💰 ₹1Cr+ Prizes</span>
-                            <span>•</span>
-                            <span>⭐ 4.8 Rating</span>
+                {/* Glow Orbs */}
+                <div className="absolute top-20 left-10 w-64 h-64 bg-[#FBEFA4] rounded-full blur-3xl opacity-20"></div>
+                <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#FBEFA4] rounded-full blur-3xl opacity-10"></div>
+                
+                {/* Content */}
+                <div className="relative z-10 flex flex-col justify-center px-8 xl:px-10 w-full">
+                    <div className="text-center">
+                        <div className="flex justify-center mb-6">
+                            <div className="w-20 h-20 xl:w-24 xl:h-24 bg-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center border-2 border-[#FBEFA4]/50">
+                                <img src={tambolaLogo} alt="Tambola" className="w-12 h-12 xl:w-14 xl:h-14 object-cover rounded-xl" />
+                            </div>
                         </div>
+                        <h2 className="text-3xl xl:text-4xl 2xl:text-5xl font-bold text-white mb-3">
+                            Join <span className="text-[#FBEFA4]">Tambola</span>
+                        </h2>
+                        <p className="text-white/70 text-sm xl:text-base mb-6">
+                            Create your account and start winning today!
+                        </p>
+                        
+                        {/* Benefits Cards */}
+                        <div className="grid grid-cols-1 gap-3 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-[#FBEFA4]/20">
+                            <div className="flex items-center gap-3 text-white/80">
+                                <span className="text-[#FBEFA4] text-xl">🎁</span>
+                                <span className="text-sm">Welcome bonus on first deposit</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-white/80">
+                                <span className="text-[#FBEFA4] text-xl">🎫</span>
+                                <span className="text-sm">Free ticket on registration</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-white/80">
+                                <span className="text-[#FBEFA4] text-xl">💰</span>
+                                <span className="text-sm">Instant withdrawals & 24/7 support</span>
+                            </div>
+                        </div>
+
+                        {/* Step Indicator */}
+                        <div className="mt-6 flex items-center justify-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${step >= 1 ? 'bg-[#FBEFA4]' : 'bg-white/30'}`}></div>
+                            <div className={`w-8 h-0.5 ${step >= 2 ? 'bg-[#FBEFA4]' : 'bg-white/30'}`}></div>
+                            <div className={`w-2 h-2 rounded-full ${step >= 2 ? 'bg-[#FBEFA4]' : 'bg-white/30'}`}></div>
+                            <div className={`w-8 h-0.5 ${step >= 3 ? 'bg-[#FBEFA4]' : 'bg-white/30'}`}></div>
+                            <div className={`w-2 h-2 rounded-full ${step >= 3 ? 'bg-[#FBEFA4]' : 'bg-white/30'}`}></div>
+                        </div>
+                        <p className="text-white/50 text-[10px] mt-2">
+                            Step {step} of 3
+                        </p>
                     </div>
                 </div>
             </div>
 
-            {/* RIGHT PANEL - Login Form */}
-            <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-6 sm:py-8 md:py-10 min-h-screen lg:min-h-0">
+            {/* RIGHT PANEL - Register Form */}
+            <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-6 sm:py-8 md:py-10 min-h-screen">
                 <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg">
                     
                     {/* Mobile Logo */}
                     <div className="lg:hidden flex justify-center mb-6">
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[#004296] to-[#0066cc] rounded-2xl flex items-center justify-center shadow-lg">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 border-[#FBEFA4]/50">
                             <img src={tambolaLogo} alt="Tambola" className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-xl" />
                         </div>
                     </div>
 
                     {/* Header */}
                     <div className="text-center mb-5 sm:mb-6">
-                        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#004296]">
-                            Welcome to Tambola
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+                            {step === 1 && "Create Account"}
+                            {step === 2 && "Your Details"}
+                            {step === 3 && "Verify OTP"}
                         </h2>
-                        <p className="text-gray-500 mt-1 sm:mt-2 text-xs sm:text-sm md:text-base">
-                            Sign in to play and win big!
+                        <p className="text-white/70 mt-1 sm:mt-2 text-xs sm:text-sm">
+                            {step === 1 && "Enter your phone number to get started"}
+                            {step === 2 && "Tell us your name"}
+                            {step === 3 && `Enter the OTP sent to +91 ${formData.phone}`}
                         </p>
                     </div>
 
-                    {/* Login Form Card */}
-                    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-5 sm:p-6 md:p-8 border border-gray-100">
+                    {/* Register Form Card */}
+                    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 border-2 border-[#FBEFA4]/30 transition-all duration-300">
                         
                         {/* Error Message */}
                         {error && (
-                            <div className="mb-4 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs sm:text-sm flex items-center gap-2">
+                            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs sm:text-sm flex items-center gap-2">
                                 <span>⚠️</span> {error}
                             </div>
                         )}
 
-                        {/* Phone Number Field - FIXED */}
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
-                                Phone Number <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative">
-                                <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm sm:text-base">📱</span>
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handlePhoneChange}
-                                    placeholder="Enter your phone number"
-                                    maxLength="10"
-                                    disabled={otpSent}
-                                    className={`w-full pl-9 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border transition-all outline-none text-sm sm:text-base text-gray-800 ${
-                                        otpSent 
-                                            ? 'bg-gray-100 border-gray-200 cursor-not-allowed' 
-                                            : 'border-gray-300 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20'
-                                    }`}
-                                />
-                            </div>
-                            <p className="text-gray-400 text-[10px] sm:text-xs mt-1">
-                                We'll send OTP to this number
-                            </p>
-                        </div>
-
-                        {/* OTP Field - Shows after Send OTP */}
-                        {otpSent && (
-                            <div className="mb-4">
-                                <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
-                                    Enter OTP <span className="text-red-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm sm:text-base">🔐</span>
-                                    <input
-                                        type="text"
-                                        name="otp"
-                                        value={formData.otp}
-                                        onChange={handleOTPChange}
-                                        placeholder="Enter 6-digit OTP"
-                                        maxLength="6"
-                                        className="w-full pl-9 sm:pl-11 pr-3 sm:pr-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-gray-300 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
-                                    />
-                                </div>
-                                <div className="flex justify-between mt-1">
-                                    <p className="text-gray-400 text-[10px] sm:text-xs">
-                                        OTP sent to +91 {formData.phone}
+                        {/* ========== STEP 1: Phone + Checkboxes ========== */}
+                        {step === 1 && (
+                            <>
+                                {/* Phone Number Field */}
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
+                                        Phone Number <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">📱</span>
+                                        <input
+                                            type="tel"
+                                            value={formData.phone}
+                                            onChange={handlePhoneChange}
+                                            placeholder="Enter 10-digit number"
+                                            maxLength="10"
+                                            className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
+                                        />
+                                    </div>
+                                    <p className="text-gray-400 text-[10px] sm:text-xs mt-1 ml-1">
+                                        We'll send OTP to this number
                                     </p>
-                                    <button 
-                                        type="button"
-                                        onClick={() => {
-                                            setOtpSent(false);
-                                            setFormData({...formData, otp: ""});
-                                        }}
-                                        className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium"
-                                    >
-                                        Change Number
-                                    </button>
                                 </div>
-                                <p className="text-right mt-1">
-                                    <button 
-                                        type="button"
-                                        className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium"
-                                    >
-                                        Resend OTP
-                                    </button>
-                                </p>
-                            </div>
+
+                                {/* Referral Code Field - Optional */}
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
+                                        Referral Code <span className="text-gray-400 text-[10px]">(Optional)</span>
+                                    </label>
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🎁</span>
+                                        <input
+                                            type="text"
+                                            value={formData.referralCode}
+                                            onChange={handleReferralChange}
+                                            placeholder="Enter referral code"
+                                            className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800 uppercase"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Checkboxes */}
+                                <div className="space-y-3 mb-5">
+                                    <label className="flex items-start gap-3 cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={checkboxes.ageConfirm}
+                                                onChange={() => handleCheckboxChange("ageConfirm")}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-[#004296] peer-checked:border-[#004296] transition-all flex items-center justify-center">
+                                                {checkboxes.ageConfirm && (
+                                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className="text-gray-600 text-xs sm:text-sm">I am over 18 years old</span>
+                                    </label>
+
+                                    <label className="flex items-start gap-3 cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={checkboxes.stateConfirm}
+                                                onChange={() => handleCheckboxChange("stateConfirm")}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-[#004296] peer-checked:border-[#004296] transition-all flex items-center justify-center">
+                                                {checkboxes.stateConfirm && (
+                                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className="text-gray-600 text-xs sm:text-sm">I am from a lottery authorised state</span>
+                                    </label>
+
+                                    <label className="flex items-start gap-3 cursor-pointer group">
+                                        <div className="relative flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={checkboxes.termsAgree}
+                                                onChange={() => handleCheckboxChange("termsAgree")}
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-[#004296] peer-checked:border-[#004296] transition-all flex items-center justify-center">
+                                                {checkboxes.termsAgree && (
+                                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <span className="text-gray-600 text-xs sm:text-sm">
+                                            I agree to the{" "}
+                                            <Link to="/rules" className="text-[#004296] hover:underline font-medium">Terms</Link>{" "}
+                                            and{" "}
+                                            <Link to="/privacy" className="text-[#004296] hover:underline font-medium">Privacy Policy</Link>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                {/* Continue Button */}
+                                <button
+                                    type="button"
+                                    onClick={handleProceedToName}
+                                    className="w-full py-3 sm:py-3.5 rounded-xl font-bold text-[#004296] bg-[#FBEFA4] hover:bg-[#FFE44D] shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
+                                >
+                                    Continue →
+                                </button>
+                            </>
                         )}
 
-                        {/* Action Button */}
-                        {!otpSent ? (
-                            <button
-                                type="button"
-                                onClick={handleSendOTP}
-                                disabled={loading}
-                                className="w-full py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-bold text-white bg-gradient-to-r from-[#004296] to-[#0066cc] hover:from-[#003380] hover:to-[#004296] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {loading ? (
-                                    <>
-                                        <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                                        </svg>
-                                        Sending...
-                                    </>
-                                ) : (
-                                    "Send OTP"
-                                )}
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={handleVerifyOTP}
-                                disabled={loading}
-                                className="w-full py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {loading ? (
-                                    <>
-                                        <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                                        </svg>
-                                        Verifying...
-                                    </>
-                                ) : (
-                                    "Verify & Login"
-                                )}
-                            </button>
+                        {/* ========== STEP 2: Name Fields ========== */}
+                        {step === 2 && (
+                            <>
+                                {/* First Name */}
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
+                                        First Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">👤</span>
+                                        <input
+                                            type="text"
+                                            name="firstName"
+                                            value={formData.firstName}
+                                            onChange={handleNameChange}
+                                            placeholder="Enter your first name"
+                                            className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Last Name */}
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
+                                        Last Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">👤</span>
+                                        <input
+                                            type="text"
+                                            name="lastName"
+                                            value={formData.lastName}
+                                            onChange={handleNameChange}
+                                            placeholder="Enter your last name"
+                                            className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Phone Number (Read-only display) */}
+                                <div className="mb-5 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                                    <p className="text-gray-500 text-[10px] sm:text-xs">Registered Phone</p>
+                                    <p className="text-gray-800 font-medium text-sm sm:text-base">+91 {formData.phone}</p>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={handleBack}
+                                        className="flex-1 py-3 sm:py-3.5 rounded-xl font-semibold text-[#004296] bg-white border-2 border-[#004296] hover:bg-gray-50 transition-all text-sm sm:text-base"
+                                    >
+                                        ← Back
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleSendOTP}
+                                        disabled={loading}
+                                        className="flex-1 py-3 sm:py-3.5 rounded-xl font-bold text-[#004296] bg-[#FBEFA4] hover:bg-[#FFE44D] shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50"
+                                    >
+                                        {loading ? "Sending..." : "Send OTP →"}
+                                    </button>
+                                </div>
+                            </>
+                        )}
+
+                        {/* ========== STEP 3: OTP Verification ========== */}
+                        {step === 3 && (
+                            <>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
+                                        Enter OTP <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔐</span>
+                                        <input
+                                            type="text"
+                                            value={otp}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (value === '' || /^[0-9]+$/.test(value)) {
+                                                    setOtp(value);
+                                                }
+                                            }}
+                                            placeholder="Enter 6-digit OTP"
+                                            maxLength="6"
+                                            className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
+                                        />
+                                    </div>
+                                    
+                                    <div className="flex justify-between items-center mt-2">
+                                        <p className="text-gray-400 text-[10px] sm:text-xs">
+                                            Didn't receive code?
+                                        </p>
+                                        <button 
+                                            type="button"
+                                            onClick={handleSendOTP}
+                                            className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium"
+                                        >
+                                            Resend OTP
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={handleChangePhone}
+                                        className="flex-1 py-3 sm:py-3.5 rounded-xl font-semibold text-[#004296] bg-white border-2 border-[#004296] hover:bg-gray-50 transition-all text-sm sm:text-base"
+                                    >
+                                        ← Change Number
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleVerifyOTP}
+                                        disabled={loading}
+                                        className="flex-1 py-3 sm:py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50"
+                                    >
+                                        {loading ? (
+                                            <>
+                                                <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                                </svg>
+                                                Verifying...
+                                            </>
+                                        ) : (
+                                            "Create Account →"
+                                        )}
+                                    </button>
+                                </div>
+                            </>
                         )}
 
                         {/* Divider */}
-                        <div className="relative my-4 sm:my-5">
+                        <div className="relative my-5">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-gray-200"></div>
                             </div>
@@ -272,60 +478,23 @@ const Register = () => {
                             </div>
                         </div>
 
-                        {/* Continue as Guest Button */}
+                        {/* Already have account - Login Button */}
                         <button
                             type="button"
-                            onClick={handleGuestLogin}
-                            className="w-full py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-[#004296] bg-[#FBEFA4] hover:bg-[#FFE44D] shadow-md hover:shadow-lg transition-all text-sm sm:text-base"
+                            onClick={() => navigate(ROUTES.LOGIN)}
+                            className="w-full py-3 sm:py-3.5 rounded-xl font-semibold text-[#004296] bg-white border-2 border-[#004296] hover:bg-[#004296] hover:text-white shadow-md hover:shadow-lg transition-all text-sm sm:text-base"
                         >
-                            Continue as Guest
+                            Already have an account? Login
                         </button>
-
-                        {/* Register Button */}
-                        <p className="text-center text-gray-500 text-xs sm:text-sm mt-4 sm:mt-5">
-                            New to Tambola?{" "}
-                            <Link to="/register" className="text-[#004296] font-semibold hover:underline">
-                                Create Account
-                            </Link>
-                        </p>
                     </div>
 
-                    {/* Testimonial Videos Section */}
-                    <div className="mt-6 sm:mt-8">
-                        <h3 className="text-center text-gray-700 font-semibold mb-3 sm:mb-4 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
-                            <span>🎥</span> Player Testimonials <span>🎥</span>
-                        </h3>
-                        
-                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                            {testimonials.map((video) => (
-                                <div 
-                                    key={video.id}
-                                    onClick={() => window.open(video.videoUrl, '_blank')}
-                                    className="cursor-pointer group"
-                                >
-                                    <div className="relative rounded-lg overflow-hidden shadow-md group-hover:shadow-lg transition-all">
-                                        <img
-                                            src={video.thumbnail}
-                                            alt={video.title}
-                                            className="w-full h-14 sm:h-16 md:h-20 object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
-                                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 flex items-center justify-center">
-                                            <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-[#FBEFA4] rounded-full flex items-center justify-center shadow-lg">
-                                                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#004296] ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M8 5v14l11-7L8 5z" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <p className="text-[9px] sm:text-[10px] md:text-xs text-gray-600 mt-1 truncate text-center">
-                                        {video.title}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
+                    {/* Footer Text */}
+                    <div className="text-center mt-4 sm:mt-5 text-[10px] sm:text-xs text-white/50">
+                        By registering, you agree to our{" "}
+                        <Link to="/rules" className="text-[#FBEFA4] hover:underline">Terms</Link>{" "}
+                        and{" "}
+                        <Link to="/privacy" className="text-[#FBEFA4] hover:underline">Privacy Policy</Link>
                     </div>
-
-                
                 </div>
             </div>
         </div>
