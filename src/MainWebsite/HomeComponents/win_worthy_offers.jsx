@@ -121,11 +121,11 @@ const OffersCarousel = () => {
                                 >
                                     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
                                         {/* Image Container */}
-                                        <div className="relative overflow-hidden h-48 md:h-56 lg:h-64">
+                                        <div className="relative overflow-hidden h-85 md:h-56 lg:h-64">
                                             <img
                                                 src={offer.image}
                                                 alt={`Offer ${offer.id}`}
-                                                className="w-full h-full object-fill group-hover:scale-105 transition-transform duration-500"
+                                                className="w-full h-full object-fil group-hover:scale-105 transition-transform duration-500"
                                             />
                                         </div>
                                     </div>
@@ -167,18 +167,16 @@ const OffersCarousel = () => {
                             <button
                                 key={index}
                                 onClick={() => goToSlide(index)}
-                                className={`h-2 rounded-full transition-all duration-300 ${
-                                    currentSlide === index
+                                className={`h-2 rounded-full transition-all duration-300 ${currentSlide === index
                                         ? 'w-8 bg-[#004296]'
                                         : 'w-2 bg-gray-300 hover:bg-gray-400'
-                                }`}
+                                    }`}
                                 aria-label={`Go to slide ${index + 1}`}
                             />
                         ))}
                     </div>
                 )}
 
-            
             </div>
         </section>
     );

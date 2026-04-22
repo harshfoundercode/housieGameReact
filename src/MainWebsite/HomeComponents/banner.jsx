@@ -4,8 +4,7 @@ import bannerImage from "../../assets/Banner.jpg";
 const Banner = () => {
 
     return (
-        <div className="pt-20 md:pt-24 ">
-
+        <div className="pt-18 md:pt-18 ">
             <div className="relative w-full">
                 <span className="overflow-hidden">
                     <img

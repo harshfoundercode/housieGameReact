@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import WinnerBg from "../../assets/winnerbg.png";
 
 const TodaysWinner = () => {
     // Winner data - 12 winners (2 rows x 6 columns)
@@ -24,57 +25,52 @@ const TodaysWinner = () => {
 
     return (
         <section className="py-6 md:py-8 lg:py-10 px-4">
+            
+            {/* Section Header */}
+            <div className="text-center mb-6 sm:mb-5 md:mb-10">
+                <h2 className="
+                    font-bold text-[#004296] inline-block relative
+                    text-2xl md:text-3xl lg:text-4xl
+                ">
+                    Today's Winners
+                    <span className="
+                        absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#FBEFA4] rounded-full
+                        w-12 h-0.5
+                        sm:w-14 sm:h-1
+                        md:w-16
+                    "></span>
+                </h2>
+            </div>
+
+            {/* Winner Image Container - FULL WIDTH (Badi Width) */}
+            <div className="
+                mx-auto overflow-hidden
+                w-7xl shadow-md rounded-lg
+                sm:shadow-lg sm:rounded-xl
+                lg:shadow-xl lg:rounded-2xl
+                mb-8
+            ">
+                <img
+                    src={WinnerBg}
+                    alt="Today's Winners"
+                    className="w-full h-auto object-cover"
+                />
+            </div>
+
+            {/* Winners Grid - LIMITED WIDTH (Choti Width) */}
             <div className="
                 mx-auto
                 max-w-full px-2
-                sm:max-w-xl
-                md:max-w-3xl
-                lg:max-w-5xl
-                xl:max-w-6xl
+                sm:max-w-2xl
+                md:max-w-4xl
+                lg:max-w-6xl
+                xl:max-w-7xl
             ">
-                
-                {/* Section Header */}
-                <div className="text-center mb-4 sm:mb-5 md:mb-6">
-                    <h2 className="
-                        font-bold text-[#004296] inline-block relative
-                        text-xl
-                        sm:text-2xl
-                        md:text-3xl
-                    ">
-                        Today's Winners
-                        <span className="
-                            absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#FBEFA4] rounded-full
-                            w-12 h-0.5
-                            sm:w-14 sm:h-1
-                            md:w-16
-                        "></span>
-                    </h2>
-                </div>
+                <div className="mt-12">
+                   
 
-                {/* Winner Image Container */}
-                <div className="
-                    mx-auto overflow-hidden
-                    max-w-full shadow-md rounded-lg
-                    sm:max-w-xl sm:shadow-lg sm:rounded-xl
-                    md:max-w-2xl
-                    lg:max-w-4xl lg:shadow-xl lg:rounded-2xl
-                    mb-8
-                ">
-                    <img
-                        src={"src/assets/winnerbg.png"}
-                        alt="Today's Winners"
-                        className="w-full h-auto object-cover"
-                    />
-                </div>
-
-                {/* Winners Grid - 2 Rows x 6 Columns */}
-                <div className="mt-8">
-                    <h3 className="text-center text-[#004296] font-bold text-lg md:text-xl mb-4">
-                        🏅 Winner Leaderboard 🏅
-                    </h3>
-                    
                     {/* Desktop Grid - 2x6 */}
-                    <div className="hidden lg:grid lg:grid-cols-6 gap-3">
+                    <div className="hidden lg:grid lg:grid-cols-6 gap-3 mt-12">
                         {winners.slice(0, 6).map((winner) => (
                             <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
                         ))}
@@ -85,12 +81,6 @@ const TodaysWinner = () => {
                         ))}
                     </div>
 
-                    {/* Tablet Grid - 3x4 */}
-                    <div className="hidden md:grid lg:hidden grid-cols-3 gap-3">
-                        {winners.map((winner) => (
-                            <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
-                        ))}
-                    </div>
 
                     {/* Mobile Grid - 1x12 */}
                     <div className="grid md:hidden grid-cols-1 gap-3">
@@ -98,18 +88,6 @@ const TodaysWinner = () => {
                             <WinnerCard key={winner.id} winner={winner} maskPhone={maskPhone} />
                         ))}
                     </div>
-                </div>
-
-                {/* View All Button */}
-                <div className="text-center mt-6">
-                    <button className="
-                        bg-[#004296] text-white rounded-full font-medium 
-                        hover:bg-[#003380] transition-all shadow-md
-                        px-6 py-2.5 text-sm
-                        md:px-8 md:py-3 md:text-base
-                    ">
-                        View All Winners →
-                    </button>
                 </div>
             </div>
         </section>
@@ -131,12 +109,12 @@ const WinnerCard = ({ winner, maskPhone }) => {
                     Rank #{winner.rank}
                 </span>
             </div>
-            
+
             {/* Name */}
             <h4 className="font-bold text-gray-800 text-sm md:text-base truncate">
                 {winner.name}
             </h4>
-            
+
             {/* TNO and Prize */}
             <div className="flex items-center justify-between mt-1">
                 <span className="text-gray-500 text-xs">{winner.tno}</span>
@@ -144,7 +122,7 @@ const WinnerCard = ({ winner, maskPhone }) => {
                     {winner.prize}
                 </span>
             </div>
-            
+
             {/* Phone - Half Hidden */}
             <div className="mt-2 flex items-center gap-1 text-gray-400 text-xs">
                 <span>📱</span>
