@@ -206,6 +206,7 @@ const TambolaCaller = () => {
             className={`w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center text-xs ${voiceEnabled ? 'bg-[#FBEFA4] text-[#004296]' : 'bg-white/10 text-white/60'}`}
           >
             {voiceEnabled ? '🔊' : '🔇'}
+            
           </button>
         </div>
 
