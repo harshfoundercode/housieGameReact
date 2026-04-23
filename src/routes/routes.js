@@ -1,26 +1,10 @@
-
-// export const ROUTES = {
-//   HOME: "/",
-//   GAME: "/gamePage",
-//   AFTERGAME:"/afterGameLive",
-//   RULES: "/rules_regulation_terms",
-//   CANCELATIONREFUNDPOLICY:"/cancellation_refund_policy",
-//   PRIVACYPOLICY:"/privacy_policy",
-//   FAQS:"/faqs",
-//   LOGIN:"/login_screen",
-//   REGISTER:"/register_screen",
-
-//   ///- MAIN Website routes
-
-//   HomeScreenWebsite:"/homescreen_website"
-// };
-
-
-// src/routes/routes.js
 export const ROUTES = {
     // Website Routes
     HomeScreenWebsite: "/",
-    ReferalGuide:"referal_guide",
+    ReferalGuide:"/referal_guide",
+    Credits:"/add_money",
+    MyTickets:"/my_tickets",
+    KYC:"/kyc",
     
     // Auth Routes
     LOGIN: "/login",

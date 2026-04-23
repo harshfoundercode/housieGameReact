@@ -4,11 +4,11 @@ import { ROUTES } from "../../routes/routes";
 
 
 const ReferAndEarn = () => {
-        const navigate = useNavigate();
+    const navigate = useNavigate();
 
     return (
         <section className="w-full bg-linear-to-r from-[#3d366d] to-[#b10b00] py-14 px-4 relative overflow-hidden">
-            
+
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
                 <div className="absolute inset-0" style={{
@@ -18,10 +18,10 @@ const ReferAndEarn = () => {
             </div>
 
             <div className="relative z-10 max-w-6xl mx-auto">
-                
+
                 {/* Two Column Layout */}
                 <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-                    
+
                     {/* LEFT SIDE - Heading & Content */}
                     <div className="text-center lg:text-left">
                         {/* Badge */}
@@ -30,17 +30,17 @@ const ReferAndEarn = () => {
                                 <span>🤝</span> REFER & EARN <span>🤝</span>
                             </span>
                         </div>
-                        
+
                         {/* Main Heading */}
                         <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
                             Refer & <span className="text-[#FBEFA4]">Earn</span>
                         </h2>
-                        
+
                         {/* Subheading */}
                         <p className="text-white/80 text-base md:text-lg max-w-md mx-auto lg:mx-0 mb-6">
                             Share the fun with your friends and earn exciting rewards when they join Tambola!
                         </p>
-                        
+
                         {/* Stats */}
                         <div className="flex gap-6 justify-center lg:justify-start">
                             <div>
@@ -66,7 +66,7 @@ const ReferAndEarn = () => {
                                 <p className="text-white/70 text-sm">Copy your unique referral link from your dashboard</p>
                             </div>
                         </div>
-                        
+
                         {/* Step 2 */}
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-white/20 flex items-start gap-4">
                             <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FBEFA4] rounded-full flex items-center justify-center text-[#3d366d] font-bold text-lg shrink-0">
@@ -77,7 +77,7 @@ const ReferAndEarn = () => {
                                 <p className="text-white/70 text-sm">Invite friends via WhatsApp, email, or social media</p>
                             </div>
                         </div>
-                        
+
                         {/* Step 3 */}
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-white/20 flex items-start gap-4">
                             <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FBEFA4] rounded-full flex items-center justify-center text-[#3d366d] font-bold text-lg shrink-0">
@@ -91,29 +91,17 @@ const ReferAndEarn = () => {
 
                         {/* CTA Button */}
                         <div className="pt-4">
-                            {/* <button className="
-                                w-full sm:w-auto
+                            <button className="w-full sm:w-auto
                                 bg-[#FBEFA4] text-[#3d366d] 
                                 px-6 py-3 rounded-full font-bold text-base
                                 shadow-lg hover:shadow-xl hover:scale-105
                                 transition-all duration-300
-                                inline-flex items-center justify-center gap-2
-                            ">
-                                <span>🤝</span>
+                                inline-flex items-center justify-center gap-2"
+                                type="button"
+                                onClick={() => navigate(ROUTES.ReferalGuide)}
+                            >
                                 Start Referring Now
-                                <span>→</span>
-                                  type="button"
-                                        onClick={() => navigate(ROUTES.HomeScreenWebsite)}
-                            </button> */}
-
-
-                             <button
-                            type="button"
-                            onClick={() => navigate(ROUTES.ReferalGuide)}
-                            className="w-full py-3 sm:py-3.5 rounded-xl font-semibold text-[#004296] bg-white border-2 border-[#004296] hover:bg-[#004296] hover:text-white shadow-md hover:shadow-lg transition-all text-sm sm:text-base"
-                        >
-                            Already have an account? Login
-                        </button>
+                            </button>
                         </div>
                     </div>
                 </div>

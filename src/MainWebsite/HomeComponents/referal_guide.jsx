@@ -26,7 +26,7 @@ const ReferralGuide = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
       
-      <main className="flex-grow pt-24 md:pt-28 pb-12 px-4">
+      <main className="grow pt-24 md:pt-28 pb-12 px-4">
         <div className="max-w-4xl mx-auto">
           
           {/* Header */}
@@ -80,7 +80,7 @@ const ReferralGuide = () => {
           </div>
 
           {/* Referral Link Box */}
-          <div className="bg-gradient-to-r from-[#004296] to-[#003380] rounded-2xl shadow-lg p-6 md:p-8 text-white mb-8">
+          <div className="bg-linear-to-r from-[#004296] to-[#003380] rounded-2xl shadow-lg p-6 md:p-8 text-white mb-8">
             <h3 className="text-xl font-bold mb-2 text-center">Your Unique Referral Link</h3>
             <p className="text-white/70 text-sm text-center mb-6">
               Share this link with friends. When they sign up and play, you both win!

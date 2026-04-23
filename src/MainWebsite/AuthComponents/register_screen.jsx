@@ -92,18 +92,42 @@ const Register = () => {
         }, 1000);
     };
 
-    const handleVerifyOTP = () => {
-        if (!otp || otp.length < 4) {
-            setError("Please enter a valid OTP");
-            return;
-        }
-        setLoading(true);
-        setTimeout(() => {
-            alert(`Welcome ${formData.firstName}! Registration successful!`);
-            setLoading(false);
-            navigate("/");
-        }, 1500);
-    };
+    // const handleVerifyOTP = () => {
+    //     if (!otp || otp.length < 4) {
+    //         setError("Please enter a valid OTP");
+    //         return;
+    //     }
+    //     setLoading(true);
+    //     setTimeout(() => {
+    //         alert(`Welcome ${formData.firstName}! Registration successful!`);
+    //         setLoading(false);
+    //         navigate("/");
+    //     }, 1500);
+    // };
+
+    // Register.jsx - Update handleVerifyOTP function
+const handleVerifyOTP = () => {
+    if (!otp || otp.length < 4) {
+        setError("Please enter a valid OTP");
+        return;
+    }
+    setLoading(true);
+    setTimeout(() => {
+        // Set login token and user data
+        localStorage.setItem("token", "user-auth-token-123");
+        localStorage.setItem("user", JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            phone: formData.phone,
+        }));
+        localStorage.setItem("credits", "1500"); // Welcome bonus
+        
+        alert(`Welcome ${formData.firstName}! Registration successful!`);
+        setLoading(false);
+        navigate("/");
+        window.location.reload();
+    }, 1500);
+};
 
     // Go back to previous step
     const handleBack = () => {
