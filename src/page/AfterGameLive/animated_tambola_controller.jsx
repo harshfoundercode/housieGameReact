@@ -14,7 +14,7 @@ const AnimatedTambolaCaller = () => {
   const [ballPosition, setBallPosition] = useState({ x: 0, y: 0 });
   
   const timerRef = useRef(null);
-  const speechSynthRef = useRef(window.speechSynthesis);
+  const audioRef = useRef(null);
   const boardRef = useRef(null);
   const ballRef = useRef(null);
   const numbers = Array.from({ length: 90 }, (_, i) => i + 1);
@@ -23,7 +23,7 @@ const AnimatedTambolaCaller = () => {
   // Check screen size
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 640);
+      setIsMobile(window.innerWidth < 768);
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
@@ -35,20 +35,36 @@ const AnimatedTambolaCaller = () => {
     setAvailableNumbers([...numbers]);
   }, []);
 
-  // Speak number
-  const speakNumber = useCallback((number) => {
+  // Play audio file for specific number
+  const playNumberAudio = useCallback((number) => {
     if (!voiceEnabled || !number) return;
     
-    speechSynthRef.current.cancel();
+    // Stop any currently playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
     
-    const utterance = new SpeechSynthesisUtterance();
-    utterance.text = `${number}`;
-    utterance.lang = 'en-IN';
-    utterance.rate = 0.85;
-    utterance.pitch = 1.1;
-    utterance.volume = 1;
+    // Create audio element with the specific number's audio file
+    const audio = new Audio(`/sounds/${number}.mp3`);
+    audioRef.current = audio;
     
-    speechSynthRef.current.speak(utterance);
+    audio.onerror = (error) => {
+      console.error(`Failed to load audio for number ${number}:`, error);
+      // Fallback to speech synthesis if audio file fails
+      const utterance = new SpeechSynthesisUtterance();
+      utterance.text = `${number}`;
+      utterance.lang = 'en-IN';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.1;
+      utterance.volume = 0.8;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    };
+    
+    audio.play().catch(error => {
+      console.error(`Failed to play audio for number ${number}:`, error);
+    });
   }, [voiceEnabled]);
 
   // Find board cell position
@@ -83,10 +99,10 @@ const AnimatedTambolaCaller = () => {
         setCalledNumbers(prev => [...prev, number]);
         setShowBallAnimation(false);
         setFlyingNumber(null);
-        speakNumber(number);
+        playNumberAudio(number);
       }, 800);
     }, 1500);
-  }, [speakNumber]);
+  }, [playNumberAudio]);
 
   // Generate next number
   const generateNextNumber = useCallback(() => {
@@ -138,13 +154,21 @@ const AnimatedTambolaCaller = () => {
     setShowBallAnimation(false);
     setFlyingNumber(null);
     setRound(1);
-    speechSynthRef.current.cancel();
+    
+    // Stop any playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
   };
 
   // Cleanup
   useEffect(() => {
     return () => {
-      speechSynthRef.current.cancel();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
@@ -156,61 +180,35 @@ const AnimatedTambolaCaller = () => {
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0" style={{
           backgroundImage: `linear-gradient(#FBEFA4 1px, transparent 1px), linear-gradient(90deg, #FBEFA4 1px, transparent 1px)`,
-          backgroundSize: '50px 50px'
+          backgroundSize: '30px 30px'
         }}></div>
       </div>
 
       {/* Glowing Orbs */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-[#FBEFA4] rounded-full blur-[100px] opacity-10 animate-pulse"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#004296] rounded-full blur-[100px] opacity-20"></div>
+      <div className="absolute top-10 md:top-20 left-5 md:left-10 w-48 md:w-72 h-48 md:h-72 bg-[#FBEFA4] rounded-full blur-[80px] md:blur-[100px] opacity-10 animate-pulse"></div>
+      <div className="absolute bottom-10 md:bottom-20 right-5 md:right-10 w-64 md:w-96 h-64 md:h-96 bg-[#004296] rounded-full blur-[80px] md:blur-[100px] opacity-20 animate-pulse" style={{ animationDelay: '1s' }}></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto p-4 md:p-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-3 md:py-6">
         
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-linear-to-br from-[#004296] to-[#0066cc] rounded-full flex items-center justify-center border-2 border-[#FBEFA4] shadow-lg">
-              <span className="text-2xl">🎲</span>
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold">
-                <span className="text-[#FBEFA4]">3D</span> BINGO CALLER
-              </h1>
-              <p className="text-white/60 text-sm">MACHINE ONLINE • 90 BALL • ROUND {round}</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setVoiceEnabled(!voiceEnabled)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center ${voiceEnabled ? 'bg-[#FBEFA4] text-[#004296]' : 'bg-white/10 text-white/60'}`}
-            >
-              {voiceEnabled ? '🔊' : '🔇'}
-            </button>
-            <div className="text-right">
-              <p className="text-white/60 text-xs">ONLY BINGO</p>
-              <p className="text-[#FBEFA4] text-sm">1.46k subscribers</p>
-            </div>
-          </div>
-        </div>
+        
 
         {/* Main Game Area */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
           
           {/* Left Side - Ball Machine */}
-          <div className="lg:col-span-1">
-            <div className="bg-linear-to-brrom-[#1a1a4e] to-[#0d0d2b] rounded-3xl p-6 border-2 border-[#FBEFA4]/30 shadow-2xl relative overflow-hidden">
+          <div className="w-full lg:w-1/3">
+            <div className="bg-gradient-to-br from-[#1a1a4e] to-[#0d0d2b] rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 border-[#FBEFA4]/30 shadow-2xl relative overflow-hidden">
               
               {/* Machine Top */}
-              <div className="absolute top-0 left-0 right-0 h-20 bg-linear-to-b from-[#004296]/50 to-transparent"></div>
+              <div className="absolute top-0 left-0 right-0 h-16 md:h-20 bg-gradient-to-b from-[#004296]/50 to-transparent"></div>
               
               {/* Ball Display */}
-              <div className="relative h-64 flex items-center justify-center">
+              <div className="relative h-48 sm:h-56 md:h-64 flex items-center justify-center">
                 
                 {/* Spinning Ball Animation */}
                 <motion.div
                   ref={ballRef}
-                  className="relative w-48 h-48"
+                  className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48"
                   animate={showBallAnimation ? {
                     rotate: [0, 360, 720, 1080],
                     scale: [1, 1.1, 1, 0.9, 1]
@@ -223,14 +221,14 @@ const AnimatedTambolaCaller = () => {
                   }}
                 >
                   {/* Outer Ring */}
-                  <div className="absolute inset-0 rounded-full border-4 border-[#FBEFA4]/50 animate-spin-slow"></div>
+                  <div className="absolute inset-0 rounded-full border-3 md:border-4 border-[#FBEFA4]/50 animate-spin-slow"></div>
                   
                   {/* Middle Ring */}
-                  <div className="absolute inset-2 rounded-full border-2 border-[#004296] animate-spin-reverse"></div>
+                  <div className="absolute inset-1 md:inset-2 rounded-full border-2 border-[#004296] animate-spin-reverse"></div>
                   
                   {/* Inner Ball */}
                   <motion.div 
-                    className="absolute inset-4 rounded-full bg-linear-to-br from-[#004296] to-[#0066cc] shadow-2xl flex items-center justify-center border-3 border-[#FBEFA4]"
+                    className="absolute inset-2 md:inset-4 rounded-full bg-gradient-to-br from-[#004296] to-[#0066cc] shadow-2xl flex items-center justify-center border-2 md:border-3 border-[#FBEFA4]"
                     animate={showBallAnimation ? {
                       boxShadow: [
                         "0 0 20px #FBEFA4",
@@ -246,7 +244,7 @@ const AnimatedTambolaCaller = () => {
                         initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
                         exit={{ scale: 0, rotate: 180 }}
-                        className="text-6xl md:text-7xl font-black text-[#FBEFA4]"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-[#FBEFA4]"
                       >
                         {currentNumber || '🎲'}
                       </motion.span>
@@ -281,8 +279,8 @@ const AnimatedTambolaCaller = () => {
                         transform: 'translate(-50%, -50%)'
                       }}
                     >
-                      <div className="w-16 h-16 bg-linear-to-br from-[#FBEFA4] to-[#FFE44D] rounded-full flex items-center justify-center shadow-2xl border-2 border-white">
-                        <span className="text-2xl font-black text-[#004296]">{flyingNumber}</span>
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#FBEFA4] to-[#FFE44D] rounded-full flex items-center justify-center shadow-2xl border-2 border-white">
+                        <span className="text-lg sm:text-xl md:text-2xl font-black text-[#004296]">{flyingNumber}</span>
                       </div>
                     </motion.div>
                   )}
@@ -290,14 +288,14 @@ const AnimatedTambolaCaller = () => {
               </div>
 
               {/* Machine Base */}
-              <div className="mt-4 p-4 bg-[#004296]/30 rounded-2xl border border-[#FBEFA4]/20">
+              <div className="mt-3 md:mt-4 p-3 md:p-4 bg-[#004296]/30 rounded-xl md:rounded-2xl border border-[#FBEFA4]/20">
                 <div className="flex items-center justify-between">
-                  <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                  <div className="flex gap-1.5 md:gap-2">
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500 animate-pulse"></div>
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-500 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                   </div>
-                  <p className="text-white/60 text-xs">
+                  <p className="text-white/60 text-xs md:text-sm">
                     {availableNumbers.length} balls remaining
                   </p>
                 </div>
@@ -305,19 +303,19 @@ const AnimatedTambolaCaller = () => {
             </div>
 
             {/* Controls */}
-            <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="mt-3 md:mt-4 grid grid-cols-3 gap-2">
               {!isPlaying ? (
                 <button
                   onClick={handleStart}
                   disabled={availableNumbers.length === 0}
-                  className="col-span-2 bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-bold shadow-lg disabled:opacity-50"
+                  className="col-span-2 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white py-2.5 md:py-3 px-4 rounded-lg md:rounded-xl font-bold text-sm md:text-base shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95"
                 >
                   ▶ START ROUND {round}
                 </button>
               ) : (
                 <button
                   onClick={handlePause}
-                  className="col-span-2 bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-xl font-bold shadow-lg"
+                  className="col-span-2 bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-700 text-white py-2.5 md:py-3 px-4 rounded-lg md:rounded-xl font-bold text-sm md:text-base shadow-lg transition-all transform hover:scale-105 active:scale-95"
                 >
                   ⏸ PAUSE
                 </button>
@@ -326,7 +324,7 @@ const AnimatedTambolaCaller = () => {
               <button
                 onClick={handleNext}
                 disabled={availableNumbers.length === 0}
-                className="bg-[#004296] hover:bg-[#0066cc] text-[#FBEFA4] py-3 rounded-xl font-bold border border-[#FBEFA4] disabled:opacity-50"
+                className="bg-[#004296] hover:bg-[#0066cc] active:bg-[#003380] text-[#FBEFA4] py-2.5 md:py-3 px-4 rounded-lg md:rounded-xl font-bold text-sm md:text-base border border-[#FBEFA4] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95"
               >
                 NEXT
               </button>
@@ -335,7 +333,7 @@ const AnimatedTambolaCaller = () => {
             <div className="mt-2 flex justify-center">
               <button
                 onClick={handleReset}
-                className="text-white/40 hover:text-white text-sm"
+                className="text-white/40 hover:text-white text-sm transition-colors"
               >
                 Reset Machine
               </button>
@@ -343,26 +341,26 @@ const AnimatedTambolaCaller = () => {
           </div>
 
           {/* Right Side - Number Board */}
-          <div className="lg:col-span-2">
-            <div className="bg-linear-to-br from-[#1a1a4e] to-[#0d0d2b] rounded-3xl p-4 md:p-6 border-2 border-[#FBEFA4]/30 shadow-2xl">
+          <div className="w-full lg:w-2/3">
+            <div className="bg-gradient-to-br from-[#1a1a4e] to-[#0d0d2b] rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border-2 border-[#FBEFA4]/30 shadow-2xl">
               
               {/* Board Header */}
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[#FBEFA4] text-lg font-bold">NUMBER BOARD • 1-90</h3>
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 md:mb-4">
+                <h3 className="text-[#FBEFA4] text-base md:text-lg font-bold">NUMBER BOARD • 1-90</h3>
+                <div className="flex items-center gap-3 md:gap-4">
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-[#004296] border border-[#FBEFA4]"></div>
-                    <span className="text-white/40 text-[10px]">Called</span>
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-[#004296] border border-[#FBEFA4]"></div>
+                    <span className="text-white/40 text-xs">Called</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-[#FBEFA4]"></div>
-                    <span className="text-white/40 text-[10px]">Current</span>
+                    <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-[#FBEFA4]"></div>
+                    <span className="text-white/40 text-xs">Current</span>
                   </div>
                 </div>
               </div>
 
               {/* Number Grid */}
-              <div ref={boardRef} className="grid grid-cols-10 gap-1 md:gap-2">
+              <div ref={boardRef} className="grid grid-cols-10 gap-0.5 sm:gap-1 md:gap-2">
                 {numbers.map((num) => {
                   const isCalled = calledNumbers.includes(num);
                   const isCurrent = currentNumber === num;
@@ -373,10 +371,10 @@ const AnimatedTambolaCaller = () => {
                       data-number={num}
                       className={`
                         aspect-square flex items-center justify-center 
-                        text-sm md:text-base font-bold
-                        rounded-lg transition-all cursor-default
+                        text-xs sm:text-sm md:text-base font-bold
+                        rounded-md md:rounded-lg transition-all cursor-default
                         ${isCurrent 
-                          ? 'bg-[#FBEFA4] text-[#004296] shadow-lg shadow-[#FBEFA4]/50 scale-110' 
+                          ? 'bg-[#FBEFA4] text-[#004296] shadow-lg shadow-[#FBEFA4]/50 scale-110 md:scale-110' 
                           : isCalled 
                             ? 'bg-[#004296] text-[#FBEFA4] border border-[#FBEFA4]/50' 
                             : 'bg-white/5 text-white/40 border border-white/10'
@@ -386,48 +384,50 @@ const AnimatedTambolaCaller = () => {
                         scale: [1, 1.1, 1],
                         transition: { duration: 0.3 }
                       } : {}}
+                      whileHover={{ scale: 1.05 }}
                     >
-                      {num}
+                      <span className="select-none">{num}</span>
                     </motion.div>
                   );
                 })}
               </div>
 
               {/* Stats Bar */}
-              <div className="mt-4 grid grid-cols-4 gap-2">
-                <div className="bg-white/5 rounded-lg p-2 text-center">
-                  <p className="text-white/40 text-[10px]">Called</p>
-                  <p className="text-[#FBEFA4] font-bold">{calledNumbers.length}</p>
+              <div className="mt-3 md:mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="bg-white/5 rounded-lg p-2 md:p-3 text-center">
+                  <p className="text-white/40 text-xs">Called</p>
+                  <p className="text-[#FBEFA4] font-bold text-sm md:text-base">{calledNumbers.length}</p>
                 </div>
-                <div className="bg-white/5 rounded-lg p-2 text-center">
-                  <p className="text-white/40 text-[10px]">Remaining</p>
-                  <p className="text-white font-bold">{availableNumbers.length}</p>
+                <div className="bg-white/5 rounded-lg p-2 md:p-3 text-center">
+                  <p className="text-white/40 text-xs">Remaining</p>
+                  <p className="text-white font-bold text-sm md:text-base">{availableNumbers.length}</p>
                 </div>
-                <div className="bg-white/5 rounded-lg p-2 text-center">
-                  <p className="text-white/40 text-[10px]">Round</p>
-                  <p className="text-[#FBEFA4] font-bold">{round}</p>
+                <div className="bg-white/5 rounded-lg p-2 md:p-3 text-center">
+                  <p className="text-white/40 text-xs">Round</p>
+                  <p className="text-[#FBEFA4] font-bold text-sm md:text-base">{round}</p>
                 </div>
-                <div className="bg-white/5 rounded-lg p-2 text-center">
-                  <p className="text-white/40 text-[10px]">Status</p>
-                  <p className={`font-bold ${isPlaying ? 'text-green-400' : 'text-yellow-400'}`}>
+                <div className="bg-white/5 rounded-lg p-2 md:p-3 text-center">
+                  <p className="text-white/40 text-xs">Status</p>
+                  <p className={`font-bold text-sm md:text-base ${isPlaying ? 'text-green-400' : 'text-yellow-400'}`}>
                     {isPlaying ? 'LIVE' : 'READY'}
                   </p>
                 </div>
               </div>
 
               {/* Recent Numbers */}
-              {calledNumbers.length > 0 && (
-                <div className="mt-4 p-3 bg-white/5 rounded-xl">
-                  <p className="text-white/40 text-[10px] mb-2">Recently Called</p>
-                  <div className="flex gap-2 overflow-x-auto">
+              {/* {calledNumbers.length > 0 && (
+                <div className="mt-3 md:mt-4 p-2 md:p-3 bg-white/5 rounded-lg md:rounded-xl">
+                  <p className="text-white/40 text-xs mb-2">Recently Called</p>
+                  <div className="flex gap-1.5 md:gap-2 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-[#FBEFA4]/50 scrollbar-track-transparent">
                     {calledNumbers.slice(-8).reverse().map((num, i) => (
                       <motion.div
                         key={i}
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className={`px-3 py-1.5 rounded-lg font-bold ${
+                        transition={{ delay: i * 0.05 }}
+                        className={`px-2.5 md:px-3 py-1 md:py-1.5 rounded-lg font-bold text-sm md:text-base whitespace-nowrap ${
                           i === 0 
-                            ? 'bg-[#FBEFA4] text-[#004296]' 
+                            ? 'bg-[#FBEFA4] text-[#004296] shadow-lg' 
                             : 'bg-white/10 text-white/70'
                         }`}
                       >
@@ -436,42 +436,71 @@ const AnimatedTambolaCaller = () => {
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
 
-        {/* Bottom Info Bar */}
-        <div className="mt-6 flex items-center justify-between text-white/40 text-xs">
-          <div className="flex items-center gap-4">
-            <span>🎮 ONLY BINGO</span>
-            <span>•</span>
-            <span>90 BALL BINGO</span>
-            <span>•</span>
-            <span>ROUND {round}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>🔴 LIVE</span>
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-          </div>
-        </div>
+      
       </div>
 
-      {/* CSS Animations */}
+      {/* Custom CSS for animations and scrollbar */}
       <style jsx>{`
         @keyframes spin-slow {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+        
         @keyframes spin-reverse {
           from { transform: rotate(360deg); }
           to { transform: rotate(0deg); }
         }
+        
         .animate-spin-slow {
           animation: spin-slow 8s linear infinite;
         }
+        
         .animate-spin-reverse {
           animation: spin-reverse 6s linear infinite;
+        }
+
+        /* Custom scrollbar for recent numbers */
+        .scrollbar-thin::-webkit-scrollbar {
+          height: 4px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+          background-color: rgba(251, 239, 164, 0.5);
+          border-radius: 20px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(251, 239, 164, 0.7);
+        }
+      `}</style>
+
+      {/* Responsive styles using Tailwind-style media queries */}
+      <style jsx>{`
+        @media (max-width: 640px) {
+          .game-container {
+            font-size: 14px;
+          }
+        }
+
+        @media (min-width: 641px) and (max-width: 1024px) {
+          .game-container {
+            font-size: 15px;
+          }
+        }
+
+        @media (min-width: 1025px) {
+          .game-container {
+            font-size: 16px;
+          }
         }
       `}</style>
     </div>
