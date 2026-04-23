@@ -35,7 +35,7 @@ const Settings = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <main className="flex-grow pt-24 md:pt-28 pb-12 px-4">
+      <main className="grow pt-24 md:pt-28 pb-12 px-4">
         <div className="max-w-2xl mx-auto">
           
           {/* Header */}

@@ -42,7 +42,7 @@ const WinnerList = () => {
                     name: "Jehrul",
                   })
                 }
-                className="bg-gradient-to-b from-[#FBEFA4] to-[#FFE44D] rounded-2xl p-4 shadow-lg text-center cursor-pointer hover:scale-105 transition border-2 border-white"
+                className="bg-linear-to-b from-[#FBEFA4] to-[#FFE44D] rounded-2xl p-4 shadow-lg text-center cursor-pointer hover:scale-105 transition border-2 border-white"
               >
                 <div className="bg-[#004296] text-[#FBEFA4] py-1 rounded-full mb-3 text-sm font-semibold">
                   {title}
@@ -59,7 +59,7 @@ const WinnerList = () => {
       {/* WINNER MODAL */}
       {selectedWinner && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-[#004296] to-[#002b66] rounded-3xl w-full max-w-3xl p-4 relative shadow-2xl border-2 border-[#FBEFA4]">
+          <div className="bg-linear-to-br from-[#004296] to-[#002b66] rounded-3xl w-full max-w-3xl p-4 relative shadow-2xl border-2 border-[#FBEFA4]">
             <button
               onClick={() => setSelectedWinner(null)}
               className="absolute top-3 right-3 bg-[#004296] text-[#FBEFA4] w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#003380] border border-[#FBEFA4]"

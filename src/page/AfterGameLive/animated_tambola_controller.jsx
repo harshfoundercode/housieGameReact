@@ -197,10 +197,10 @@ const AnimatedTambolaCaller = () => {
           
           {/* Left Side - Ball Machine */}
           <div className="w-full lg:w-1/3">
-            <div className="bg-gradient-to-br from-[#1a1a4e] to-[#0d0d2b] rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 border-[#FBEFA4]/30 shadow-2xl relative overflow-hidden">
+            <div className="bg-linear-to-br from-[#1a1a4e] to-[#0d0d2b] rounded-2xl md:rounded-3xl p-4 md:p-6 border-2 border-[#FBEFA4]/30 shadow-2xl relative overflow-hidden">
               
               {/* Machine Top */}
-              <div className="absolute top-0 left-0 right-0 h-16 md:h-20 bg-gradient-to-b from-[#004296]/50 to-transparent"></div>
+              <div className="absolute top-0 left-0 right-0 h-16 md:h-20 bg-linear-to-b from-[#004296]/50 to-transparent"></div>
               
               {/* Ball Display */}
               <div className="relative h-48 sm:h-56 md:h-64 flex items-center justify-center">
@@ -228,7 +228,7 @@ const AnimatedTambolaCaller = () => {
                   
                   {/* Inner Ball */}
                   <motion.div 
-                    className="absolute inset-2 md:inset-4 rounded-full bg-gradient-to-br from-[#004296] to-[#0066cc] shadow-2xl flex items-center justify-center border-2 md:border-3 border-[#FBEFA4]"
+                    className="absolute inset-2 md:inset-4 rounded-full bg-linear-to-br from-[#004296] to-[#0066cc] shadow-2xl flex items-center justify-center border-2 md:border-3 border-[#FBEFA4]"
                     animate={showBallAnimation ? {
                       boxShadow: [
                         "0 0 20px #FBEFA4",
@@ -279,7 +279,7 @@ const AnimatedTambolaCaller = () => {
                         transform: 'translate(-50%, -50%)'
                       }}
                     >
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-br from-[#FBEFA4] to-[#FFE44D] rounded-full flex items-center justify-center shadow-2xl border-2 border-white">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-linear-to-br from-[#FBEFA4] to-[#FFE44D] rounded-full flex items-center justify-center shadow-2xl border-2 border-white">
                         <span className="text-lg sm:text-xl md:text-2xl font-black text-[#004296]">{flyingNumber}</span>
                       </div>
                     </motion.div>
@@ -342,7 +342,7 @@ const AnimatedTambolaCaller = () => {
 
           {/* Right Side - Number Board */}
           <div className="w-full lg:w-2/3">
-            <div className="bg-gradient-to-br from-[#1a1a4e] to-[#0d0d2b] rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border-2 border-[#FBEFA4]/30 shadow-2xl">
+            <div className="bg-linear-to-br from-[#1a1a4e] to-[#0d0d2b] rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border-2 border-[#FBEFA4]/30 shadow-2xl">
               
               {/* Board Header */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 md:mb-4">

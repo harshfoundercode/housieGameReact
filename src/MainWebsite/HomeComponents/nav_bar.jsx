@@ -103,7 +103,7 @@ const Navbar = () => {
                             className="flex items-center gap-2 cursor-pointer group"
                         >
                             <div className="relative">
-                                <div className="relative w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-[#004296] to-[#0066cc] rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-all overflow-hidden">
+                                <div className="relative w-10 h-10 md:w-11 md:h-11 bg-linear-to-br from-[#004296] to-[#0066cc] rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-all overflow-hidden">
                                     <img
                                         src={logoImage}
                                         alt="Tambola"
@@ -162,7 +162,7 @@ const Navbar = () => {
                                     onClick={() => setIsDrawerOpen(true)}
                                     className="relative group"
                                 >
-                                    <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-[#004296] to-[#0066cc] rounded-full flex items-center justify-center shadow-md border-2 border-[#FBEFA4] overflow-hidden">
+                                    <div className="w-10 h-10 md:w-11 md:h-11 bg-linear-to-br from-[#004296] to-[#0066cc] rounded-full flex items-center justify-center shadow-md border-2 border-[#FBEFA4] overflow-hidden">
                                         <span className="text-white text-lg font-bold">
                                             {getUserInitial()}
                                         </span>

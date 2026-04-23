@@ -216,7 +216,7 @@ const TambolaCaller = () => {
           <div className="space-y-2">
             
             {/* Current Number */}
-            <div className="current-number-box bg-gradient-to-br from-[#FBEFA4] to-[#FFE44D] w-full aspect-square max-w-[160px] md:max-w-none mx-auto md:mx-0 rounded-xl flex items-center justify-center shadow-md border-2 border-white">
+            <div className="current-number-box bg-linear-to-br from-[#FBEFA4] to-[#FFE44D] w-full aspect-square max-w-40 md:max-w-none mx-auto md:mx-0 rounded-xl flex items-center justify-center shadow-md border-2 border-white">
               <span className="current-number-text font-black text-[#004296] text-4xl md:text-5xl">
                 {currentNumber || '--'}
               </span>
@@ -307,7 +307,7 @@ const TambolaCaller = () => {
             <p className="text-[#FBEFA4] text-[8px] md:text-[9px] font-medium mb-1 text-center">
               Board (1-90)
             </p>
-            <div className="board-grid grid grid-cols-10 gap-[1px] md:gap-[2px]">
+            <div className="board-grid grid grid-cols-10 gap-px md:gap-0.5">
               {numbers.map((num) => {
                 const isCalled = calledNumbers.includes(num);
                 const isCurrent = currentNumber === num;

@@ -320,7 +320,7 @@ const MyTickets = () => {
                     <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
 
                         {/* Modal Header */}
-                        <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-5 text-white rounded-t-2xl">
+                        <div className="sticky top-0 bg-linear-to-r from-[#004296] to-[#003380] p-5 text-white rounded-t-2xl">
                             <div className="flex justify-between items-center">
                                 <div>
                                     <h3 className="text-xl md:text-2xl font-bold">{selectedTicketDetail.tno}</h3>

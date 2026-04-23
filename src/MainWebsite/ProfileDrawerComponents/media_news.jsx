@@ -86,7 +86,7 @@ const NewsAndMedia = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
       
-      <main className="flex-grow pt-24 md:pt-28 pb-12 px-4">
+      <main className="grow pt-24 md:pt-28 pb-12 px-4">
         <div className="max-w-6xl mx-auto">
           
           {/* Header */}
@@ -138,7 +138,7 @@ const NewsAndMedia = () => {
                     </span>
                   </div>
                   
-                  <div className="p-5 flex flex-col flex-grow">
+                  <div className="p-5 flex flex-col grow">
                     <h3 className="font-bold text-gray-800 text-lg mb-2 line-clamp-2">
                       {article.title}
                     </h3>
