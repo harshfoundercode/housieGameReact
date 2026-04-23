@@ -30,11 +30,11 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
 
     const moreItems = [
         { icon: "✅", label: "My KYC", path: ROUTES.KYC },
-        { icon: "🌐", label: "Language", path: "/language" },
-        { icon: "⚙️", label: "Settings", path: "/settings" },
-        { icon: "📰", label: "News & Media", path: "/news" },
+        { icon: "🌐", label: "Language", path: ROUTES.LANG },
+        { icon: "⚙️", label: "Settings", path: ROUTES.SETTINGS},
+        { icon: "📰", label: "News & Media", path: ROUTES.MEDIA },
         { icon: "📊", label: "Ticket Results", path: "/ticket-results" },
-        { icon: "🏅", label: "Results", path: "/results" },
+        { icon: "🏅", label: "Results", path: ROUTES.AllResults},
     ];
 
     const getUserInitial = () => {

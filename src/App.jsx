@@ -16,6 +16,10 @@ import ReferralGuide from "./MainWebsite/HomeComponents/referal_guide";
 import MyTickets from "./MainWebsite/ProfileDrawerComponents/my_tickets";
 import Credits from "./MainWebsite/ProfileDrawerComponents/add_money";
 import KYC from "./MainWebsite/ProfileDrawerComponents/kyc";
+import Language from "./MainWebsite/ProfileDrawerComponents/language";
+import Settings from "./MainWebsite/ProfileDrawerComponents/setting";
+import NewsAndMedia from "./MainWebsite/ProfileDrawerComponents/media_news";
+import AllResults from "./MainWebsite/ProfileDrawerComponents/all_results";
 
 function App() {
   return (
@@ -27,6 +31,10 @@ function App() {
         <Route path={ROUTES.Credits} element={<Credits />} />
         <Route path={ROUTES.MyTickets} element={<MyTickets />} />
         <Route path={ROUTES.KYC} element={<KYC />} />
+        <Route path={ROUTES.LANG} element={<Language />} />
+        <Route path={ROUTES.SETTINGS} element={<Settings />} />
+        <Route path={ROUTES.MEDIA} element={<NewsAndMedia />} />
+        <Route path={ROUTES.AllResults} element={<AllResults />} />
 
         {/* Auth Routes */}
         <Route path={ROUTES.LOGIN} element={<Login />} />

@@ -5,6 +5,10 @@ export const ROUTES = {
     Credits:"/add_money",
     MyTickets:"/my_tickets",
     KYC:"/kyc",
+    LANG:"/language",
+    SETTINGS:"/setting",
+    MEDIA:"/media_news",
+    AllResults:"/all_results",
     
     // Auth Routes
     LOGIN: "/login",
