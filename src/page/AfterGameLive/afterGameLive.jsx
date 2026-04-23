@@ -2,10 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
 import logoImage from "../../assets/tambolaGame.jpeg";
-import TambolaCaller from "./tambola_board";
-import AnimatedTambolaCaller from "./animated_tambola_controller";
 import PlayerRanking from "./GameResultComponents/player_ranking";
 import WinnerList from "./GameResultComponents/winner_list";
+import AnimatedTambolaCaller from "./animated_tambola_controller";
 
 const AfterGameLive = () => {
   const navigate = useNavigate();
