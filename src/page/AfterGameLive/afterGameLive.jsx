@@ -5,6 +5,7 @@ import logoImage from "../../assets/tambolaGame.jpeg";
 import PlayerRanking from "./GameResultComponents/player_ranking";
 import WinnerList from "./GameResultComponents/winner_list";
 import AnimatedTambolaCaller from "./animated_tambola_controller";
+import TambolaLive from "./animated_tambola_controller";
 
 const AfterGameLive = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const AfterGameLive = () => {
 
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#0a0a2e] via-[#1a0a3e] to-[#0a0a2e] text-white p-4 md:p-6 relative">
+    <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white p-4 md:p-6 relative">
 
       {/* Animated background pattern */}
       <div className="absolute inset-0 opacity-10">
@@ -69,7 +70,8 @@ const AfterGameLive = () => {
         </div>
 
         {/* CONDITIONAL RENDERING */}
-        <AnimatedTambolaCaller />
+        <TambolaLive />
+        
 
         {/* PLAYER RANKING */}
         <PlayerRanking />

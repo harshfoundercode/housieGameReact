@@ -2040,7 +2040,7 @@ const GamePage = () => {
 
   return (
     <>
-      <div className={`min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative`}>
+      <div className={`min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative`}>
         {/* Animated background elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
