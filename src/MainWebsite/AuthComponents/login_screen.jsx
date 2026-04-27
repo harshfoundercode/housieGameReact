@@ -134,19 +134,16 @@ const handleVerifyOTP = () => {
                         </p>
                         
                         {/* Stats Cards */}
-                        <div className="grid grid-cols-3 gap-3 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-[#FBEFA4]/20">
+                        <div className="grid grid-cols-2 gap-1 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-[#FBEFA4]/20">
                             <div className="text-center">
                                 <p className="text-[#FBEFA4] text-xl xl:text-2xl font-bold">10K+</p>
                                 <p className="text-white/60 text-[10px] xl:text-xs">Winners</p>
                             </div>
-                            <div className="text-center border-x border-white/20">
+                            <div className="text-cente">
                                 <p className="text-[#FBEFA4] text-xl xl:text-2xl font-bold">₹1Cr+</p>
                                 <p className="text-white/60 text-[10px] xl:text-xs">Prizes</p>
                             </div>
-                            <div className="text-center">
-                                <p className="text-[#FBEFA4] text-xl xl:text-2xl font-bold">4.8★</p>
-                                <p className="text-white/60 text-[10px] xl:text-xs">Rating</p>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>

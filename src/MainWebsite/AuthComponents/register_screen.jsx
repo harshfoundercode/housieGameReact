@@ -174,21 +174,7 @@ const handleVerifyOTP = () => {
                             Create your account and start winning today!
                         </p>
                         
-                        {/* Benefits Cards */}
-                        <div className="grid grid-cols-1 gap-3 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-[#FBEFA4]/20">
-                            <div className="flex items-center gap-3 text-white/80">
-                                <span className="text-[#FBEFA4] text-xl">🎁</span>
-                                <span className="text-sm">Welcome bonus on first deposit</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-white/80">
-                                <span className="text-[#FBEFA4] text-xl">🎫</span>
-                                <span className="text-sm">Free ticket on registration</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-white/80">
-                                <span className="text-[#FBEFA4] text-xl">💰</span>
-                                <span className="text-sm">Instant withdrawals & 24/7 support</span>
-                            </div>
-                        </div>
+                      
 
                         {/* Step Indicator */}
                         <div className="mt-6 flex items-center justify-center gap-2">
