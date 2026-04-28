@@ -113,7 +113,7 @@ const Navbar = () => {
                             </div>
                             <div className="flex items-baseline">
                                 <h1 className="text-xl md:text-2xl font-bold text-[#004296]">
-                                    Tambola
+                                    Bingo Tambola Lucky Funda
                                 </h1>
                                 <span className="text-[#004296] text-lg md:text-xl font-bold ml-0.5">.</span>
                                 <span className="text-[#004296] text-lg md:text-xl font-bold">com</span>

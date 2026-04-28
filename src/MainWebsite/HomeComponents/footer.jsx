@@ -13,9 +13,7 @@ import FAQs from "../FooterComponents/faqs";
 const Footer = () => {
     const currentYear = new Date().getFullYear();
 
-    
-    
-    
+
     // Scroll to section function
     const scrollToSection = (sectionId) => {
         const element = document.getElementById(sectionId);
@@ -75,21 +73,14 @@ const Footer = () => {
                                 <img src={logoImage} alt="Tambola" className="w-full h-full object-cover rounded-xl" />
                             </div>
                             <h3 className="text-xl font-bold">
-                                <span className="text-[#FBEFA4]">Tambola</span>
+                                <span className="text-[#FBEFA4]">Bingo Tambola Lucky Funda</span>
                                 <span className="text-white">.com</span>
                             </h3>
                         </div>
                         <p className="text-white/60 text-sm mb-4">
                             India's most trusted online Tambola platform. Play, win, and celebrate with millions of players!
                         </p>
-                        {/* Social Icons */}
-                        <div className="flex gap-3 justify-center sm:justify-start">
-                            {["📘", "🐦", "📸", "▶️"].map((icon, i) => (
-                                <div key={i} className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm hover:bg-[#FBEFA4] hover:text-[#004296] transition-all cursor-pointer">
-                                    {icon}
-                                </div>
-                            ))}
-                        </div>
+                   
                     </div>
 
                     {/* Column 2 - Quick Links */}
