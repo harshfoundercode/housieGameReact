@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link, Routes } from "react-router-dom";
 import tambolaLogo from "../../assets/tambolaGame.jpeg";
 import { ROUTES } from "../../routes/routes";
+import { sendOTP, verifyOTP, registerUser } from "../../services/register_user";
+
 
 const Register = () => {
     const navigate = useNavigate();
@@ -24,6 +26,7 @@ const Register = () => {
     
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(""); // Success message ke liye naya state
     const [error, setError] = useState("");
 
     // Check if all checkboxes are checked
@@ -71,10 +74,11 @@ const Register = () => {
         }
         setError("");
         setStep(2);
+        console.log("Proceeding to name fields with phone:", formData.phone);
     };
 
     // Step 2 → Step 3: Validate name and send OTP
-    const handleSendOTP = () => {
+    const handleSendOTP = async () => {
         if (!formData.firstName || formData.firstName.trim() === "") {
             setError("Please enter your first name");
             return;
@@ -85,54 +89,97 @@ const Register = () => {
         }
 
         setLoading(true);
-        setTimeout(() => {
+        setError("");
+        setSuccessMessage("");
+         try {
+            // API call to send OTP
+            const response = await sendOTP(formData.phone);
+            console.log("OTP sent successfully:", response);
+            setSuccessMessage("OTP sent successfully to your phone number!");
             setStep(3);
+            
+        } catch (err) {
+            console.error("Error sending OTP:", err);
+            setError(err.message || "Failed to send OTP. Please try again.");
+        } finally {
             setLoading(false);
-            setError("");
-        }, 1000);
+        }
     };
 
-    // const handleVerifyOTP = () => {
-    //     if (!otp || otp.length < 4) {
-    //         setError("Please enter a valid OTP");
-    //         return;
-    //     }
-    //     setLoading(true);
-    //     setTimeout(() => {
-    //         alert(`Welcome ${formData.firstName}! Registration successful!`);
-    //         setLoading(false);
-    //         navigate("/");
-    //     }, 1500);
-    // };
-
+  
     // Register.jsx - Update handleVerifyOTP function
-const handleVerifyOTP = () => {
+    const handleVerifyOTP = async () => {
     if (!otp || otp.length < 4) {
         setError("Please enter a valid OTP");
         return;
     }
     setLoading(true);
-    setTimeout(() => {
-        // Set login token and user data
-        localStorage.setItem("token", "user-auth-token-123");
-        localStorage.setItem("user", JSON.stringify({
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone,
-        }));
-        localStorage.setItem("credits", "1500"); // Welcome bonus
-        
-        alert(`Welcome ${formData.firstName}! Registration successful!`);
-        setLoading(false);
-        navigate("/");
-        window.location.reload();
-    }, 1500);
-};
+    setError("");
+      try {
+            // Step 3a: OTP verify karo
+            const verifyResponse = await verifyOTP(formData.phone, otp);
+            console.log("OTP verified:", verifyResponse);
+
+            // Step 3b: OTP verify hone ke baad register karo
+            const registrationData = {
+                phone: formData.phone,
+                first_name: formData.firstName.trim(),
+                last_name: formData.lastName.trim(),
+                // referralCode: formData.referralCode || "", // Optional
+            };
+
+            const registerResponse = await registerUser(registrationData);
+            console.log("Registration successful:", registerResponse);
+
+            // Response se token aur user data lo
+            const { token, user } = registerResponse;
+
+            // Local storage mein data save karo
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(user));
+            
+            // Agar API se credits aaye to wo save karo, nahi to default
+            if (registerResponse.credits) {
+                localStorage.setItem("credits", registerResponse.credits.toString());
+            } else {
+                localStorage.setItem("credits", "1500"); // Default welcome bonus
+            }
+
+            // Success message
+            alert(`Welcome ${formData.firstName}! Registration successful!`);
+            navigate("/");
+            window.location.reload();
+            
+        } catch (err) {
+            console.error("Error during verification/registration:", err);
+            setError(err.message || "Verification failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+   
+ // Resend OTP
+    const handleResendOTP = async () => {
+        setLoading(true);
+        setError("");
+        setSuccessMessage("");
+
+        try {
+            const response = await sendOTP(formData.phone);
+            console.log("OTP resent:", response);
+            setSuccessMessage("OTP resent successfully!");
+        } catch (err) {
+            setError(err.message || "Failed to resend OTP");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Go back to previous step
     const handleBack = () => {
         setStep(step - 1);
         setError("");
+        setSuccessMessage("");
     };
 
     // Change phone number (from OTP screen)
@@ -140,6 +187,7 @@ const handleVerifyOTP = () => {
         setStep(1);
         setOtp("");
         setError("");
+         setSuccessMessage("");
     };
 
     return (
@@ -509,6 +557,7 @@ const handleVerifyOTP = () => {
             </div>
         </div>
     );
+
 };
 
 export default Register;

@@ -72,7 +72,6 @@ function BigBall({ number, animKey, size = 140 }) {
         transform: "rotate(-28deg)", filter: "blur(3px)",
       }} />
       <span style={{
-        // fontFamily: "'Orbitron', monospace",
         fontSize: number ? fontSize : fontSize * 0.55,
         fontWeight: 900,
         color: number ? "#fff" : "rgba(255,255,255,.2)",
@@ -103,12 +102,101 @@ function TrayBall({ number, size = 60 }) {
         transform: "rotate(-28deg)", filter: "blur(2px)",
       }} />
       <span style={{
-        // fontFamily: "'Orbitron', monospace",
         fontSize: size * 0.3, fontWeight: 700,
         color: "#fff", textShadow: "0 1px 4px rgba(0,0,0,.6)", zIndex: 1,
       }}>
         {number}
       </span>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   ENHANCED: Grid Ball with better sizing
+───────────────────────────────────────────── */
+function GridBall({ number, called, arriving, size = 40 }) {
+  const c = dc(number);
+  const fontSize = size * 0.38;
+  
+  return (
+    <div
+      style={{
+        width: size, 
+        height: size, 
+        borderRadius: "50%",
+        background: called 
+          ? ballBg(number)
+          : "radial-gradient(circle at 38% 28%, #3a3a5a, #1a1a3a)",
+        boxShadow: arriving 
+          ? `0 0 0 3px rgba(255,255,255,.2), 0 0 25px ${c.base}, 0 0 40px ${c.base}80, inset -4px -4px 14px rgba(0,0,0,.5), inset 3px 3px 10px rgba(255,255,255,.3)`
+          : called 
+            ? `0 0 0 2px rgba(255,255,255,.1), 0 3px 15px rgba(0,0,0,.4), 0 0 12px ${c.base}55, inset -3px -3px 12px rgba(0,0,0,.45), inset 2px 2px 8px rgba(255,255,255,.25)`
+            : "0 2px 8px rgba(0,0,0,.3), inset -2px -2px 8px rgba(0,0,0,.4), inset 1px 1px 5px rgba(255,255,255,.08)",
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        position: "relative",
+        transition: "all 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+        animation: arriving ? "cellArrive 0.6s cubic-bezier(.22,1.5,.36,1) forwards" : "none",
+        cursor: "default", 
+        userSelect: "none",
+        transform: called ? "scale(1.05)" : "scale(1)",
+        opacity: called ? 1 : 0.65,
+      }}
+    >
+      {/* Glossy highlight */}
+      {called && (
+        <div style={{
+          position: "absolute",
+          top: size * 0.13, 
+          left: size * 0.2,
+          width: size * 0.3, 
+          height: size * 0.16,
+          background: "rgba(255,255,255,.4)", 
+          borderRadius: "50%",
+          transform: "rotate(-28deg)", 
+          filter: "blur(2px)",
+        }} />
+      )}
+      
+      {/* Secondary highlight for extra gloss */}
+      {called && (
+        <div style={{
+          position: "absolute",
+          bottom: size * 0.2, 
+          right: size * 0.22,
+          width: size * 0.15, 
+          height: size * 0.08,
+          background: "rgba(255,255,255,.15)", 
+          borderRadius: "50%",
+          transform: "rotate(15deg)", 
+          filter: "blur(1px)",
+        }} />
+      )}
+      
+      {/* Number with shadow */}
+      <span style={{
+        fontSize: fontSize,
+        fontWeight: 800,
+        color: called ? "#fff" : "rgba(255,255,255,.35)",
+        textShadow: called ? "0 2px 4px rgba(0,0,0,.7), 0 0 10px rgba(255,255,255,.3)" : "0 1px 2px rgba(0,0,0,.4)",
+        zIndex: 1,
+        lineHeight: 1,
+        letterSpacing: "-0.5px",
+      }}>
+        {number}
+      </span>
+      
+      {/* Border ring for called balls */}
+      {called && !arriving && (
+        <div style={{
+          position: "absolute",
+          inset: -2,
+          borderRadius: "50%",
+          border: `1.5px solid ${c.light}30`,
+          pointerEvents: "none",
+        }} />
+      )}
     </div>
   );
 }
@@ -139,7 +227,6 @@ function FlyingBall({ from, to, number, size, targetSize, onDone }) {
       background: ballBg(number),
       display: "flex", alignItems: "center", justifyContent: "center",
       zIndex: 9999, pointerEvents: "none",
-      // fontFamily: "'Orbitron', monospace",
       fontSize: size * 0.32, fontWeight: 700,
       color: "#fff", textShadow: "0 1px 4px rgba(0,0,0,.6)",
     }}>
@@ -150,12 +237,6 @@ function FlyingBall({ from, to, number, size, targetSize, onDone }) {
 
 /* ─────────────────────────────────────────────
    MAIN COMPONENT
-   KEY DESIGN DECISIONS for embedded use:
-   1. Root = width:100% + overflow:hidden  (no 100vw)
-   2. Heights = auto / minHeight           (no 100vh)
-   3. Responsive via ResizeObserver on container (not window.innerWidth)
-   4. No position:fixed on layout elements (only FlyingBall uses it, harmless)
-   5. minWidth:0 on flex children to prevent overflow
 ───────────────────────────────────────────── */
 export default function TambolaLive() {
   const [bag, setBag] = useState(() => shuffle(Array.from({ length: 90 }, (_, i) => i + 1)));
@@ -170,7 +251,7 @@ export default function TambolaLive() {
   const [arrivingCell, setArrivingCell] = useState(null);
   const [done, setDone] = useState(false);
 
-  /* ── Container-aware responsive (NOT window width) ── */
+  /* ── Container-aware responsive ── */
   const containerRef = useRef(null);
   const [containerW, setContainerW] = useState(900);
 
@@ -186,12 +267,14 @@ export default function TambolaLive() {
   }, []);
 
   const isMobile  = containerW < 520;
-  const isNarrow  = containerW < 800;   // laptop ~768-800px range
+  const isNarrow  = containerW < 800;
 
   const bigBallSize  = isMobile ? 88  : isNarrow ? 108 : 140;
   const trayBallSize = isMobile ? 42  : isNarrow ? 50  : 60;
   const traySlotSize = isMobile ? 48  : isNarrow ? 56  : 68;
-  const leftPanelW   = isNarrow ? 190 : 400;
+  // ENHANCED: Bigger grid balls
+  const gridBallSize = isMobile ? 28  : isNarrow ? 38 : 46;
+  const leftPanelW   = isNarrow ? 180 : 380;
 
   /* ── refs ── */
   const bigBallRef = useRef(null);
@@ -257,7 +340,7 @@ export default function TambolaLive() {
     const fromPos = getCenter(slotEl);
     const toPos   = getCenter(cellEl);
     setTray(prev => { const t = [...prev]; t[slotIdx] = null; return t; });
-    setFly({ from: fromPos, to: toPos, number: n, size: trayBallSize, targetSize: 22, slotIdx: -1, boardTarget: n, onDone: onDoneCb });
+    setFly({ from: fromPos, to: toPos, number: n, size: trayBallSize, targetSize: gridBallSize, slotIdx: -1, boardTarget: n, onDone: onDoneCb });
   }
 
   function handleFlyDone() {
@@ -297,41 +380,38 @@ export default function TambolaLive() {
 
   const pct = Math.round((calledCount / 90) * 100);
 
-  /* ── Shared sub-components ── */
+  /* ── ENHANCED Board Grid with better spacing ── */
   const BoardGrid = () => (
     <div style={{
       display: "grid",
       gridTemplateColumns: "repeat(10, 1fr)",
-      gap: isMobile ? 2 : 4,
+      gap: isMobile ? 4 : isNarrow ? 6 : 8,
       width: "100%",
+      padding: isMobile ? "4px" : isNarrow ? "6px" : "8px",
     }}>
       {Array.from({ length: 90 }, (_, i) => {
         const n = i + 1;
         const called   = calledSet.has(n);
         const arriving = arrivingCell === n;
-        const c = dc(n);
+        
         return (
           <div
             key={n}
             ref={el => { cellRefs.current[n] = el; }}
             style={{
-              aspectRatio: "1",            
-              borderRadius: "100%",     
-              display: "flex", alignItems: "center", justifyContent: "center",
-              // fontFamily: "'Orbitron',monospace",
-              fontSize: isMobile ? 7 : isNarrow ? 9 : 15,
-              fontWeight: 700,
-              background: called ? c.base : "rgba(255,255,255,.055)",
-              color: called ? "#fff" : "rgba(255,255,255,.22)",
-              border: `1px solid ${called ? c.base : "rgba(255,255,255,.07)"}`,
-              boxShadow: arriving ? `0 0 10px ${c.base}, 0 0 20px ${c.base}66`
-                : called ? `0 0 4px ${c.base}55` : "none",
-              transition: "background .3s, color .3s, box-shadow .3s",
-              animation: arriving ? "cellArrive .55s cubic-bezier(.22,1.5,.36,1) forwards" : "none",
-              cursor: "default", userSelect: "none",
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              aspectRatio: "1",
+              padding: "2px",
             }}
           >
-            {n}
+            <GridBall 
+              number={n} 
+              called={called} 
+              arriving={arriving} 
+              size={gridBallSize} 
+            />
           </div>
         );
       })}
@@ -376,7 +456,6 @@ export default function TambolaLive() {
           border:"1px solid rgba(255,255,255,.09)",
         }}>
           <div style={{
-            //  fontFamily:"'Orbitron',monospace",
               fontSize: compact?15:19, fontWeight:700, color:s.color }}>{s.val}</div>
           <div style={{ fontSize:8, color:"rgba(255,255,255,.4)", letterSpacing:1 }}>{s.lbl}</div>
         </div>
@@ -415,9 +494,10 @@ export default function TambolaLive() {
           100% { transform: scale(1.7); opacity: 0; }
         }
         @keyframes cellArrive {
-          0%   { transform: scale(1.6); opacity: 0; }
-          55%  { transform: scale(0.9); }
-          100% { transform: scale(1); opacity: 1; }
+          0%   { transform: scale(0.3) rotate(-180deg); opacity: 0; }
+          60%  { transform: scale(1.15) rotate(8deg); }
+          80%  { transform: scale(0.95) rotate(-3deg); }
+          100% { transform: scale(1.05) rotate(0); opacity: 1; }
         }
         @keyframes shimmerText {
           0%   { background-position: -400px 0; }
@@ -435,6 +515,10 @@ export default function TambolaLive() {
           0%,100% { transform: scaleY(0.3); }
           50%     { transform: scaleY(1); }
         }
+        @keyframes gridGlow {
+          0%,100% { opacity: 0.5; }
+          50%     { opacity: 0.8; }
+        }
         .tl-shimmer {
           background: linear-gradient(90deg,#ffd700,#ff8c00,#ffe066,#ff8c00,#ffd700);
           background-size: 400px 100%;
@@ -445,12 +529,6 @@ export default function TambolaLive() {
         .tl-float { animation: floatBall 3s ease-in-out infinite; }
       `}</style>
 
-      {/*
-        ROOT WRAPPER RULES:
-        - width: 100%  → fits parent, never causes horiz scroll
-        - overflow: hidden  → clips decorative glow orbs
-        - NO 100vw, NO 100vh, NO position:fixed on this element
-      */}
       <div
         ref={containerRef}
         style={{
@@ -458,24 +536,21 @@ export default function TambolaLive() {
           overflow: "hidden",
           borderRadius: 14,
           background: "radial-gradient(ellipse at 85% 90%, rgba(0, 43, 102, 1) 0%, transparent 60%),radial-gradient(ellipse at 18% 12%, rgba(0, 66, 150, 1) 0%, rgba(0, 20, 51, 1) 55%)",
-
-          // background: "radial-gradient(ellipse at 18% 12%, #1a0540 0%, #080818 55%), radial-gradient(ellipse at 85% 90%, #001a28 0%, transparent 60%)",
-          // fontFamily: "'Baloo 2', cursive",
           color: "#fff",
           position: "relative",
         }}
       >
-        {/* decorative grid — contained by overflow:hidden */}
+        {/* decorative grid */}
         <div style={{
           position:"absolute", inset:0, pointerEvents:"none",
           backgroundImage:"linear-gradient(rgba(0,180,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,180,255,.03) 1px,transparent 1px)",
           backgroundSize:"36px 36px",
         }} />
-        {/* glow orbs — % sizing so they never exceed container */}
+        {/* glow orbs */}
         <div style={{ position:"absolute", top:"-12%", left:"-6%", width:"38%", paddingBottom:"38%", borderRadius:"50%", background:"radial-gradient(circle,rgba(120,40,255,.16) 0%,transparent 70%)", pointerEvents:"none" }} />
         <div style={{ position:"absolute", bottom:"-12%", right:"-6%", width:"34%", paddingBottom:"34%", borderRadius:"50%", background:"radial-gradient(circle,rgba(0,180,120,.12) 0%,transparent 70%)", pointerEvents:"none" }} />
 
-        {/* FlyingBall: position:fixed, does NOT cause layout overflow */}
+        {/* FlyingBall */}
         {fly && (
           <FlyingBall
             from={fly.from} to={fly.to} number={fly.number}
@@ -490,7 +565,6 @@ export default function TambolaLive() {
             {/* top bar */}
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8 }}>
               <h1 className="tl-shimmer" style={{ 
-                // fontFamily:"'Orbitron',monospace",
                  fontSize:10, fontWeight:900, letterSpacing:2, flexShrink:0 }}>
                 🎱 TAMBOLA
               </h1>
@@ -512,10 +586,7 @@ export default function TambolaLive() {
               </div>
               <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
                 {bigNum
-                  ? <div style={{ 
-                    // fontFamily:"'Orbitron',monospace", 
-                    
-                    fontSize:22, fontWeight:900, color:"#ffd700", lineHeight:1 }}>{bigNum}</div>
+                  ? <div style={{ fontSize:22, fontWeight:900, color:"#ffd700", lineHeight:1 }}>{bigNum}</div>
                   : <div style={{ fontSize:9, color:"rgba(255,255,255,.3)" }}>{done?"Done!":"Drawing…"}</div>
                 }
                 <TraySlots vertical />
@@ -529,29 +600,29 @@ export default function TambolaLive() {
 
         {/* ══ DESKTOP / TABLET LAYOUT ══ */}
         {!isMobile && (
-          <div style={{ display:"flex", alignItems:"stretch", position:"relative", zIndex:1, minHeight:440 }}>
+          <div style={{ display:"flex", alignItems:"stretch", position:"relative", zIndex:1, minHeight:500 }}>
 
-            {/* LEFT PANEL */}
+            {/* LEFT PANEL - Made slightly narrower to give more space to grid */}
             <div style={{
               flexShrink: 0,
               width: leftPanelW,
               display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center",
-              gap: isNarrow ? 16 : 22,
-              padding: isNarrow ? "16px 10px" : "20px 14px",
+              gap: isNarrow ? 14 : 20,
+              padding: isNarrow ? "16px 8px" : "20px 12px",
               borderRight: "1px solid rgba(255,255,255,.06)",
+              background: "rgba(0,0,0,.15)",
             }}>
               <div style={{ textAlign:"center" }}>
                 <h1 className="tl-shimmer" style={{ 
-                  // fontFamily:"'Orbitron',monospace", 
-                  fontSize: isNarrow?12:15, fontWeight:900, letterSpacing:2 }}>
+                  fontSize: isNarrow?11:14, fontWeight:900, letterSpacing:2 }}>
                   🎱 TAMBOLA LIVE
                 </h1>
-                <p style={{ fontSize:8, color:"rgba(0,200,255,.5)", letterSpacing:2, marginTop:2 }}>90 BALL · AUTO DRAW</p>
+                <p style={{ fontSize:7, color:"rgba(0,200,255,.5)", letterSpacing:2, marginTop:2 }}>90 BALL · AUTO DRAW</p>
               </div>
 
               {/* Big ball + number */}
-              <div style={{ position:"relative", display:"flex", flexDirection:"column", alignItems:"center", gap:10 }}>
+              <div style={{ position:"relative", display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
                 {showPulse && bigNum && (
                   <>
                     <div style={{ position:"absolute", width:bigBallSize, height:bigBallSize, borderRadius:"50%", border:`3px solid ${dc(bigNum).base}`, animation:"pulseRing 1.3s ease-out infinite", top:0, left:0 }} />
@@ -564,11 +635,6 @@ export default function TambolaLive() {
                 <div style={{ textAlign:"center", minHeight:40, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center" }}>
                   {bigNum ? (
                     <>
-                      {/* <div style={{ 
-                        // fontFamily:"'Orbitron',monospace",
-                         fontSize: isNarrow?26:34, fontWeight:900, color:"#ffd700", textShadow:"0 0 18px rgba(255,215,0,.7)", lineHeight:1 }}>
-                        {bigNum}
-                      </div> */}
                       <div style={{ display:"flex", gap:2, alignItems:"flex-end", marginTop:4, height:12 }}>
                         {[1,2,3,4,3,2,1].map((h,idx) => (
                           <div key={idx} style={{ width:2, height:h*3, background:"rgba(0,200,255,.6)", borderRadius:1, animation:`soundBar 0.6s ease-in-out ${idx*0.08}s infinite`, transformOrigin:"bottom" }} />
@@ -586,30 +652,102 @@ export default function TambolaLive() {
               <ProgressBar />
             </div>
 
-            {/* RIGHT PANEL — minWidth:0 is CRITICAL to prevent flex overflow */}
+            {/* RIGHT PANEL - ENHANCED with better styling */}
             <div style={{
               flex: 1,
               minWidth: 0,
               display: "flex", flexDirection: "column",
-              padding: isNarrow ? "12px 10px 12px 8px" : "16px 16px 12px 10px",
-              gap: 8,
+              padding: isNarrow ? "16px 12px 16px 10px" : "20px 20px 16px 14px",
+              gap: 10,
+              background: "rgba(0,0,20,.2)",
             }}>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                <h2 style={{
-                  //  fontFamily:"'Orbitron',monospace",
-                    fontSize: isNarrow?9:11, fontWeight:900, letterSpacing:2, color:"rgba(0,200,255,.7)" }}>
-                  FULL BOARD 1–90
-                </h2>
-                <span style={{ fontSize:9, color:"rgba(255,255,255,.35)", letterSpacing:1 }}>{pct}% complete</span>
+              {/* Header with decorative elements */}
+              <div style={{ 
+                display:"flex", 
+                alignItems:"center", 
+                justifyContent:"space-between",
+                padding: "0 4px",
+              }}>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{
+                    width: 3,
+                    height: 16,
+                    background: "linear-gradient(180deg, #ffd700, #ff4500)",
+                    borderRadius: 2,
+                  }} />
+                  <h2 style={{
+                    fontSize: isNarrow?10:13, 
+                    fontWeight:900, 
+                    letterSpacing:2, 
+                    color:"rgba(0,200,255,.8)",
+                    textTransform: "uppercase",
+                  }}>
+                    Full Board 1–90
+                  </h2>
+                </div>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "rgba(255,255,255,.05)",
+                  padding: "4px 10px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,255,255,.08)",
+                }}>
+                  <div style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: pct === 100 ? "#00ff88" : "#ffd700",
+                    boxShadow: pct === 100 ? "0 0 8px #00ff88" : "0 0 8px #ffd700",
+                  }} />
+                  <span style={{ fontSize:9, color:"rgba(255,255,255,.5)", fontWeight:700 }}>
+                    {pct}%
+                  </span>
+                </div>
               </div>
 
-              <div style={{ flex:1 }}><BoardGrid /></div>
+              {/* Grid with enhanced background */}
+              <div style={{ 
+                flex:1,
+                background: "rgba(0,0,0,.25)",
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,.05)",
+                overflow: "auto",
+                display: "flex",
+                alignItems: "center",
+              }}>
+                <BoardGrid />
+              </div>
 
-              <div style={{ display:"flex", flexWrap:"wrap", gap:5, justifyContent:"center" }}>
+              {/* Enhanced Legend */}
+              <div style={{ 
+                display:"flex", 
+                flexWrap:"wrap", 
+                gap:6, 
+                justifyContent:"center",
+                padding: "6px 0",
+              }}>
                 {DECADE_COLORS.map((d,i) => (
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:3 }}>
-                    <div style={{ width:7, height:7, borderRadius:"50%", background:d.base }} />
-                    <span style={{ fontSize:7, color:"rgba(255,255,255,.3)" }}>{i*10+1}–{(i+1)*10}</span>
+                  <div key={i} style={{ 
+                    display:"flex", 
+                    alignItems:"center", 
+                    gap:4,
+                    background: "rgba(255,255,255,.03)",
+                    padding: "3px 7px",
+                    borderRadius: 10,
+                    border: "1px solid rgba(255,255,255,.04)",
+                  }}>
+                    <div style={{ 
+                      width:10, 
+                      height:10, 
+                      borderRadius:"50%", 
+                      background: `radial-gradient(circle at 35% 25%, ${d.light}, ${d.base} 60%, ${d.shadow})`,
+                      boxShadow: `inset -1px -1px 3px rgba(0,0,0,.5), 0 0 8px ${d.base}44`
+                    }} />
+                    <span style={{ fontSize:7, color:"rgba(255,255,255,.4)", fontWeight:600 }}>
+                      {i*10+1}–{(i+1)*10}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -626,7 +764,6 @@ export default function TambolaLive() {
             alignItems:"center", justifyContent:"center", gap:12,
           }}>
             <div style={{
-              // fontFamily:"'Orbitron',monospace", 
               fontSize: isMobile?22:30, fontWeight:900,
               color:"#ffd700", textShadow:"0 0 28px rgba(255,215,0,.8)",
               textAlign:"center", animation:"donePulse 1.5s ease-in-out infinite",
@@ -636,7 +773,6 @@ export default function TambolaLive() {
               onClick={() => window.location.reload()}
               style={{
                 marginTop:8, padding:"8px 24px",
-                // fontFamily:"'Orbitron',monospace",
                  fontSize:11, fontWeight:700,
                 background:"linear-gradient(135deg,#ffd700,#ff8c00)",
                 color:"#1a0a2e", border:"none", borderRadius:10, cursor:"pointer",
@@ -648,4 +784,4 @@ export default function TambolaLive() {
       </div>
     </>
   );
-}
+} 
