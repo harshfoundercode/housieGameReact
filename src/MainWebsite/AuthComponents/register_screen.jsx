@@ -137,13 +137,6 @@ const Register = () => {
             // Local storage mein data save karo
             localStorage.setItem("token", token);
             localStorage.setItem("user", JSON.stringify(user));
-            
-            // Agar API se credits aaye to wo save karo, nahi to default
-            if (registerResponse.credits) {
-                localStorage.setItem("credits", registerResponse.credits.toString());
-            } else {
-                localStorage.setItem("credits", "1500"); // Default welcome bonus
-            }
 
             // Success message
             alert(`Welcome ${formData.firstName}! Registration successful!`);

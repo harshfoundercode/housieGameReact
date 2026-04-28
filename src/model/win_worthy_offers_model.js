@@ -1,6 +1,3 @@
-/**
- * Offer Model - Individual offer ka data structure
- */
 class OfferModel {
   constructor(data = {}) {
     this.id = data.id || null;
@@ -8,7 +5,24 @@ class OfferModel {
     this.createdAt = data.created_at || null;
   }
 
-  // ✅ Check if offer has valid image
+  // ✅ Convert to plain object for component use
+  toJSON() {
+    return {
+      id: this.id,
+      image: this.imageUrl, 
+      createdAt: this.createdAt,
+    };
+  }
+
+  static fromAPIResponse(response) {
+    if (!response || !response.success || !Array.isArray(response.data)) {
+      return [];
+    }
+    return response.data.map(item => new OfferModel(item));
+    
+  }
+
+   // ✅ Check if offer has valid image
   hasValidImage() {
     return this.imageUrl && this.imageUrl.length > 0;
   }
@@ -21,30 +35,6 @@ class OfferModel {
       month: 'short',
       day: 'numeric'
     });
-  }
-
-  // ✅ Convert to plain object for component use
-  toJSON() {
-    return {
-      id: this.id,
-      image: this.imageUrl,  // Component mein 'image' key use ho rahi hai
-      createdAt: this.createdAt,
-    };
-  }
-
-  // ✅ Static: Create single offer from API data
-  static fromJSON(data) {
-    return new OfferModel(data);
-  }
-
-  // ✅ Static: Create list of offers from API response
-  static fromAPIResponse(response) {
-    if (!response || !response.success || !Array.isArray(response.data)) {
-      return [];
-    }
-    
-    // Har object ko OfferModel mein convert karo
-    return response.data.map(item => new OfferModel(item));
   }
 }
 

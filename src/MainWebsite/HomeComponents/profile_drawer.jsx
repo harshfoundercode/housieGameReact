@@ -6,7 +6,11 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
 
     // Get user data from localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    const storedUser = localStorage.getItem("user");
+const userData = storedUser && storedUser !== "undefined" 
+    ? JSON.parse(storedUser) 
+    : null;
+    
     const credits = localStorage.getItem("credits") || "1250";
 
     const handleLogout = () => {
@@ -38,12 +42,14 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     ];
 
     const getUserInitial = () => {
+        if (!userData) return "U"; // null/undefined check
         if (userData?.name) return userData.name.charAt(0).toUpperCase();
         if (userData?.firstName) return userData.firstName.charAt(0).toUpperCase();
         return "U";
     };
 
     const getUserDisplayName = () => {
+        if (!userData) return "User";
         if (userData?.name) return userData.name;
         if (userData?.firstName && userData?.lastName)
             return `${userData.firstName} ${userData.lastName}`;
