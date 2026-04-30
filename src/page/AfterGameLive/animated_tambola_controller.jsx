@@ -122,15 +122,15 @@ function BigBall({ number, animKey, size = 148 }) {
     <div
       key={`wrapper-${animKey}`}
       style={{
-        animation: number ? "tl-ballReveal 1.5s ease-in-out forwards" : "none",
+animation: number ? "tl-ballReveal 1.5s cubic-bezier(0.42, 0.0, 0.58, 1.0) forwards" : "none",
         willChange: "transform",
         width: size,
         height: size,
       }}
     >
       <div style={{
-        width: size,
-        height: size,
+        width: size, 
+        height: size, 
         borderRadius: "50%",
         background: number
           ? ballGradient(number)
@@ -139,24 +139,18 @@ function BigBall({ number, animKey, size = 148 }) {
           ? ballBoxShadow(number, "big")
           : `inset -8px -8px 22px rgba(0,0,0,0.6),
              inset 6px 6px 16px rgba(255,255,255,0.04)`,
-        display: "flex",
-        alignItems: "center",
+        display: "flex", 
+        alignItems: "center", 
         justifyContent: "center",
-        position: "relative",
+        position: "relative", 
         flexShrink: 0,
       }}>
-        <div style={{
-          position: "absolute", top: size * 0.10, left: size * 0.18, width: size * 0.32, height: size * 0.18,
-          background: "rgba(255,255,255,0.30)", borderRadius: "50%", transform: "rotate(-30deg)", filter: `blur(${size < 100 ? 2 : 4}px)`
-        }} />
-        <div style={{
-          position: "absolute", top: size * 0.14, left: size * 0.22, width: size * 0.20, height: size * 0.10,
-          background: "rgba(255,255,255,0.50)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(2px)"
-        }} />
-        <div style={{
-          position: "absolute", bottom: size * 0.14, right: size * 0.18, width: size * 0.18, height: size * 0.08,
-          background: "rgba(255,255,255,0.10)", borderRadius: "50%", transform: "rotate(20deg)", filter: "blur(3px)"
-        }} />
+        <div style={{ position:"absolute", top:size*0.10, left:size*0.18, width:size*0.32, height:size*0.18,
+          background:"rgba(255,255,255,0.30)", borderRadius:"50%", transform:"rotate(-30deg)", filter:`blur(${size<100?2:4}px)` }} />
+        <div style={{ position:"absolute", top:size*0.14, left:size*0.22, width:size*0.20, height:size*0.10,
+          background:"rgba(255,255,255,0.50)", borderRadius:"50%", transform:"rotate(-30deg)", filter:"blur(2px)" }} />
+        <div style={{ position:"absolute", bottom:size*0.14, right:size*0.18, width:size*0.18, height:size*0.08,
+          background:"rgba(255,255,255,0.10)", borderRadius:"50%", transform:"rotate(20deg)", filter:"blur(3px)" }} />
         <span style={{
           fontSize: number ? fontSize : fontSize * 0.35,
           fontWeight: 900, fontFamily: "'Cinzel', serif",
@@ -601,18 +595,20 @@ export default function TambolaLive() {
         //     0%   {  transform: rotate(0deg); opacity: 0;  }
         //     100% {   transform: rotate(360deg);  opacity: 1;  }
         // }
-        @keyframes tl-ballReveal {
+      @keyframes tl-ballReveal {
   0% { 
-    transform: rotate(0deg) scale(0.3);
-    opacity: 0; 
+    transform: rotate(0deg) scale(0.2);
+    opacity: 0;
+    animation-timing-function: ease-in;
   }
-  40% { 
-    transform: rotate(180deg) scale(0.3);
-    opacity: 0.7; 
+  50% { 
+    transform: rotate(360deg) scale(0.6);
+    opacity: 0.8;
+    animation-timing-function: ease-out;
   }
   100% { 
-    transform: rotate(180deg) scale(1);
-    opacity: 1; 
+    transform: rotate(360deg) scale(1);
+    opacity: 1;
   }
 }
         @keyframes tl-traySettle {
