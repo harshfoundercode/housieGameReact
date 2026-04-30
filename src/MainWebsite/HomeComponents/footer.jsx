@@ -37,7 +37,7 @@ const Footer = () => {
     const policyLinks = [
         { name: "Rules & Regulations", path: ROUTES.RULES },
         { name: "Terms & Conditions", path: ROUTES.RULES },
-        { name: "Cancellation & Refund", path: ROUTES.CANCELATIONREFUNDPOLICY },
+        // { name: "Cancellation & Refund", path: ROUTES.CANCELATIONREFUNDPOLICY },
         { name: "Privacy Policy", path: ROUTES.PRIVACYPOLICY },
         { name: "FAQs", path: ROUTES.FAQS },
     ];

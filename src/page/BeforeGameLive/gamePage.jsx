@@ -2175,7 +2175,6 @@ const GamePage = () => {
                             <div className="booked-info bg-[#FBEFA4]/10 text-gray-800 rounded-xl md:rounded-2xl p-2 sm:p-3 mb-2 md:mb-3 text-xs sm:text-sm shadow border border-[#FBEFA4]/30">
                               <p className="truncate"><b className="text-[#004296]">Booked By:</b> {ticket.name}</p>
                               <p><b className="text-[#004296]">Agent Name:</b> -</p>
-                              <p><b className="text-[#004296]">Won last Time?:</b> <span className="text-green-600 font-bold">{ticket.win}</span></p>
                             </div>
 
                             <div className="bg-gray-50 p-1 sm:p-2 rounded-xl md:rounded-2xl shadow-inner border border-gray-200">
@@ -2607,7 +2606,7 @@ const GamePage = () => {
                                 disabled={!agent.available}
                                 className={`flex-1 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 ${
                                   agent.available
-                                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700'
+                                    ? 'bg-linear-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700'
                                     : 'bg-gray-500/50 text-gray-300 cursor-not-allowed'
                                 }`}
                               >
@@ -2639,10 +2638,10 @@ const GamePage = () => {
                       ← Back to all agents
                     </button>
 
-                    <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+                    <div className="bg-linear-to-br from-white/10 to-white/5 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
                       <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                         <div className="relative">
-                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-4xl sm:text-5xl border-3 border-[#FBEFA4]">
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-linear-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-4xl sm:text-5xl border-3 border-[#FBEFA4]">
                             {selectedAgent.avatar}
                           </div>
                           <div className={`absolute -bottom-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 border-white ${selectedAgent.available ? 'bg-green-500' : 'bg-gray-500'}`}></div>
@@ -2705,7 +2704,7 @@ const GamePage = () => {
                 )}
               </div>
 
-              <div className="sticky bottom-0 bg-gradient-to-r from-[#004296] to-[#003380] p-3 sm:p-4 border-t border-[#FBEFA4]/30">
+              <div className="sticky bottom-0 bg-linear-to-r from-[#004296] to-[#003380] p-3 sm:p-4 border-t border-[#FBEFA4]/30">
                 <p className="text-center text-white/50 text-xs sm:text-sm">
                   All agents are verified and experienced in Tambola games.
                   Your privacy is protected.
@@ -2718,9 +2717,9 @@ const GamePage = () => {
         {/* ENHANCED BOOKING MODAL */}
         {showBookingModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
-            <div className="booking-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
+            <div className="booking-modal bg-linear-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
               {/* Modal Header with Progress Bar */}
-              <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
+              <div className="sticky top-0 bg-linear-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
                 <div className="flex justify-between items-center mb-3 sm:mb-4">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FBEFA4]">Book Your Tickets</h2>

@@ -8,15 +8,15 @@ import { useState, useEffect, useRef, useCallback } from "react";
    #FBEFA4  gold highlight
 ───────────────────────────────────────────── */
 const DECADE_COLORS = [
-  { base:"#004296", light:"#1a6fd8", mid:"#002b66", glow:"rgba(0,66,150,0.55)"  },  // 1-10  navy
-  { base:"#005f8a", light:"#0090cc", mid:"#003a55", glow:"rgba(0,95,138,0.50)"  },  // 11-20
-  { base:"#1a5276", light:"#2e86c1", mid:"#0f2e45", glow:"rgba(26,82,118,0.50)" },  // 21-30
-  { base:"#1a7a6a", light:"#1abc9c", mid:"#0d4d42", glow:"rgba(26,122,106,0.50)"},  // 31-40
-  { base:"#b8860b", light:"#FBEFA4", mid:"#7a5a05", glow:"rgba(251,239,164,0.50)"},  // 41-50 gold
-  { base:"#c9a227", light:"#ffe066", mid:"#8a6d10", glow:"rgba(201,162,39,0.50)" },  // 51-60
-  { base:"#a07620", light:"#d4a017", mid:"#6b4f10", glow:"rgba(160,118,32,0.50)" },  // 61-70
-  { base:"#7d5a0b", light:"#b8860b", mid:"#4d3608", glow:"rgba(125,90,11,0.45)"  },  // 71-80
-  { base:"#3a3a8c", light:"#6666cc", mid:"#1e1e5a", glow:"rgba(58,58,140,0.50)"  },  // 81-90
+  { base: "#004296", light: "#1a6fd8", mid: "#002b66", glow: "rgba(0,66,150,0.55)" },  // 1-10  navy
+  { base: "#005f8a", light: "#0090cc", mid: "#003a55", glow: "rgba(0,95,138,0.50)" },  // 11-20
+  { base: "#1a5276", light: "#2e86c1", mid: "#0f2e45", glow: "rgba(26,82,118,0.50)" },  // 21-30
+  { base: "#1a7a6a", light: "#1abc9c", mid: "#0d4d42", glow: "rgba(26,122,106,0.50)" },  // 31-40
+  { base: "#b8860b", light: "#FBEFA4", mid: "#7a5a05", glow: "rgba(251,239,164,0.50)" },  // 41-50 gold
+  { base: "#c9a227", light: "#ffe066", mid: "#8a6d10", glow: "rgba(201,162,39,0.50)" },  // 51-60
+  { base: "#a07620", light: "#d4a017", mid: "#6b4f10", glow: "rgba(160,118,32,0.50)" },  // 61-70
+  { base: "#7d5a0b", light: "#b8860b", mid: "#4d3608", glow: "rgba(125,90,11,0.45)" },  // 71-80
+  { base: "#3a3a8c", light: "#6666cc", mid: "#1e1e5a", glow: "rgba(58,58,140,0.50)" },  // 81-90
 ];
 
 function dc(n) { return DECADE_COLORS[Math.min(Math.floor((n - 1) / 10), 8)]; }
@@ -70,8 +70,8 @@ function playNumberSound(n) {
   try {
     const audio = new Audio(`/sounds/${n}.mp3`);
     audio.volume = 0.85;
-    audio.play().catch(() => {});
-  } catch (e) {}
+    audio.play().catch(() => { });
+  } catch (e) { }
 }
 
 /* ─────────────────────────────────────────────
@@ -81,12 +81,12 @@ function Particles({ active, color, size }) {
   if (!active) return null;
   const particles = Array.from({ length: 14 }, (_, i) => {
     const angle = (i / 14) * 360;
-    const dist  = size * 0.65 + Math.random() * size * 0.45;
+    const dist = size * 0.65 + Math.random() * size * 0.45;
     const delay = Math.random() * 0.3;
-    const dur   = 1.2 + Math.random() * 0.7;
-    const px    = Math.cos((angle * Math.PI) / 180) * dist;
-    const py    = Math.sin((angle * Math.PI) / 180) * dist;
-    const s     = 2 + Math.random() * 3;
+    const dur = 1.2 + Math.random() * 0.7;
+    const px = Math.cos((angle * Math.PI) / 180) * dist;
+    const py = Math.sin((angle * Math.PI) / 180) * dist;
+    const s = 2 + Math.random() * 3;
     return { px, py, delay, dur, s };
   });
   return (
@@ -120,9 +120,18 @@ function BigBall({ number, animKey, size = 148 }) {
   const c = number ? dc(number) : null;
   return (
     <div
-      key={animKey}
+      key={`wrapper-${animKey}`}
       style={{
-        width: size, height: size, borderRadius: "50%",
+        animation: number ? "tl-ballReveal 1.5s ease-in-out forwards" : "none",
+        willChange: "transform",
+        width: size,
+        height: size,
+      }}
+    >
+      <div style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
         background: number
           ? ballGradient(number)
           : "radial-gradient(circle at 35% 25%, #1e2a4a, #001433)",
@@ -130,28 +139,35 @@ function BigBall({ number, animKey, size = 148 }) {
           ? ballBoxShadow(number, "big")
           : `inset -8px -8px 22px rgba(0,0,0,0.6),
              inset 6px 6px 16px rgba(255,255,255,0.04)`,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        position: "relative", flexShrink: 0,
-        animation: number ? "tl-ballReveal 0.9s cubic-bezier(0.16,1.4,0.3,1) forwards" : "none",
-        willChange: "transform",
-      }}
-    >
-      <div style={{ position:"absolute", top:size*0.10, left:size*0.18, width:size*0.32, height:size*0.18,
-        background:"rgba(255,255,255,0.30)", borderRadius:"50%", transform:"rotate(-30deg)", filter:`blur(${size<100?2:4}px)` }} />
-      <div style={{ position:"absolute", top:size*0.14, left:size*0.22, width:size*0.20, height:size*0.10,
-        background:"rgba(255,255,255,0.50)", borderRadius:"50%", transform:"rotate(-30deg)", filter:"blur(2px)" }} />
-      <div style={{ position:"absolute", bottom:size*0.14, right:size*0.18, width:size*0.18, height:size*0.08,
-        background:"rgba(255,255,255,0.10)", borderRadius:"50%", transform:"rotate(20deg)", filter:"blur(3px)" }} />
-      <span style={{
-        fontSize: number ? fontSize : fontSize * 0.35,
-        fontWeight: 900, fontFamily: "'Cinzel', serif",
-        color: number ? "#fff" : "rgba(255,255,255,0.07)",
-        textShadow: number ? "0 2px 12px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.2)" : "none",
-        zIndex: 1, lineHeight: 1,
-        letterSpacing: number && number < 10 ? "2px" : "0px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+        flexShrink: 0,
       }}>
-        {number ?? "·"}
-      </span>
+        <div style={{
+          position: "absolute", top: size * 0.10, left: size * 0.18, width: size * 0.32, height: size * 0.18,
+          background: "rgba(255,255,255,0.30)", borderRadius: "50%", transform: "rotate(-30deg)", filter: `blur(${size < 100 ? 2 : 4}px)`
+        }} />
+        <div style={{
+          position: "absolute", top: size * 0.14, left: size * 0.22, width: size * 0.20, height: size * 0.10,
+          background: "rgba(255,255,255,0.50)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(2px)"
+        }} />
+        <div style={{
+          position: "absolute", bottom: size * 0.14, right: size * 0.18, width: size * 0.18, height: size * 0.08,
+          background: "rgba(255,255,255,0.10)", borderRadius: "50%", transform: "rotate(20deg)", filter: "blur(3px)"
+        }} />
+        <span style={{
+          fontSize: number ? fontSize : fontSize * 0.35,
+          fontWeight: 900, fontFamily: "'Cinzel', serif",
+          color: number ? "#fff" : "rgba(255,255,255,0.07)",
+          textShadow: number ? "0 2px 12px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.2)" : "none",
+          zIndex: 1, lineHeight: 1,
+          letterSpacing: number && number < 10 ? "2px" : "0px",
+        }}>
+          {number ?? "·"}
+        </span>
+      </div>
     </div>
   );
 }
@@ -170,10 +186,14 @@ function TrayBall({ number, size = 64, isNew = false }) {
       animation: isNew ? "tl-traySettle 0.6s cubic-bezier(0.16,1.2,0.3,1) forwards" : "none",
       willChange: "transform",
     }}>
-      <div style={{ position:"absolute", top:size*0.14, left:size*0.20, width:size*0.28, height:size*0.14,
-        background:"rgba(255,255,255,0.42)", borderRadius:"50%", transform:"rotate(-30deg)", filter:"blur(2px)" }} />
-      <div style={{ position:"absolute", top:size*0.18, left:size*0.24, width:size*0.16, height:size*0.08,
-        background:"rgba(255,255,255,0.58)", borderRadius:"50%", transform:"rotate(-30deg)", filter:"blur(1px)" }} />
+      <div style={{
+        position: "absolute", top: size * 0.14, left: size * 0.20, width: size * 0.28, height: size * 0.14,
+        background: "rgba(255,255,255,0.42)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(2px)"
+      }} />
+      <div style={{
+        position: "absolute", top: size * 0.18, left: size * 0.24, width: size * 0.16, height: size * 0.08,
+        background: "rgba(255,255,255,0.58)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(1px)"
+      }} />
       <span style={{
         fontSize: size * 0.32, fontWeight: 900,
         fontFamily: "'Cinzel', serif", color: "#fff",
@@ -211,8 +231,10 @@ function GridBall({ number, called, arriving, size = 44 }) {
       willChange: "transform",
     }}>
       {called && (
-        <div style={{ position:"absolute", top:size*0.12, left:size*0.20, width:size*0.28, height:size*0.14,
-          background:"rgba(255,255,255,0.38)", borderRadius:"50%", transform:"rotate(-30deg)", filter:"blur(1.5px)" }} />
+        <div style={{
+          position: "absolute", top: size * 0.12, left: size * 0.20, width: size * 0.28, height: size * 0.14,
+          background: "rgba(255,255,255,0.38)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(1.5px)"
+        }} />
       )}
       <span style={{
         fontSize: size * 0.33, fontWeight: 800,
@@ -237,12 +259,12 @@ function FlyingBall({ from, to, number, size, targetSize, onDone, duration = 900
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const scale = targetSize / size;
-    const arcX  = dx * 0.5;
-    const arcY  = dy * 0.3 - Math.abs(dx) * 0.15;
+    const arcX = dx * 0.5;
+    const arcY = dy * 0.3 - Math.abs(dx) * 0.15;
     ref.current.animate([
-      { transform: "translate(0px, 0px) scale(1)",                                     opacity: 1,    offset: 0    },
-      { transform: `translate(${arcX}px, ${arcY}px) scale(${0.9 + scale * 0.1})`,     opacity: 1,    offset: 0.45 },
-      { transform: `translate(${dx}px, ${dy}px) scale(${scale})`,                     opacity: 0.65, offset: 1    },
+      { transform: "translate(0px, 0px) scale(1)", opacity: 1, offset: 0 },
+      { transform: `translate(${arcX}px, ${arcY}px) scale(${0.9 + scale * 0.1})`, opacity: 1, offset: 0.45 },
+      { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0.65, offset: 1 },
     ], { duration, easing: "cubic-bezier(0.4,0,0.2,1)", fill: "forwards" }).onfinish = onDone;
   }, []);
   if (!from) return null;
@@ -260,8 +282,10 @@ function FlyingBall({ from, to, number, size, targetSize, onDone, duration = 900
       textShadow: "0 1px 4px rgba(0,0,0,0.7)",
       willChange: "transform",
     }}>
-      <div style={{ position:"absolute", top:"12%", left:"20%", width:"28%", height:"14%",
-        background:"rgba(255,255,255,0.38)", borderRadius:"50%", transform:"rotate(-30deg)", filter:"blur(2px)" }} />
+      <div style={{
+        position: "absolute", top: "12%", left: "20%", width: "28%", height: "14%",
+        background: "rgba(255,255,255,0.38)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(2px)"
+      }} />
       {number}
     </div>
   );
@@ -271,18 +295,18 @@ function FlyingBall({ from, to, number, size, targetSize, onDone, duration = 900
    MAIN COMPONENT
 ───────────────────────────────────────────── */
 export default function TambolaLive() {
-  const [bag, setBag]               = useState(() => shuffle(Array.from({ length: 90 }, (_, i) => i + 1)));
-  const [calledSet, setCalledSet]   = useState(new Set());
+  const [bag, setBag] = useState(() => shuffle(Array.from({ length: 90 }, (_, i) => i + 1)));
+  const [calledSet, setCalledSet] = useState(new Set());
   const [calledCount, setCalledCount] = useState(0);
-  const [bigNum, setBigNum]         = useState(null);
-  const [bigKey, setBigKey]         = useState(0);
-  const [showPulse, setShowPulse]   = useState(false);
+  const [bigNum, setBigNum] = useState(null);
+  const [bigKey, setBigKey] = useState(0);
+  const [showPulse, setShowPulse] = useState(false);
   const [showParticles, setShowParticles] = useState(false);
-  const [tray, setTray]             = useState([null, null]);
-  const [trayKey, setTrayKey]       = useState([0, 0]);
-  const [fly, setFly]               = useState(null);
+  const [tray, setTray] = useState([null, null]);
+  const [trayKey, setTrayKey] = useState([0, 0]);
+  const [fly, setFly] = useState(null);
   const [arrivingCell, setArrivingCell] = useState(null);
-  const [done, setDone]             = useState(false);
+  const [done, setDone] = useState(false);
 
   /* ── Responsive ── */
   const containerRef = useRef(null);
@@ -297,26 +321,26 @@ export default function TambolaLive() {
     return () => ro.disconnect();
   }, []);
 
-  const isMobile  = containerW < 520;
-  const isNarrow  = containerW < 820;
+  const isMobile = containerW < 520;
+  const isNarrow = containerW < 820;
 
-  const BIG_BALL_SIZE  = isMobile ? 92   : isNarrow ? 116 : 148;
-  const TRAY_BALL_SIZE = isMobile ? 46   : isNarrow ? 54  : 64;
-  const TRAY_SLOT_SIZE = isMobile ? 54   : isNarrow ? 62  : 76;
-  const GRID_BALL_SIZE = isMobile ? 26   : isNarrow ? 36  : 44;
-  const LEFT_PANEL_W   = isNarrow ? 210  : 340;
+  const BIG_BALL_SIZE = isMobile ? 92 : isNarrow ? 116 : 148;
+  const TRAY_BALL_SIZE = isMobile ? 46 : isNarrow ? 54 : 64;
+  const TRAY_SLOT_SIZE = isMobile ? 54 : isNarrow ? 62 : 76;
+  const GRID_BALL_SIZE = isMobile ? 26 : isNarrow ? 36 : 44;
+  const LEFT_PANEL_W = isNarrow ? 210 : 340;
 
   /* Refs */
-  const bigBallRef  = useRef(null);
-  const slot0Ref    = useRef(null);
-  const slot1Ref    = useRef(null);
-  const cellRefs    = useRef({});
-  const trayRef     = useRef([null, null]);
-  const bagRef      = useRef(bag);
-  const busyRef     = useRef(false);
+  const bigBallRef = useRef(null);
+  const slot0Ref = useRef(null);
+  const slot1Ref = useRef(null);
+  const cellRefs = useRef({});
+  const trayRef = useRef([null, null]);
+  const bagRef = useRef(bag);
+  const busyRef = useRef(false);
 
   trayRef.current = tray;
-  bagRef.current  = bag;
+  bagRef.current = bag;
 
   function getCenter(el) {
     if (!el) return null;
@@ -359,7 +383,7 @@ export default function TambolaLive() {
 
   const runCycle = useCallback(() => {
     if (busyRef.current) return;
-    const currentBag  = bagRef.current;
+    const currentBag = bagRef.current;
     const currentTray = trayRef.current;
     if (currentBag.length === 0 && currentTray[0] === null && currentTray[1] === null) {
       setDone(true); return;
@@ -488,11 +512,11 @@ export default function TambolaLive() {
           {tray[i] !== null
             ? <div key={trayKey[i]}><TrayBall number={tray[i]} size={TRAY_BALL_SIZE} isNew /></div>
             : <div style={{
-                width: TRAY_BALL_SIZE * 0.4, height: TRAY_BALL_SIZE * 0.4,
-                borderRadius: "50%",
-                background: "rgba(251,239,164,0.03)",
-                border: "1px dashed rgba(251,239,164,0.09)",
-              }}/>
+              width: TRAY_BALL_SIZE * 0.4, height: TRAY_BALL_SIZE * 0.4,
+              borderRadius: "50%",
+              background: "rgba(251,239,164,0.03)",
+              border: "1px dashed rgba(251,239,164,0.09)",
+            }} />
           }
         </div>
       ))}
@@ -503,7 +527,7 @@ export default function TambolaLive() {
     <div style={{ display: "flex", gap: 8, width: "100%" }}>
       {[
         { lbl: "CALLED", val: calledCount, accent: "#FBEFA4" },
-        { lbl: "LEFT",   val: 90 - calledCount, accent: "#1abc9c" },
+        { lbl: "LEFT", val: 90 - calledCount, accent: "#1abc9c" },
       ].map(s => (
         <div key={s.lbl} style={{
           flex: 1, textAlign: "center",
@@ -535,7 +559,7 @@ export default function TambolaLive() {
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
         <span style={{ fontSize: 7, color: "rgba(255,255,255,0.18)", fontFamily: "'Cinzel',serif" }}>0</span>
-        <span style={{ fontSize: 7, color: "rgba(251,239,164,0.6)",  fontFamily: "'Cinzel',serif" }}>{pct}%</span>
+        <span style={{ fontSize: 7, color: "rgba(251,239,164,0.6)", fontFamily: "'Cinzel',serif" }}>{pct}%</span>
         <span style={{ fontSize: 7, color: "rgba(255,255,255,0.18)", fontFamily: "'Cinzel',serif" }}>90</span>
       </div>
     </div>
@@ -573,12 +597,24 @@ export default function TambolaLive() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Raleway:wght@300;400;600&display=swap');
 
+        // @keyframes tl-ballReveal {
+        //     0%   {  transform: rotate(0deg); opacity: 0;  }
+        //     100% {   transform: rotate(360deg);  opacity: 1;  }
+        // }
         @keyframes tl-ballReveal {
-          0%   { transform:scale(0.1) rotate(-180deg); opacity:0; filter:brightness(2.5); }
-          55%  { transform:scale(1.08) rotate(5deg);  opacity:1; filter:brightness(1.4); }
-          75%  { transform:scale(0.97) rotate(-2deg); filter:brightness(1.1); }
-          100% { transform:scale(1)   rotate(0);      opacity:1; filter:brightness(1); }
-        }
+  0% { 
+    transform: rotate(0deg) scale(0.3);
+    opacity: 0; 
+  }
+  40% { 
+    transform: rotate(180deg) scale(0.3);
+    opacity: 0.7; 
+  }
+  100% { 
+    transform: rotate(180deg) scale(1);
+    opacity: 1; 
+  }
+}
         @keyframes tl-traySettle {
           0%   { transform:scale(0.3) translateY(-10px); opacity:0; }
           60%  { transform:scale(1.06) translateY(1px);  opacity:1; }
@@ -676,9 +712,9 @@ export default function TambolaLive() {
 
         {/* Decorative rings */}
         {[
-          { s: 280, t: -90, l: -90, anim: "tl-rotateSlow 32s linear infinite",         c: "rgba(0,66,150,0.18)"     },
-          { s: 180, t: -50, l: -50, anim: "tl-rotateSlow 20s linear infinite reverse",  c: "rgba(251,239,164,0.07)"  },
-          { s: 240, b: -70, r: -70, anim: "tl-rotateSlow 28s linear infinite",          c: "rgba(251,239,164,0.07)"  },
+          { s: 280, t: -90, l: -90, anim: "tl-rotateSlow 32s linear infinite", c: "rgba(0,66,150,0.18)" },
+          { s: 180, t: -50, l: -50, anim: "tl-rotateSlow 20s linear infinite reverse", c: "rgba(251,239,164,0.07)" },
+          { s: 240, b: -70, r: -70, anim: "tl-rotateSlow 28s linear infinite", c: "rgba(251,239,164,0.07)" },
         ].map((ring, i) => (
           <div key={i} style={{
             position: "absolute", borderRadius: "50%",
@@ -718,13 +754,13 @@ export default function TambolaLive() {
               {/* Stage */}
               <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 {showPulse && bigNum && (<>
-                  {[0,1,2].map(k => (
+                  {[0, 1, 2].map(k => (
                     <div key={k} style={{
                       position: "absolute",
-                      inset: -(6*(k+1)+2),
+                      inset: -(6 * (k + 1) + 2),
                       borderRadius: "50%",
-                      border: `${k<1?"1.5":"1"}px solid ${k===0?dc(bigNum).light+"55":dc(bigNum).base+(k===1?"33":"18")}`,
-                      animation: `tl-softPulse 2.2s ease-out ${k*0.55}s infinite`,
+                      border: `${k < 1 ? "1.5" : "1"}px solid ${k === 0 ? dc(bigNum).light + "55" : dc(bigNum).base + (k === 1 ? "33" : "18")}`,
+                      animation: `tl-softPulse 2.2s ease-out ${k * 0.55}s infinite`,
                     }} />
                   ))}
                   <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
@@ -736,17 +772,7 @@ export default function TambolaLive() {
 
               {/* Number + tray */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-                {bigNum ? (
-                  <div style={{
-                    fontSize: 26, fontWeight: 900, fontFamily: "'Cinzel',serif",
-                    background: numColor,
-                    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1,
-                  }}>{bigNum}</div>
-                ) : (
-                  <div style={{ fontSize: 7, color: "rgba(255,255,255,0.18)", letterSpacing: 2 }}>
-                    {done ? "COMPLETE" : "DRAWING…"}
-                  </div>
-                )}
+
                 <TraySlots vertical />
               </div>
             </div>
@@ -783,12 +809,12 @@ export default function TambolaLive() {
               {/* Stage */}
               <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
                 {showPulse && bigNum && (<>
-                  {[0,1,2].map(k => (
+                  {[0, 1, 2].map(k => (
                     <div key={k} style={{
                       position: "absolute", borderRadius: "50%",
-                      inset: -(6*(k+1)+2),
-                      border: `${k<1?"1.5":"1"}px solid ${k===0?dc(bigNum).light+"55":dc(bigNum).base+(k===1?"33":"18")}`,
-                      animation: `tl-softPulse 2.2s ease-out ${k*0.55}s infinite`,
+                      inset: -(6 * (k + 1) + 2),
+                      border: `${k < 1 ? "1.5" : "1"}px solid ${k === 0 ? dc(bigNum).light + "55" : dc(bigNum).base + (k === 1 ? "33" : "18")}`,
+                      animation: `tl-softPulse 2.2s ease-out ${k * 0.55}s infinite`,
                     }} />
                   ))}
                   <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
@@ -831,7 +857,7 @@ export default function TambolaLive() {
                   <span style={{ fontSize: 9, fontWeight: 600, fontFamily: "'Cinzel',serif", color: "rgba(251,239,164,0.35)", letterSpacing: 3 }}>FULL BOARD</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, background: "rgba(0,20,51,0.50)", border: "1px solid rgba(251,239,164,0.08)" }}>
-                  <div className="tl-breathe" style={{ width: 5, height: 5, borderRadius: "50%", background: pct===100?"#1abc9c":"#FBEFA4", boxShadow: pct===100?"0 0 6px #1abc9c":"0 0 6px #FBEFA4" }} />
+                  <div className="tl-breathe" style={{ width: 5, height: 5, borderRadius: "50%", background: pct === 100 ? "#1abc9c" : "#FBEFA4", boxShadow: pct === 100 ? "0 0 6px #1abc9c" : "0 0 6px #FBEFA4" }} />
                   <span style={{ fontSize: 8, color: "rgba(255,255,255,0.38)", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}>{calledCount} / 90</span>
                 </div>
               </div>
@@ -874,12 +900,12 @@ export default function TambolaLive() {
               {/* Big ball stage */}
               <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
                 {showPulse && bigNum && (<>
-                  {[0,1,2].map(k => (
+                  {[0, 1, 2].map(k => (
                     <div key={k} style={{
                       position: "absolute", borderRadius: "50%",
-                      inset: -(6*(k+1)+2),
-                      border: `${k<1?"1.5":"1"}px solid ${k===0?dc(bigNum).light+"55":dc(bigNum).base+(k===1?"33":"18")}`,
-                      animation: `tl-softPulse 2.2s ease-out ${k*0.55}s infinite`,
+                      inset: -(6 * (k + 1) + 2),
+                      border: `${k < 1 ? "1.5" : "1"}px solid ${k === 0 ? dc(bigNum).light + "55" : dc(bigNum).base + (k === 1 ? "33" : "18")}`,
+                      animation: `tl-softPulse 2.2s ease-out ${k * 0.55}s infinite`,
                     }} />
                   ))}
                   <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
@@ -896,7 +922,7 @@ export default function TambolaLive() {
                   <BigBall number={bigNum} animKey={bigKey} size={BIG_BALL_SIZE} />
                 </div>
 
-                {/* Number display */}
+                {/* Number display
                 <div style={{ textAlign: "center", minHeight: 40, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   {bigNum ? (
                     <div style={{
@@ -910,7 +936,7 @@ export default function TambolaLive() {
                       {done ? "COMPLETE" : "DRAWING…"}
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
 
               <TraySlots />
@@ -931,7 +957,7 @@ export default function TambolaLive() {
                   </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 20, background: "rgba(0,20,51,0.50)", border: "1px solid rgba(251,239,164,0.08)", backdropFilter: "blur(8px)" }}>
-                  <div className="tl-breathe" style={{ width: 5, height: 5, borderRadius: "50%", background: pct===100?"#1abc9c":"#FBEFA4", boxShadow: pct===100?"0 0 6px #1abc9c":"0 0 6px #FBEFA4" }} />
+                  <div className="tl-breathe" style={{ width: 5, height: 5, borderRadius: "50%", background: pct === 100 ? "#1abc9c" : "#FBEFA4", boxShadow: pct === 100 ? "0 0 6px #1abc9c" : "0 0 6px #FBEFA4" }} />
                   <span style={{ fontSize: 8, color: "rgba(255,255,255,0.40)", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}>{calledCount} / 90</span>
                 </div>
               </div>
@@ -958,8 +984,8 @@ export default function TambolaLive() {
             animation: "tl-doneFade 0.8s ease forwards",
           }}>
             {/* Rings */}
-            {[{s:320,a:"tl-rotateSlow 12s linear infinite",c:"rgba(251,239,164,0.09)"},{s:220,a:"tl-rotateSlow 8s linear infinite reverse",c:"rgba(0,66,150,0.22)"}].map((r,i)=>(
-              <div key={i} style={{ position:"absolute", width:r.s, height:r.s, borderRadius:"50%", border:`1px solid ${r.c}`, animation:r.a }} />
+            {[{ s: 320, a: "tl-rotateSlow 12s linear infinite", c: "rgba(251,239,164,0.09)" }, { s: 220, a: "tl-rotateSlow 8s linear infinite reverse", c: "rgba(0,66,150,0.22)" }].map((r, i) => (
+              <div key={i} style={{ position: "absolute", width: r.s, height: r.s, borderRadius: "50%", border: `1px solid ${r.c}`, animation: r.a }} />
             ))}
             <div style={{ fontSize: isMobile ? 11 : 13, letterSpacing: 6, color: "rgba(251,239,164,0.55)", fontFamily: "'Cinzel',serif" }}>✦ ✦ ✦</div>
             <div style={{
@@ -987,8 +1013,8 @@ export default function TambolaLive() {
                 boxShadow: "0 4px 24px rgba(251,239,164,0.38), 0 0 50px rgba(251,239,164,0.12)",
                 transition: "transform 0.2s ease, box-shadow 0.2s ease",
               }}
-              onMouseOver={e => { e.currentTarget.style.transform="scale(1.07)"; e.currentTarget.style.boxShadow="0 6px 32px rgba(251,239,164,0.58)"; }}
-              onMouseOut={e => { e.currentTarget.style.transform="scale(1)"; e.currentTarget.style.boxShadow="0 4px 24px rgba(251,239,164,0.38)"; }}
+              onMouseOver={e => { e.currentTarget.style.transform = "scale(1.07)"; e.currentTarget.style.boxShadow = "0 6px 32px rgba(251,239,164,0.58)"; }}
+              onMouseOut={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(251,239,164,0.38)"; }}
             >
               PLAY AGAIN
             </button>

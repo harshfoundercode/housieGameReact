@@ -19,8 +19,7 @@ const Register = () => {
     });
     
     const [checkboxes, setCheckboxes] = useState({
-        ageConfirm: false,
-        stateConfirm: false,
+    
         termsAgree: false,
     });
     
@@ -30,7 +29,7 @@ const Register = () => {
     const [error, setError] = useState("");
 
     // Check if all checkboxes are checked
-    const allChecked = checkboxes.ageConfirm && checkboxes.stateConfirm && checkboxes.termsAgree;
+    const allChecked =  checkboxes.termsAgree;
 
     const handlePhoneChange = (e) => {
         const value = e.target.value;
@@ -54,18 +53,35 @@ const Register = () => {
         setError("");
     };
 
+     // Save user data to localStorage (Shared Preferences equivalent)
+    const saveUserData = (token, userData) => {
+        try {
+            // Save token
+            localStorage.setItem("token", token);
+            
+            // Save user data
+            localStorage.setItem("user", JSON.stringify(userData));
+            
+            // Optional: Save registration timestamp
+            localStorage.setItem("registrationTime", new Date().toISOString());
+            
+            console.log("User data saved successfully:", { token, userData });
+        } catch (error) {
+            console.error("Error saving user data:", error);
+        }
+    };
+
+    // Check if user is already logged in
+    const isUserLoggedIn = () => {
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+        return token && user;
+    };
+
     // Step 1 → Step 2: Validate and proceed to name fields
     const handleProceedToName = () => {
         if (!formData.phone || formData.phone.length < 10) {
             setError("Please enter a valid 10-digit phone number");
-            return;
-        }
-        if (!checkboxes.ageConfirm) {
-            setError("Please confirm you are over 18 years old");
-            return;
-        }
-        if (!checkboxes.stateConfirm) {
-            setError("Please confirm you are from a lottery authorised state");
             return;
         }
         if (!checkboxes.termsAgree) {
@@ -131,13 +147,20 @@ const Register = () => {
             const registerResponse = await registerUser(registrationData);
             console.log("Registration successful:", registerResponse);
 
-            // Response se token aur user data lo
-            const { token, user } = registerResponse;
+           // Extract token and user data from response
+            const { token, user, data } = registerResponse;
+            
+            // Handle different response structures
+            let authToken = token || data?.token || registerResponse.token;
+            let userData = user || data?.user || registerResponse.user;
+            
+            if (!authToken || !userData) {
+                throw new Error("Invalid response from server: Missing token or user data");
+            }
 
-            // Local storage mein data save karo
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
-
+            // Save to localStorage (Shared Preferences equivalent)
+            saveUserData(authToken, userData);
+            
             // Success message
             alert(`Welcome ${formData.firstName}! Registration successful!`);
             navigate("/");
@@ -310,43 +333,7 @@ const Register = () => {
 
                                 {/* Checkboxes */}
                                 <div className="space-y-3 mb-5">
-                                    <label className="flex items-start gap-3 cursor-pointer group">
-                                        <div className="relative flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={checkboxes.ageConfirm}
-                                                onChange={() => handleCheckboxChange("ageConfirm")}
-                                                className="sr-only peer"
-                                            />
-                                            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-[#004296] peer-checked:border-[#004296] transition-all flex items-center justify-center">
-                                                {checkboxes.ageConfirm && (
-                                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <span className="text-gray-600 text-xs sm:text-sm">I am over 18 years old</span>
-                                    </label>
-
-                                    <label className="flex items-start gap-3 cursor-pointer group">
-                                        <div className="relative flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={checkboxes.stateConfirm}
-                                                onChange={() => handleCheckboxChange("stateConfirm")}
-                                                className="sr-only peer"
-                                            />
-                                            <div className="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-[#004296] peer-checked:border-[#004296] transition-all flex items-center justify-center">
-                                                {checkboxes.stateConfirm && (
-                                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <span className="text-gray-600 text-xs sm:text-sm">I am from a lottery authorised state</span>
-                                    </label>
+                                  
 
                                     <label className="flex items-start gap-3 cursor-pointer group">
                                         <div className="relative flex items-center">

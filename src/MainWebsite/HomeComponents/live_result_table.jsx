@@ -1,48 +1,114 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
+import { useGameRounds } from "../../hooks/live_result_hooks";
 
 const LiveResultTable = () => {
     const navigate = useNavigate();
+    const { gameRounds, loading, error, refreshGameRounds } = useGameRounds();
 
-    // Live Draw Schedule Data
-    const liveDrawSchedule = [
-        {
-            id: 1,
-            gameName: "Sweet Dreamz",
-            drawTime: "4:30 PM",
-            days: "Monday, Tuesday, Wednesday, Friday, Saturday",
-            status: "live"
-        },
-        {
-            id: 2,
-            gameName: "Multiwin",
-            drawTime: "12:15 PM",
-            days: "Every Thursday",
-            status: "upcoming"
-        },
-        {
-            id: 3,
-            gameName: "Tambola Classic",
-            drawTime: "7:30 PM",
-            days: "Monday to Saturday",
-            status: "live"
-        },
-        {
-            id: 4,
-            gameName: "Morning Delight",
-            drawTime: "10:00 AM",
-            days: "Monday, Wednesday, Friday",
-            status: "upcoming"
-        },
-        {
-            id: 5,
-            gameName: "Jackpot Special",
-            drawTime: "9:00 PM",
-            days: "Saturday, Sunday",
-            status: "upcoming"
-        },
-    ];
+    // Loading State
+    if (loading) {
+        return (
+            <section className="pt-6 sm:pt-8 md:pt-10 lg:pt-12 px-3 sm:px-4">
+                <div className="max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto">
+                    <div className="text-center mb-4 sm:mb-5 md:mb-6">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#004296]">
+                            Loading Schedule...
+                        </h2>
+                    </div>
+                    <div className="bg-white rounded-xl shadow-md p-6">
+                        <div className="animate-pulse space-y-4">
+                            {[1, 2, 3, 4, 5].map((item) => (
+                                <div key={item} className="flex items-center justify-between">
+                                    <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                                    <div className="h-8 bg-gray-200 rounded-full w-20"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    // Error State
+    if (error) {
+        return (
+            <section className="pt-6 sm:pt-8 md:pt-10 lg:pt-12 px-3 sm:px-4">
+                <div className="max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto text-center">
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+                        <span className="text-4xl mb-2 block">⚠️</span>
+                        <h3 className="text-red-800 font-semibold text-lg">Failed to load schedule</h3>
+                        <p className="text-red-600 text-sm mt-2">{error}</p>
+                        <button
+                            onClick={refreshGameRounds}
+                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded-full text-sm hover:bg-red-600 transition"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    // API se data ko table format me convert karo
+    const liveDrawSchedule = gameRounds?.data?.map((game) => {
+        // Determine status based on rounds
+        let status = 'upcoming';
+        let drawTime = 'N/A';
+        let days = 'Not scheduled';
+
+        if (game.hasRounds && game.latestRound) {
+            status = 'live';
+            
+            // Latest round ke time se draw time set karo
+            const latestDate = new Date(game.latestRound.createdAt);
+            drawTime = latestDate.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            // Days format
+            if (game.totalRounds > 1) {
+                // Multiple rounds - show days range
+                const oldestDate = new Date(game.oldestRound?.createdAt);
+                const latestDateObj = new Date(game.latestRound.createdAt);
+                
+                const daysDiff = Math.floor((latestDateObj - oldestDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff === 0) {
+                    days = 'Today';
+                } else if (daysDiff === 1) {
+                    days = 'Yesterday & Today';
+                } else {
+                    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const oldestDay = dayNames[oldestDate.getDay()];
+                    const latestDay = dayNames[latestDateObj.getDay()];
+                    days = `${oldestDay} to ${latestDay}`;
+                }
+            } else {
+                // Single round
+                const roundDate = new Date(game.latestRound.createdAt);
+                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                days = dayNames[roundDate.getDay()];
+            }
+        }
+
+        return {
+            id: game.gameId,
+            gameName: game.title,
+            drawTime: drawTime,
+            days: days,
+            status: status,
+            totalRounds: game.totalRounds,
+            latestRoundId: game.latestRound?.roundId || null,
+            daysAgo: game.latestRound?.daysAgo || null
+        };
+    }) || [];
 
     return (
         <section className="pt-6 sm:pt-8 md:pt-10 lg:pt-12 px-3 sm:px-4">
@@ -75,7 +141,7 @@ const LiveResultTable = () => {
 
                     {/* Header - Responsive */}
                     <div className="
-                        bg-linear-to-r from-[#004296] to-[#003380] 
+                        bg-gradient-to-r from-[#004296] to-[#003380] 
                         px-4 sm:px-5 md:px-6 
                         py-3 sm:py-3.5 md:py-4
                     ">
@@ -104,7 +170,7 @@ const LiveResultTable = () => {
 
                     {/* Body */}
                     <div className="divide-y divide-gray-100">
-                        {liveDrawSchedule.map((item, index) => (
+                        {liveDrawSchedule.length > 0 ? liveDrawSchedule.map((item, index) => (
                             <div
                                 key={item.id}
                                 className={`
@@ -138,6 +204,11 @@ const LiveResultTable = () => {
                                     <p className="text-gray-500 text-[10px] sm:text-xs flex items-center gap-1">
                                         <span>📅</span> 
                                         <span className="truncate">{item.days}</span>
+                                        {item.daysAgo && (
+                                            <span className="text-green-600 font-medium ml-auto">
+                                                {item.daysAgo}
+                                            </span>
+                                        )}
                                     </p>
                                 </div>
 
@@ -170,10 +241,19 @@ const LiveResultTable = () => {
                                         <span className="text-gray-500 text-xs sm:text-sm truncate">
                                             {item.days}
                                         </span>
+                                        {item.daysAgo && (
+                                            <span className="text-green-600 text-xs font-medium ml-2">
+                                                ({item.daysAgo})
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        )) : (
+                            <div className="p-6 text-center text-gray-500">
+                                No games available
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -182,7 +262,7 @@ const LiveResultTable = () => {
                     <button
                         onClick={() => navigate(ROUTES.AFTERGAME)}
                         className="
-                            bg-linear-to-r from-[#004296] to-[#003380] 
+                            bg-gradient-to-r from-[#004296] to-[#003380] 
                             text-white 
                             px-6 sm:px-8 py-2.5 sm:py-3 
                             mb-6
@@ -199,8 +279,6 @@ const LiveResultTable = () => {
                         View Live Draw
                         <span>→</span>
                     </button>
-                    
-            
                 </div>
             </div>
         </section>

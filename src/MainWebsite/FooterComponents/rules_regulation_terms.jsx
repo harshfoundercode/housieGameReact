@@ -1,72 +1,227 @@
-// src/page/RulesAndTerms.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../HomeComponents/nav_bar";
 import Footer from "../HomeComponents/footer";
+import {API} from "../../services/api_url";
+
 
 const RulesAndTerms = () => {
     const navigate = useNavigate();
     const [showMoreRules, setShowMoreRules] = useState(false);
     const [showMoreTerms, setShowMoreTerms] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [apiData, setApiData] = useState({
+        rules: "",
+        terms: "",
+        refund: "",
+        shipping: "",
+        privacy: "",
+        faq: "",
+        contact: null
+    });
 
-    // Do's & Don'ts Data
-    const dosAndDonts = [
-        "Do set boundaries and/or limits on lottery expenditure and respect them.",
-        "Don't buy lottery tickets with money intended for daily needs.",
-        "Don't try and \"make up\" a loss by purchasing more tickets.",
-        "Don't borrow money to purchase lottery tickets.",
-        "Don't approach a potential lottery win as a solution to real problems and concerns.",
-        "Do be aware and open about the money or time spent in purchasing lottery.",
-        "Don't neglect work, studies, personal life or other aspect to try your luck in lotteries.",
-        "Don't indulge in lottery ticket purchases as a reaction to feeling lonely, bored, sad, burdened, or stressed.",
-        "Do seek help or professional counselling when tendencies of addiction to gambling start to arise.",
-        "Do be aware that no person or thing can influence the draw result as it is purely a game of chance.",
-        "Do contact support@tambola.com if you find your spouse, relative(s) or friend(s) exhibiting tendencies of addiction to gambling or purchasing beyond their means.",
-        "DISCLAIMER: Playing online lotteries comes with risks. There's no guarantee of financial gain, so you should only play with what you can afford to.",
-    ];
+    // Parse HTML content to extract list items
+    const parseHtmlToList = (htmlContent) => {
+        if (!htmlContent) return [];
+        
+        const items = [];
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+        
+        // Extract all list items from ul
+        const listItems = doc.querySelectorAll('ul li');
+        listItems.forEach(li => {
+            items.push(li.textContent.trim());
+        });
+        
+        // Also check for h3 and paragraphs if needed
+        const disclaimer = doc.querySelector('p');
+        if (disclaimer && disclaimer.textContent.includes('DISCLAIMER')) {
+            items.push(disclaimer.textContent.trim());
+        }
+        
+        return items;
+    };
 
-    // Rules and Guidelines Data
-    const rulesGuidelines = [
-        "Any person/persons below the age of 18 are prohibited from the purchase, distribution, or sale of lottery tickets.",
-        "Online operators and agents of our lottery shall not permit adults accompanied by minors to enter or remain on the premises.",
-        "They shall not allow minors to purchase online lottery tickets or purchase in the presence of minors.",
-        "They shall not give lottery tickets to minors as a gift.",
-        "They shall not lend money to customers, friends, or relatives to purchase lottery tickets.",
-        "They shall not accept alternative methods of payment or credit.",
-        "They should not encourage reckless use of their choice to purchase.",
-        "They should not underestimate or neglect to foresee problems and should act immediately when they detect signs of problematic compulsive purchasing behavior.",
-        "They should not purchase on behalf of others or give any advice on the same.",
-        "No advice or algorithm works in lottery, as it is purely a game of chance.",
-        "The high rates of taxes should not be considered a burden, but rather a privilege of protection placed by the respective regulatory authorities.",
-        "They should not allow participation, purchase, or access to the establishment if someone exhibits evidence of being under the influence of alcohol and/or drugs.",
-        "We encourage responsible lottery practices where the right amount of taxes is paid to the Government.",
-        "Fair play in the lottery means playing by the set of rules and awareness of your odds.",
-        "Lottery Tickets are non-refundable as per the government lottery rules unless the draw is canceled.",
-        "Postponement of the draw or a change of mind after purchase will not allow/enable you to get any refund.",
-        "We reserve the right to block you if it is noticed that you are constantly losing exorbitant amounts, for a fixed number of days.",
-    ];
+    // Parse Terms HTML to extract list items
+    const parseTermsToList = (htmlContent) => {
+        if (!htmlContent) return [];
+        
+        const items = [];
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+        
+        const listItems = doc.querySelectorAll('ul li');
+        listItems.forEach(li => {
+            items.push(li.textContent.trim());
+        });
+        
+        return items;
+    };
 
-    // Terms & Conditions Data
-    const termsConditions = [
-        "This lottery is operated under applicable laws and regulations of India.",
-        "By participating in Tambola.com you agree to be bound by these terms and conditions. Tambola.com reserves the right to amend these terms at any time without prior notice.",
-        "Continued participation in the lottery signifies acceptance of any updated terms.",
-        "The Online Digital lottery tickets are not sold in states where online lottery is prohibited.",
-        "The draws shall be held as per the procedure prescribed in the Rules and supervised by appropriate authorities.",
-        "Tambola.com reserves the right to change the Date & Time of Draw.",
-        "No Draw shall be held on National Holidays i.e. 26th January, 15th August and 2nd October.",
-        "Participants must be at least 18 years old. Participants must purchase tickets in a jurisdiction where participation in the lottery is legal.",
-        "Participant information will be collected and used in accordance with our Privacy Policy.",
-        "The Participants can purchase the Online Digital Lottery Tickets on our portal Tambola.com only.",
-        "Draw is conducted under proper supervision and winners are selected randomly by prescribed methodology.",
-        "The draw will be held out of the total scheme and the prizes shall be drawn on the proportionate basis.",
-    ];
+    useEffect(() => {
+        const fetchRulesAndTerms = async () => {
+            try {
+                setLoading(true);
+                // Replace with your actual API endpoint
+                const response = await fetch(API.FOOTER_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    setApiData({
+                        rules: result.data.rules || "",
+                        terms: result.data.terms || "",
+                        refund: result.data.refund || "",
+                        shipping: result.data.shipping || "",
+                        privacy: result.data.privacy || "",
+                        faq: result.data.faq || "",
+                        contact: result.data.contact ? JSON.parse(result.data.contact) : null
+                    });
+                } else {
+                    throw new Error('Invalid API response structure');
+                }
+                
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRulesAndTerms();
+    }, []);
+
+    // Parse the API HTML content into arrays
+    const dosAndDonts = parseHtmlToList(apiData.rules);
+    const rulesGuidelines = parseHtmlToList(apiData.rules); // Rules & Guidelines are also in the same HTML
+    const termsConditions = parseTermsToList(apiData.terms);
+
+    // Separate Do's & Don'ts from Rules & Guidelines
+    // The API returns both in the same HTML, so we need to split them
+    const getDosAndDontsOnly = () => {
+        const items = [];
+        if (!apiData.rules) return [];
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(apiData.rules, 'text/html');
+        
+        // Find the Do's & Don'ts section
+        const h3Elements = doc.querySelectorAll('h3');
+        let foundDosDonts = false;
+        
+        h3Elements.forEach(h3 => {
+            if (h3.textContent.includes("Do's & Don'ts")) {
+                foundDosDonts = true;
+                let nextElement = h3.nextElementSibling;
+                while (nextElement && nextElement.tagName !== 'H3') {
+                    if (nextElement.tagName === 'UL') {
+                        const listItems = nextElement.querySelectorAll('li');
+                        listItems.forEach(li => {
+                            items.push(li.textContent.trim());
+                        });
+                    }
+                    nextElement = nextElement.nextElementSibling;
+                }
+            }
+        });
+        
+        return items;
+    };
+
+    const getRulesGuidelinesOnly = () => {
+        const items = [];
+        if (!apiData.rules) return [];
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(apiData.rules, 'text/html');
+        
+        // Find the Rules & Guidelines section
+        const h3Elements = doc.querySelectorAll('h3');
+        let foundRules = false;
+        
+        h3Elements.forEach(h3 => {
+            if (h3.textContent.includes("Rules & Guidelines")) {
+                foundRules = true;
+                let nextElement = h3.nextElementSibling;
+                while (nextElement && nextElement.tagName !== 'H3') {
+                    if (nextElement.tagName === 'UL') {
+                        const listItems = nextElement.querySelectorAll('li');
+                        listItems.forEach(li => {
+                            items.push(li.textContent.trim());
+                        });
+                    }
+                    nextElement = nextElement.nextElementSibling;
+                }
+            }
+        });
+        
+        // Also get the disclaimer paragraph
+        const disclaimer = doc.querySelector('p');
+        if (disclaimer && disclaimer.textContent.includes('DISCLAIMER')) {
+            items.push(disclaimer.textContent.trim());
+        }
+        
+        return items;
+    };
+
+    const dosAndDontsList = getDosAndDontsOnly();
+    const rulesGuidelinesList = getRulesGuidelinesOnly();
+    const termsConditionsList = parseTermsToList(apiData.terms);
+
+    // Loading State
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white">
+                <Navbar />
+                <div className="flex justify-center items-center h-96">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#004296] mx-auto mb-4"></div>
+                        <p className="text-gray-600">Loading rules and regulations...</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
+    // Error State
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white">
+                <Navbar />
+                <div className="flex justify-center items-center h-96 px-4">
+                    <div className="text-center bg-red-50 p-8 rounded-lg max-w-md mx-auto">
+                        <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h3 className="text-xl font-bold text-red-700 mb-2">Error Loading Content</h3>
+                        <p className="text-red-600 mb-4">{error}</p>
+                        <button 
+                            onClick={() => window.location.reload()}
+                            className="bg-[#004296] text-white px-6 py-2 rounded-lg hover:bg-[#003380] transition"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white">
             <Navbar />
             
-            {/* Header - Simple like EasyLottery */}
+            {/* Header */}
             <section className="pt-24 md:pt-28 pb-6 px-4 bg-[#004296]">
                 <div className="max-w-5xl mx-auto">
                     <h1 className="text-3xl md:text-4xl font-bold text-white">
@@ -90,76 +245,86 @@ const RulesAndTerms = () => {
                     </div>
 
                     {/* Do's & Don'ts Section */}
-                    <div className="mb-10">
-                        <h3 className="text-xl md:text-2xl font-bold text-[#004296] mb-4">
-                            Do's & Don'ts of responsible participation in Online Lottery:
-                        </h3>
-                        <div className="space-y-3">
-                            {dosAndDonts.map((item, index) => (
-                                <div key={index} className="flex gap-3">
-                                    <span className="text-[#004296] font-bold min-w-7">
-                                        {String(index + 1).padStart(2, '0')}
-                                    </span>
-                                    <p className="text-gray-600 text-sm md:text-base">
-                                        {item}
-                                    </p>
-                                </div>
-                            ))}
+                    {dosAndDontsList.length > 0 && (
+                        <div className="mb-10">
+                            <h3 className="text-xl md:text-2xl font-bold text-[#004296] mb-4">
+                                Do's & Don'ts of responsible participation in Online Lottery:
+                            </h3>
+                            <div className="space-y-3">
+                                {dosAndDontsList.map((item, index) => (
+                                    <div key={index} className="flex gap-3">
+                                        <span className="text-[#004296] font-bold min-w-7">
+                                            {String(index + 1).padStart(2, '0')}
+                                        </span>
+                                        <p className="text-gray-600 text-sm md:text-base">
+                                            {item}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Rules and Guidelines Section */}
-                    <div className="mb-10">
-                        <h3 className="text-xl md:text-2xl font-bold text-[#004296] mb-4">
-                            Rules and Guidelines
-                        </h3>
-                        <p className="text-gray-600 text-sm mb-4 italic">
-                            For company employees, agents and their employees and purchasers (hereinafter referred to as "They")
-                        </p>
-                        <div className="space-y-3">
-                            {rulesGuidelines.slice(0, showMoreRules ? rulesGuidelines.length : 8).map((item, index) => (
-                                <div key={index} className="flex gap-3">
-                                    <span className="text-[#004296] font-bold min-w-7">
-                                        {index + 1}.
-                                    </span>
-                                    <p className="text-gray-600 text-sm md:text-base">
-                                        {item}
-                                    </p>
-                                </div>
-                            ))}
+                    {rulesGuidelinesList.length > 0 && (
+                        <div className="mb-10">
+                            <h3 className="text-xl md:text-2xl font-bold text-[#004296] mb-4">
+                                Rules and Guidelines
+                            </h3>
+                            <p className="text-gray-600 text-sm mb-4 italic">
+                                For company employees, agents and their employees and purchasers (hereinafter referred to as "They")
+                            </p>
+                            <div className="space-y-3">
+                                {rulesGuidelinesList.slice(0, showMoreRules ? rulesGuidelinesList.length : 8).map((item, index) => (
+                                    <div key={index} className="flex gap-3">
+                                        <span className="text-[#004296] font-bold min-w-7">
+                                            {index + 1}.
+                                        </span>
+                                        <p className="text-gray-600 text-sm md:text-base">
+                                            {item}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                            {rulesGuidelinesList.length > 8 && (
+                                <button 
+                                    onClick={() => setShowMoreRules(!showMoreRules)}
+                                    className="mt-4 text-[#004296] font-medium text-sm hover:underline"
+                                >
+                                    Read {showMoreRules ? 'Less' : 'More'}
+                                </button>
+                            )}
                         </div>
-                        <button 
-                            onClick={() => setShowMoreRules(!showMoreRules)}
-                            className="mt-4 text-[#004296] font-medium text-sm hover:underline"
-                        >
-                            Read {showMoreRules ? 'Less' : 'More'}
-                        </button>
-                    </div>
+                    )}
 
                     {/* Terms & Conditions Section */}
-                    <div className="mb-10">
-                        <h3 className="text-xl md:text-2xl font-bold text-[#004296] mb-4">
-                            Terms & Conditions
-                        </h3>
-                        <div className="space-y-3">
-                            {termsConditions.slice(0, showMoreTerms ? termsConditions.length : 6).map((item, index) => (
-                                <div key={index} className="flex gap-3">
-                                    <span className="text-[#004296] font-bold min-w-7">
-                                        {index + 1}.
-                                    </span>
-                                    <p className="text-gray-600 text-sm md:text-base">
-                                        {item}
-                                    </p>
-                                </div>
-                            ))}
+                    {termsConditionsList.length > 0 && (
+                        <div className="mb-10">
+                            <h3 className="text-xl md:text-2xl font-bold text-[#004296] mb-4">
+                                Terms & Conditions
+                            </h3>
+                            <div className="space-y-3">
+                                {termsConditionsList.slice(0, showMoreTerms ? termsConditionsList.length : 6).map((item, index) => (
+                                    <div key={index} className="flex gap-3">
+                                        <span className="text-[#004296] font-bold min-w-7">
+                                            {index + 1}.
+                                        </span>
+                                        <p className="text-gray-600 text-sm md:text-base">
+                                            {item}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                            {termsConditionsList.length > 6 && (
+                                <button 
+                                    onClick={() => setShowMoreTerms(!showMoreTerms)}
+                                    className="mt-4 text-[#004296] font-medium text-sm hover:underline"
+                                >
+                                    Read {showMoreTerms ? 'Less' : 'More'}
+                                </button>
+                            )}
                         </div>
-                        <button 
-                            onClick={() => setShowMoreTerms(!showMoreTerms)}
-                            className="mt-4 text-[#004296] font-medium text-sm hover:underline"
-                        >
-                            Read {showMoreTerms ? 'Less' : 'More'}
-                        </button>
-                    </div>
+                    )}
 
                     {/* Jurisdiction */}
                     <div className="mt-8 pt-6 border-t border-gray-200">
