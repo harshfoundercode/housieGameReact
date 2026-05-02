@@ -122,7 +122,7 @@ function BigBall({ number, animKey, size = 148 }) {
     <div
       key={`wrapper-${animKey}`}
       style={{
-animation: number ? "tl-ballReveal 1.5s cubic-bezier(0.42, 0.0, 0.58, 1.0) forwards" : "none",
+        animation: number ? "tl-ballReveal 1.8s ease-in-out forwards" : "none",
         willChange: "transform",
         width: size,
         height: size,

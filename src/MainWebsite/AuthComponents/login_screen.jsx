@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import tambolaLogo from "../../assets/tambolaGame.jpeg";
+import { sendOTP, verifyOTP, LoginUser } from "../../services/login_user"; // Import your API functions
 
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        phone: "", otp: "",
+        phone: "", 
+        otp: "",
     });
     const [otpSent, setOtpSent] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -48,62 +50,142 @@ const Login = () => {
         setError("");
     };
 
-    const handleSendOTP = () => {
+    // Step 1: Send OTP API Call
+    const handleSendOTP = async () => {
         if (!formData.phone || formData.phone.length < 10) {
             setError("Please enter a valid 10-digit phone number");
             return;
         }
+        
         setLoading(true);
-        setTimeout(() => {
-            setOtpSent(true);
+        setError("");
+        
+        try {
+            // Call your send OTP API
+            const response = await sendOTP(formData.phone);
+            console.log("Send OTP Response:", response);
+            
+            // Check if API call was successful (status 200)
+            if (response.status === 200 || response.success) {
+                setOtpSent(true);
+                alert(`OTP sent successfully to ${formData.phone}`);
+            } else {
+                throw new Error(response.message || "Failed to send OTP");
+            }
+        } catch (err) {
+            console.error("Send OTP Error:", err);
+            setError(err.message || "Failed to send OTP. Please try again.");
+        } finally {
             setLoading(false);
-            setError("");
-        }, 1000);
+        }
     };
 
-    // const handleVerifyOTP = () => {
-    //     if (!formData.otp || formData.otp.length < 4) {
-    //         setError("Please enter a valid OTP");
-    //         return;
-    //     }
-    //     setLoading(true);
-    //     setTimeout(() => {
-    //         alert("Login successful! Welcome to Tambola!");
-    //         setLoading(false);
-    //         navigate("/");
-    //     }, 1500);
-    // };
-
-    // Login.jsx - Update handleVerifyOTP function
-const handleVerifyOTP = () => {
-    if (!formData.otp || formData.otp.length < 4) {
-        setError("Please enter a valid OTP");
-        return;
-    }
-    setLoading(true);
-    setTimeout(() => {
-        // Set login token and user data
-        localStorage.setItem("token", "user-auth-token-123");
-        localStorage.setItem("user", JSON.stringify({
-            name: "Rajesh Kumar",
-            phone: formData.phone,
-        }));
-        localStorage.setItem("credits", "1250");
+    // Step 2: Verify OTP and then call Login API
+    const handleVerifyOTP = async () => {
+        if (!formData.otp || formData.otp.length < 4) {
+            setError("Please enter a valid OTP");
+            return;
+        }
         
-        alert("Login successful! Welcome to Tambola!");
-        setLoading(false);
-        navigate("/");
-        window.location.reload(); // Refresh to update navbar
-    }, 1500);
-};
+        setLoading(true);
+        setError("");
+        
+        try {
+            // Step 2a: First verify OTP
+            const verifyResponse = await verifyOTP(formData.phone, formData.otp);
+            console.log("Verify OTP Response:", verifyResponse);
+            
+            // Check if OTP verification was successful (status 200)
+            if (verifyResponse.status === 200 || verifyResponse.success) {
+                console.log("OTP verified successfully");
+                
+                // Step 2b: Now call login API
+                const loginResponse = await LoginUser(formData.phone);
+                console.log("Login Response:", loginResponse);
+                
+                // Check if login was successful (status 200)
+                if (loginResponse.status === 200 || loginResponse.success) {
+                    
+                    // Extract data from login response (adjust based on your API structure)
+                    const { data } = loginResponse;
+                    const authToken = data?.token;
+                    const userData = {
+                        user_id: data?.user_id,
+                        first_name: data?.first_name,
+                        last_name: data?.last_name,
+                        phone: data?.phone,
+                        email: data?.email,
+                        credits: data?.credits,
+                        referral_code: data?.referral_code
+                    };
+                    
+                    // Save user data to localStorage
+                    saveUserData(authToken, userData);
+                    
+                    // Success message
+                    alert(`Welcome back ${userData.first_name || 'User'}! Login successful!`);
+                    
+                    // Navigate to home page
+                    navigate("/");
+                    window.location.reload(); // Refresh to update navbar
+                } else {
+                    throw new Error(loginResponse.message || "Login failed");
+                }
+            } else {
+                throw new Error(verifyResponse.message || "Invalid OTP. Please try again.");
+            }
+        } catch (err) {
+            console.error("Verification/Login Error:", err);
+            setError(err.message || "Verification failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const handleGuestLogin = () => {
-        navigate("/");
+    // Save user data to localStorage
+    const saveUserData = (token, userData) => {
+        try {
+            if (token) {
+                localStorage.setItem("token", token);
+            }
+            if (userData) {
+                localStorage.setItem("user", JSON.stringify(userData));
+            }
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("loginTime", new Date().toISOString());
+            
+            // Save individual fields for quick access
+            if (userData?.user_id) localStorage.setItem("userId", userData.user_id.toString());
+            if (userData?.phone) localStorage.setItem("userPhone", userData.phone);
+            if (userData?.credits) localStorage.setItem("credits", userData.credits.toString());
+            
+            console.log("User data saved successfully");
+        } catch (error) {
+            console.error("Error saving user data:", error);
+        }
+    };
+
+    // Resend OTP
+    const handleResendOTP = async () => {
+        setLoading(true);
+        try {
+            const response = await sendOTP(formData.phone);
+            if (response.status === 200 || response.success) {
+                alert("OTP resent successfully!");
+            } else {
+                throw new Error(response.message || "Failed to resend OTP");
+            }
+        } catch (err) {
+            console.error("Resend OTP Error:", err);
+            setError(err.message || "Failed to resend OTP");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] flex flex-col lg:flex-row">
-            
+
             {/* LEFT PANEL - Image with Content (Same as Register) */}
             <div className="hidden lg:flex lg:w-112.5 xl:w-137.5 2xl:w-150 h-screen sticky top-0 overflow-hidden">
                 {/* Background Pattern */}
@@ -113,11 +195,11 @@ const handleVerifyOTP = () => {
                         backgroundSize: '40px 40px'
                     }}></div>
                 </div>
-                
+
                 {/* Glow Orbs */}
                 <div className="absolute top-20 left-10 w-64 h-64 bg-[#FBEFA4] rounded-full blur-3xl opacity-20"></div>
                 <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#FBEFA4] rounded-full blur-3xl opacity-10"></div>
-                
+
                 {/* Content */}
                 <div className="relative z-10 flex flex-col justify-center px-8 xl:px-10 w-full">
                     <div className="text-center">
@@ -132,18 +214,17 @@ const handleVerifyOTP = () => {
                         <p className="text-white/70 text-sm xl:text-base mb-6">
                             Sign in to play and win exciting prizes!
                         </p>
-                        
+
                         {/* Stats Cards */}
                         <div className="grid grid-cols-2 gap-1 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-[#FBEFA4]/20">
                             <div className="text-center">
                                 <p className="text-[#FBEFA4] text-xl xl:text-2xl font-bold">10K+</p>
                                 <p className="text-white/60 text-[10px] xl:text-xs">Winners</p>
                             </div>
-                            <div className="text-cente">
+                            <div className="text-center">
                                 <p className="text-[#FBEFA4] text-xl xl:text-2xl font-bold">₹1Cr+</p>
                                 <p className="text-white/60 text-[10px] xl:text-xs">Prizes</p>
                             </div>
-                           
                         </div>
                     </div>
                 </div>
@@ -152,7 +233,7 @@ const handleVerifyOTP = () => {
             {/* RIGHT PANEL - Login Form */}
             <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-6 sm:py-8 md:py-10 min-h-screen">
                 <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg">
-                    
+
                     {/* Mobile Logo */}
                     <div className="lg:hidden flex justify-center mb-6">
                         <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 border-[#FBEFA4]/50">
@@ -172,7 +253,7 @@ const handleVerifyOTP = () => {
 
                     {/* Login Form Card - White with Yellow Border */}
                     <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 border-2 border-[#FBEFA4]/30">
-                        
+
                         {/* Error Message */}
                         {error && (
                             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs sm:text-sm flex items-center gap-2">
@@ -194,11 +275,10 @@ const handleVerifyOTP = () => {
                                     placeholder="Enter 10-digit number"
                                     maxLength="10"
                                     disabled={otpSent}
-                                    className={`w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 transition-all outline-none text-sm sm:text-base text-gray-800 ${
-                                        otpSent 
-                                            ? 'bg-gray-100 border-gray-200 cursor-not-allowed' 
+                                    className={`w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 transition-all outline-none text-sm sm:text-base text-gray-800 ${otpSent
+                                            ? 'bg-gray-100 border-gray-200 cursor-not-allowed'
                                             : 'border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20'
-                                    }`}
+                                        }`}
                                 />
                             </div>
                             <p className="text-gray-400 text-[10px] sm:text-xs mt-1 ml-1">
@@ -218,8 +298,8 @@ const handleVerifyOTP = () => {
                                         type="text"
                                         value={formData.otp}
                                         onChange={handleOTPChange}
-                                        placeholder="Enter 6-digit OTP"
-                                        maxLength="6"
+                                        placeholder="Enter 4-digit OTP"
+                                        maxLength="4"
                                         className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
                                     />
                                 </div>
@@ -227,11 +307,12 @@ const handleVerifyOTP = () => {
                                     <p className="text-gray-400 text-[10px] sm:text-xs ml-1">
                                         OTP sent to +91 {formData.phone}
                                     </p>
-                                    <button 
+                                    <button
                                         type="button"
                                         onClick={() => {
                                             setOtpSent(false);
-                                            setFormData({...formData, otp: ""});
+                                            setFormData({ ...formData, otp: "" });
+                                            setOtpSessionId("");
                                         }}
                                         className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium"
                                     >
@@ -239,7 +320,12 @@ const handleVerifyOTP = () => {
                                     </button>
                                 </div>
                                 <p className="text-right mt-1">
-                                    <button type="button" className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium">
+                                    <button 
+                                        type="button" 
+                                        onClick={handleResendOTP}
+                                        disabled={loading}
+                                        className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium disabled:opacity-50"
+                                    >
                                         Resend OTP
                                     </button>
                                 </p>
@@ -291,10 +377,10 @@ const handleVerifyOTP = () => {
                         <h3 className="text-center text-white/90 font-semibold mb-3 sm:mb-4 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
                             <span>🎥</span> What Players Say <span>🎥</span>
                         </h3>
-                        
+
                         <div className="grid grid-cols-3 gap-2 sm:gap-3">
                             {testimonials.map((video) => (
-                                <div 
+                                <div
                                     key={video.id}
                                     onClick={() => window.open(video.videoUrl, '_blank')}
                                     className="cursor-pointer group"
@@ -334,4 +420,4 @@ const handleVerifyOTP = () => {
     );
 };
 
-export default Login; 
+export default Login;

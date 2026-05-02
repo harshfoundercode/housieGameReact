@@ -138,29 +138,43 @@ const Register = () => {
 
             // Step 3b: OTP verify hone ke baad register karo
             const registrationData = {
-                phone: formData.phone,
+                phone: formData.phone,        
                 first_name: formData.firstName.trim(),
                 last_name: formData.lastName.trim(),
-                // referralCode: formData.referralCode || "", // Optional
+                referral_code: formData.referralCode || ""
             };
-
+        
             const registerResponse = await registerUser(registrationData);
             console.log("Registration successful:", registerResponse);
 
-           // Extract token and user data from response
-            const { token, user, data } = registerResponse;
-            
-            // Handle different response structures
-            let authToken = token || data?.token || registerResponse.token;
-            let userData = user || data?.user || registerResponse.user;
-            
-            if (!authToken || !userData) {
-                throw new Error("Invalid response from server: Missing token or user data");
-            }
+            // Check if response was successful
+        if (!registerResponse.success || registerResponse.status !== 200) {
+            throw new Error(registerResponse.message || "Registration failed");
+        }
 
-            // Save to localStorage (Shared Preferences equivalent)
-            saveUserData(authToken, userData);
-            
+        // Extract token and user data from response (corrected for your API structure)
+        const { data } = registerResponse;
+        
+        // Get token from data object
+        const authToken = data?.token;
+        
+        // Get user data from data object
+        const userData = {
+            first_name: data?.first_name,
+            last_name: data?.last_name,
+            phone: data?.phone,
+            user_id: data?.user_id,
+            referral_code: data?.referral_code,
+            referred_by: data?.referred_by,
+        };
+        
+        if (!authToken || !userData.user_id) {
+            throw new Error("Invalid response from server: Missing token or user data");
+        }
+
+        
+        saveUserData(authToken, userData);
+        
             // Success message
             alert(`Welcome ${formData.firstName}! Registration successful!`);
             navigate("/");
@@ -455,8 +469,8 @@ const Register = () => {
                                                     setOtp(value);
                                                 }
                                             }}
-                                            placeholder="Enter 6-digit OTP"
-                                            maxLength="6"
+                                            placeholder="Enter 4-digit OTP"
+                                            maxLength="4"
                                             className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
                                         />
                                     </div>
