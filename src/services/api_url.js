@@ -18,5 +18,8 @@ export const API = {
     GAME_RESULT_URL:`${API_CONFIG_URL}game/status?round_id=`,
     FOOTER_URL:`${API_CONFIG_URL}policy/all`,
     NEWS_MEDIA_URL:`${API_CONFIG_URL}news`,
+
+    ADD_MONEY_URL:`${API_CONFIG_URL}wallet/add-credit`,
+    TRANSACTION_HISTORY_URL:`${API_CONFIG_URL}wallet/history`,
     
 };
