@@ -222,13 +222,7 @@ const Navbar = () => {
                                 /* Profile Avatar - Click to open drawer */
                                 <div className="flex items-center gap-3">
                                     {/* Credits Display (Optional) */}
-                                    {credits && (
-                                        <div className="hidden sm:flex items-center gap-1 bg-green-50 px-3 py-1.5 rounded-full">
-                                            <span className="text-green-600 text-sm">💰</span>
-                                            <span className="text-green-700 font-semibold text-sm">₹{parseInt(credits).toLocaleString()}</span>
-                                        </div>
-                                    )}
-                                    
+                                   
                                     <button
                                         onClick={() => setIsDrawerOpen(true)}
                                         className="relative group"
@@ -279,13 +273,7 @@ const Navbar = () => {
                                                 <p className="text-sm text-gray-500">{userData.phone || userData.phone_number}</p>
                                             </div>
                                         </div>
-                                        {credits && (
-                                            <div className="mt-2 pt-2 border-t border-gray-200">
-                                                <p className="text-sm text-gray-600">
-                                                    Credits: <span className="font-bold text-green-600">₹{parseInt(credits).toLocaleString()}</span>
-                                                </p>
-                                            </div>
-                                        )}
+                                       
                                     </div>
                                 )}
                                 

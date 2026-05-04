@@ -7,6 +7,89 @@ const LiveResultTable = () => {
     const navigate = useNavigate();
     const { gameRounds, loading, error, refreshGameRounds } = useGameRounds();
 
+    // Helper function to format time
+    const formatDrawTime = (roundTime, gameDate) => {
+        if (roundTime) {
+            // Convert 24-hour format to 12-hour format
+            const [hours, minutes, seconds] = roundTime.split(':');
+            const date = new Date();
+            date.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds || 0));
+            return date.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        if (gameDate) {
+            const date = new Date(gameDate);
+            const now = new Date();
+            const isToday = date.toDateString() === now.toDateString();
+
+            if (isToday) {
+                return "Today";
+            }
+
+            // Check if yesterday
+            const yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            if (date.toDateString() === yesterday.toDateString()) {
+                return "Yesterday";
+            }
+
+            return date.toLocaleDateString('en-IN', {
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        return "Upcoming";
+    };
+
+    // Helper function to format days
+    const formatDays = (gameDate, roundTime) => {
+        const date = new Date(gameDate);
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const gameDateObj = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+        const diffTime = gameDateObj - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 0) {
+            return "Today";
+        } else if (diffDays === 1) {
+            return "Tomorrow";
+        } else if (diffDays > 1) {
+            return `In ${diffDays} days`;
+        } else if (diffDays === -1) {
+            return "Yesterday";
+        } else if (diffDays < -1) {
+            return `${Math.abs(diffDays)} days ago`;
+        }
+
+        return date.toLocaleDateString('en-IN', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+        });
+    };
+
+    // Helper function to check if game is live
+    const isGameLive = (roundTime, gameDate) => {
+        if (!roundTime) return false;
+
+        const [hours, minutes] = roundTime.split(':');
+        const gameDateTime = new Date(gameDate);
+        gameDateTime.setHours(parseInt(hours), parseInt(minutes), 0);
+
+        const now = new Date();
+        const diffMinutes = (now - gameDateTime) / (1000 * 60);
+
+        // Game is live if within 30 minutes of scheduled time
+        return diffMinutes >= -5 && diffMinutes <= 30;
+    };
+
     // Loading State
     if (loading) {
         return (
@@ -55,58 +138,20 @@ const LiveResultTable = () => {
     }
 
     // API se data ko table format me convert karo
-    const liveDrawSchedule = gameRounds?.data?.map((game) => {
-        // Determine status based on rounds
-        let status = 'upcoming';
-        let drawTime = 'N/A';
-        let days = 'Not scheduled';
-
-        if (game.hasRounds && game.latestRound) {
-            status = 'live';
-            
-            // Latest round ke time se draw time set karo
-            const latestDate = new Date(game.latestRound.createdAt);
-            drawTime = latestDate.toLocaleTimeString('en-IN', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-
-            // Days format
-            if (game.totalRounds > 1) {
-                // Multiple rounds - show days range
-                const oldestDate = new Date(game.oldestRound?.createdAt);
-                const latestDateObj = new Date(game.latestRound.createdAt);
-                
-                const daysDiff = Math.floor((latestDateObj - oldestDate) / (1000 * 60 * 60 * 24));
-                
-                if (daysDiff === 0) {
-                    days = 'Today';
-                } else if (daysDiff === 1) {
-                    days = 'Yesterday & Today';
-                } else {
-                    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                    const oldestDay = dayNames[oldestDate.getDay()];
-                    const latestDay = dayNames[latestDateObj.getDay()];
-                    days = `${oldestDay} to ${latestDay}`;
-                }
-            } else {
-                // Single round
-                const roundDate = new Date(game.latestRound.createdAt);
-                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                days = dayNames[roundDate.getDay()];
-            }
-        }
+    const liveDrawSchedule = gameRounds?.data?.games?.map((game) => {
+        const isLive = isGameLive(game.round_time, game.game_date);
+        const drawTime = formatDrawTime(game.round_time, game.game_date);
+        const days = formatDays(game.game_date, game.round_time);
 
         return {
-            id: game.gameId,
+            id: game.game_id,
             gameName: game.title,
             drawTime: drawTime,
             days: days,
-            status: status,
-            totalRounds: game.totalRounds,
-            latestRoundId: game.latestRound?.roundId || null,
-            daysAgo: game.latestRound?.daysAgo || null
+            status: isLive ? 'live' : 'upcoming',
+            roundTime: game.round_time,
+            gameDate: game.game_date,
+            ticketPrice: game.ticket_price
         };
     }) || [];
 
@@ -151,7 +196,7 @@ const LiveResultTable = () => {
                             tracking-wide
                             flex items-center justify-center gap-1 sm:gap-2
                         ">
-                            <span className="hidden xs:inline">🎲</span> 
+                            <span className="hidden xs:inline">🎲</span>
                             LIVE DRAW SCHEDULE
                             <span className="hidden xs:inline">🎲</span>
                         </h3>
@@ -165,7 +210,7 @@ const LiveResultTable = () => {
                     ">
                         <span className="text-gray-600 font-semibold text-xs sm:text-sm">Game Name</span>
                         <span className="text-gray-600 font-semibold text-xs sm:text-sm text-center">Draw Time</span>
-                        <span className="text-gray-600 font-semibold text-xs sm:text-sm text-right">Days</span>
+                        <span className="text-gray-600 font-semibold text-xs sm:text-sm text-right">Schedule</span>
                     </div>
 
                     {/* Body */}
@@ -173,6 +218,19 @@ const LiveResultTable = () => {
                         {liveDrawSchedule.length > 0 ? liveDrawSchedule.map((item, index) => (
                             <div
                                 key={item.id}
+                                button
+                                onClick={() => {
+                                    navigate(ROUTES.GAME, {
+                                        state: {
+                                            gameId: item.id,
+                                            gameName: item.gameName,
+                                            gameDate: item.gameDate,
+                                            roundTime: item.roundTime
+                                        }
+                                    });
+                                    console.log("Navigating to game with ID:", item.id);    
+                                                                                                                        
+                                }}
                                 className={`
                                     p-3 sm:p-4 md:p-0 
                                     hover:bg-gray-50 transition-all 
@@ -202,13 +260,8 @@ const LiveResultTable = () => {
                                         </span>
                                     </div>
                                     <p className="text-gray-500 text-[10px] sm:text-xs flex items-center gap-1">
-                                        <span>📅</span> 
+                                        <span>📅</span>
                                         <span className="truncate">{item.days}</span>
-                                        {item.daysAgo && (
-                                            <span className="text-green-600 font-medium ml-auto">
-                                                {item.daysAgo}
-                                            </span>
-                                        )}
                                     </p>
                                 </div>
 
@@ -241,11 +294,6 @@ const LiveResultTable = () => {
                                         <span className="text-gray-500 text-xs sm:text-sm truncate">
                                             {item.days}
                                         </span>
-                                        {item.daysAgo && (
-                                            <span className="text-green-600 text-xs font-medium ml-2">
-                                                ({item.daysAgo})
-                                            </span>
-                                        )}
                                     </div>
                                 </div>
                             </div>

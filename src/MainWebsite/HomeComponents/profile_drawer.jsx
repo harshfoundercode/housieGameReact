@@ -110,11 +110,13 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     ];
 
     const moreItems = [
-        { icon: "✅", label: "My KYC", path: ROUTES.KYC },
+        { icon: "✅", label: "My KYC", path: ROUTES.KYC_VIEW },
+        { icon: "✅", label: "Add KYC", path: ROUTES.KYC_ADD},
+        // { icon: "✅", label: "Update KYC", path: ROUTES.KYC_EDIT},
         { icon: "🌐", label: "Language", path: ROUTES.LANG },
         { icon: "⚙️", label: "Settings", path: ROUTES.SETTINGS },
         { icon: "📰", label: "News & Media", path: ROUTES.MEDIA },
-        { icon: "📊", label: "Ticket Results", path: "/ticket-results" },
+        // { icon: "📊", label: "Ticket Results", path: "/ticket-results" },
         { icon: "🏅", label: "Results", path: ROUTES.AllResults },
     ];
 

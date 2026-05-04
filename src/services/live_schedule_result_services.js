@@ -1,5 +1,4 @@
 import { API } from './api_url';
-import { GameRoundsResponseModel } from '../model/live_schedule_result_model';
 
 export const getGameRounds = async () => {
   try {
@@ -20,14 +19,7 @@ export const getGameRounds = async () => {
       throw new Error(result.message || 'Failed to fetch game rounds');
     }
 
-    // Convert API response to model
-    const gameRoundsModel = GameRoundsResponseModel.fromAPIResponse(result);
-    console.log("✅ Game Rounds Model created");
-    console.log("📊 Total Games:", gameRoundsModel.data.length);
-    console.log("🎯 Games with rounds:", gameRoundsModel.getGamesWithRounds().length);
-    console.log("📝 Total rounds:", gameRoundsModel.getTotalRoundsCount());
-    
-    return gameRoundsModel;
+    return result;
     
   } catch (error) {
     console.error("❌ getGameRounds Error:", error);

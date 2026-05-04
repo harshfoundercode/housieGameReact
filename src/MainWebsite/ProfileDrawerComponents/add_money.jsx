@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../HomeComponents/nav_bar";
 import Footer from "../HomeComponents/footer";
 import { addMoney, transactionHistory } from "../../services/add_money_services";
-
+import { API } from "../../services/api_url";
 
 const Credits = () => {
     const navigate = useNavigate();
@@ -12,10 +12,61 @@ const Credits = () => {
     const [selectedPayment, setSelectedPayment] = useState("1");
     const [loading, setLoading] = useState(false);
     const [loadingHistory, setLoadingHistory] = useState(false);
+    const [loadingBalance, setLoadingBalance] = useState(false);
     const [userData, setUserData] = useState(null);
     const [transactionHistoryData, setTransactionHistoryData] = useState([]);
 
-  
+    // Fetch user profile from API (includes wallet balance)
+    const fetchUserProfileFromAPI = async () => {
+        setLoadingBalance(true);
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.log("No token found");
+                return;
+            }
+
+            const response = await fetch(`${API.PROFILE_URL}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const result = await response.json();
+            console.log("Profile API Response:", result);
+
+            if (result.status === 200 && result.success) {
+                const profileData = result.data;
+                setUserData(profileData);
+                
+                // Update localStorage
+                localStorage.setItem("user", JSON.stringify(profileData));
+                
+                // Update credits in localStorage for navbar
+                if (profileData.total_balance) {
+                    localStorage.setItem("credits", profileData.total_balance);
+                }
+                
+                // Dispatch event for navbar update
+                window.dispatchEvent(new Event('creditsUpdated'));
+                window.dispatchEvent(new Event('profileUpdated'));
+                
+                return profileData;
+            } else {
+                throw new Error(result.message || "Failed to fetch profile");
+            }
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+            // Fallback to localStorage
+            checkCreditStatus();
+            return null;
+        } finally {
+            setLoadingBalance(false);
+        }
+    };
+
     // Check login status and get user data from localStorage (initial load)
     const checkCreditStatus = () => {
         const user = localStorage.getItem("user");
@@ -30,6 +81,11 @@ const Credits = () => {
         } else {
             setUserData(null);
         }
+    };
+
+    // Refresh wallet balance - API call karega
+    const refreshWalletBalance = async () => {
+        await fetchUserProfileFromAPI();
     };
 
     // Fetch transaction history
@@ -62,8 +118,8 @@ const Credits = () => {
 
     useEffect(() => {
         checkCreditStatus();
-
-
+        fetchUserProfileFromAPI(); // Initial load ke liye API call
+        
         if (activeTab === "history") {
             fetchTransactionHistory();
         }
@@ -100,7 +156,7 @@ const Credits = () => {
                 alert(`Successfully added ₹${amountNum} to your wallet!`);
 
                 // Refresh profile data to get updated balance
-                await checkCreditStatus();
+                await refreshWalletBalance();
 
                 // Clear amount
                 setAmount("");
@@ -109,10 +165,6 @@ const Credits = () => {
                 if (activeTab === "history") {
                     await fetchTransactionHistory();
                 }
-
-                // Dispatch event for navbar update
-                window.dispatchEvent(new Event('creditsUpdated'));
-                window.dispatchEvent(new Event('profileUpdated'));
             } else {
                 throw new Error(response.message || "Failed to add money");
             }
@@ -179,22 +231,41 @@ const Credits = () => {
 
                     {/* Available Balance Card - Showing all balances from profile API */}
                     <div className="bg-linear-to-r from-[#004296] to-[#003380] rounded-2xl p-5 mb-8 text-white shadow-md">
-                        <p className="text-white/70 text-sm font-medium">Total Balance</p>
-                        <p className="text-4xl font-bold mt-1">
-                            ₹{currentBalance.toLocaleString('en-IN', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
-                        </p>
-                          <button
-                                onClick={checkCreditStatus}
-                                className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all"
-                                title="Refresh Profile"
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-white/70 text-sm font-medium">Total Balance</p>
+                                <p className="text-4xl font-bold mt-1">
+                                    {loadingBalance ? (
+                                        <span className="inline-block animate-pulse">---</span>
+                                    ) : (
+                                        `₹${currentBalance.toLocaleString('en-IN', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}`
+                                    )}
+                                </p>
+                            </div>
+                            <button
+                                onClick={refreshWalletBalance}
+                                disabled={loadingBalance}
+                                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all disabled:opacity-50"
+                                title="Refresh Balance"
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                <svg 
+                                    className={`w-5 h-5 ${loadingBalance ? 'animate-spin' : ''}`} 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round" 
+                                        strokeWidth={2} 
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                                    />
                                 </svg>
                             </button>
+                        </div>
 
                         {/* Balance Breakdown - if these fields exist in your profile API */}
                         {(userData?.main_balance !== undefined ||
