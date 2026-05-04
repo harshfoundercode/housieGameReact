@@ -33,7 +33,7 @@ export const API = {
     KYC_SUBMIT_URL: `${API_CONFIG_URL}kyc/submit`,
 
     ///GAME APIS
-
+    
     TICKET_LIST_BY_GAMEID_URL: `${API_CONFIG_URL}ticket/all?game_id=`,
     GET_AGENTS_URL: `${API_CONFIG_URL}agent`,
     GET_AGENT_DETAILS_URL: `${API_CONFIG_URL}agent/`,
