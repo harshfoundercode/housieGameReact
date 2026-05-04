@@ -1822,8 +1822,10 @@ const GamePage = () => {
     setCart([]);
   };
 
-  // Payment Functions
+  
+  // Payment Functions new created
   const handleWalletPayment = () => {
+    
     const total = getCartTotal();
     if (walletBalance >= total) {
       alert(`✅ Payment Successful!\n\nAmount Deducted: ₹${total}\nRemaining Balance: ₹${walletBalance - total}\n\nYour tickets have been booked successfully!\n\nThank you for your purchase! 🎉`);
