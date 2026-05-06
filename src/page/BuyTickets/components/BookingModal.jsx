@@ -85,9 +85,9 @@ const BookingModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
-      <div className="booking-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
+      <div className="booking-modal bg-linear-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
         {/* Modal Header with Progress Bar */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
+        <div className="sticky top-0 bg-linear-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
           <div className="flex justify-between items-center mb-3 sm:mb-4">
             <div className="flex items-center gap-2 sm:gap-3">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FBEFA4]">Book Your Tickets</h2>
@@ -156,7 +156,7 @@ const BookingModal = ({
           {/* STEP 1: Player Details */}
           {currentStep === 1 && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+              <div className="bg-linear-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
                   <span>👤</span> Step 1: Your Details
                 </h3>
@@ -205,7 +205,7 @@ const BookingModal = ({
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white font-bold text-sm sm:text-base"
+                  className="px-6 sm:px-8 py-2 sm:py-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white font-bold text-sm sm:text-base"
                 >
                   Next: Choose Ticket Type →
                 </button>
@@ -256,7 +256,7 @@ const BookingModal = ({
                   disabled={!selectedTicketType}
                   className={`px-6 sm:px-8 py-2 sm:py-3 rounded-xl text-white font-bold text-sm sm:text-base ${
                     selectedTicketType
-                      ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                      ? 'bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
                       : 'bg-gray-500 cursor-not-allowed'
                   }`}
                 >
@@ -269,7 +269,7 @@ const BookingModal = ({
           {/* STEP 3: Select Quantity */}
           {currentStep === 3 && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-gradient-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+              <div className="bg-linear-to-r from-[#004296]/30 to-[#003380]/30 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FBEFA4] mb-3 sm:mb-4 flex items-center gap-2">
                   <span>🔢</span> Step 3: Select Quantity
                 </h3>
@@ -310,7 +310,7 @@ const BookingModal = ({
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white font-bold text-sm sm:text-base"
+                  className="px-6 sm:px-8 py-2 sm:py-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white font-bold text-sm sm:text-base"
                 >
                   Next: Review →
                 </button>
@@ -370,7 +370,7 @@ const BookingModal = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#FBEFA4] to-[#FFE44D] hover:from-[#FFE44D] hover:to-[#FBEFA4] rounded-xl text-[#004296] font-bold text-sm sm:text-base"
+                  className="px-6 sm:px-8 py-2 sm:py-3 bg-linear-to-r from-[#FBEFA4] to-[#FFE44D] hover:from-[#FFE44D] hover:to-[#FBEFA4] rounded-xl text-[#004296] font-bold text-sm sm:text-base"
                 >
                   Confirm Booking 🎉
                 </button>

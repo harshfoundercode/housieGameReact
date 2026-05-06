@@ -22,10 +22,11 @@ export const ROUTES = {
 
     // Game Routes
     HOME: "/home",
-    GAME: "/game",
+    GAME: "/main_buy_ticket",
     AFTERGAME: "/aftergame",
 
     KYC_ADD: "/kyc-add",
     KYC_EDIT: "/kyc-edit",
     KYC_VIEW: "/kyc-view",
+    ALL_LIVE_RESULTS: "/all_live_results",
 };

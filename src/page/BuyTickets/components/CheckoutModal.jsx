@@ -16,8 +16,8 @@ const CheckoutModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
-      <div className="bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
-        <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
+      <div className="bg-linear-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-[#FBEFA4]/50 shadow-2xl">
+        <div className="sticky top-0 bg-linear-to-r from-[#004296] to-[#003380] p-4 sm:p-6 rounded-t-2xl sm:rounded-t-3xl border-b-2 border-[#FBEFA4]/50 z-10">
           <div className="flex justify-between items-center">
             <h2 className="text-xl sm:text-2xl font-bold text-[#FBEFA4]">💳 Checkout</h2>
             <button
@@ -114,7 +114,7 @@ const CheckoutModal = ({
               disabled={!selectedPaymentMethod}
               className={`flex-1 py-3 rounded-xl font-bold ${
                 selectedPaymentMethod
-                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
+                  ? 'bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
                   : 'bg-gray-500 text-gray-300 cursor-not-allowed'
               }`}
             >

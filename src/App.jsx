@@ -23,6 +23,7 @@ import AllResults from "./MainWebsite/ProfileDrawerComponents/all_results";
 import KYCAddEdit from "./MainWebsite/ProfileDrawerComponents/kyc_add_edit";
 import KYCView from "./MainWebsite/ProfileDrawerComponents/kyc_view";
 import GamePage from "./page/BuyTickets/main_buy_ticket";
+import AllLiveResults from "./MainWebsite/HomeComponents/all_limit_results";
 
 
 function App() {
@@ -83,7 +84,10 @@ function App() {
          {/* KYC Routes */}
         <Route path={ROUTES.KYC_ADD} element={<KYCAddEdit isEditMode={false} />} />
         <Route path={ROUTES.KYC_EDIT} element={<KYCAddEdit isEditMode={true} />} />
-        <Route path={ROUTES.KYC_VIEW} element={<KYCView />} />
+        <Route path={ROUTES.KYC_VIEW} element={<KYCView />} /> 
+
+        <Route path={ROUTES.ALL_LIVE_RESULTS} element={<AllLiveResults />} /> 
+
 
 
         {/* 404 Redirect */}

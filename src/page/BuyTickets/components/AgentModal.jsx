@@ -16,7 +16,7 @@ const AgentModal = ({
   handleCallAgent,
   cart,
   getCartTotal,
-  setSelectedAgentData
+  setSelectedAgentData  // ✅ Added this prop
 }) => {
   if (!showAgentModal) return null;
 
@@ -45,7 +45,7 @@ const AgentModal = ({
               onClick={() => {
                 setShowAgentModal(false);
                 setSelectedAgent(null);
-                setSelectedAgentData(null);
+                setSelectedAgentData(null);  // ✅ Using setSelectedAgentData
                 setSearchAgent("");
               }}
               className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-all"
@@ -153,7 +153,7 @@ const AgentModal = ({
               <button
                 onClick={() => {
                   setSelectedAgent(null);
-                  setSelectedAgentData(null);
+                  setSelectedAgentData(null);  // ✅ Using setSelectedAgentData
                 }}
                 className="text-[#FBEFA4] hover:text-white flex items-center gap-2 text-sm sm:text-base"
               >
