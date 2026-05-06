@@ -186,7 +186,7 @@ const LiveResultTable = () => {
 
                     {/* Header - Responsive */}
                     <div className="
-                        bg-gradient-to-r from-[#004296] to-[#003380] 
+                        bg-linear-to-r from-[#004296] to-[#003380] 
                         px-4 sm:px-5 md:px-6 
                         py-3 sm:py-3.5 md:py-4
                     ">
@@ -310,7 +310,7 @@ const LiveResultTable = () => {
                     <button
                         onClick={() => navigate(ROUTES.AFTERGAME)}
                         className="
-                            bg-gradient-to-r from-[#004296] to-[#003380] 
+                            bg-linear-to-r from-[#004296] to-[#003380] 
                             text-white 
                             px-6 sm:px-8 py-2.5 sm:py-3 
                             mb-6

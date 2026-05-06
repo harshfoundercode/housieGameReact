@@ -4,7 +4,6 @@ import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "./page/Home";
 import { ROUTES } from "./routes/routes";
-import GamePage from "./page/BeforeGameLive/gamePage";
 import AfterGameLive from "./page/AfterGameLive/afterGameLive";
 import HomeScreenWebsite from "./MainWebsite/homescreen_website";
 import RulesAndTerms from "./MainWebsite/FooterComponents/rules_regulation_terms";
@@ -23,6 +22,7 @@ import NewsAndMedia from "./MainWebsite/ProfileDrawerComponents/media_news";
 import AllResults from "./MainWebsite/ProfileDrawerComponents/all_results";
 import KYCAddEdit from "./MainWebsite/ProfileDrawerComponents/kyc_add_edit";
 import KYCView from "./MainWebsite/ProfileDrawerComponents/kyc_view";
+import GamePage from "./page/BuyTickets/main_buy_ticket";
 
 
 function App() {

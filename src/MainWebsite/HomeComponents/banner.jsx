@@ -1,4 +1,3 @@
-// src/components/Banner.js (UPDATED)
 import React, { useState, useEffect } from "react";
 import BannerLogo from '../../assets/Banner.jpg'; 
 import { getBanner } from "../../services/banner_services";
@@ -39,10 +38,10 @@ const Banner = () => {
         }
     };
 
-    const displayImage = bannerImage || BannerLogo; // API image nahi hai to fallback
+    const displayImage = bannerImage || BannerLogo; 
 
     return (
-        <section className="pt-16 sm:pt-20 md:pt-24 lg:pt-28">
+        <section className="w-full pt-16 sm:pt-20 md:pt-24 lg:pt-28">
             <div className="relative w-full">
                 
                 {/* Loading Overlay */}
@@ -55,21 +54,25 @@ const Banner = () => {
                     </div>
                 )}
                 
-              
+                {/* Error Message */}
+                {error && (
+                    <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded z-20">
+                        <p className="text-sm">Failed to load banner: {error}</p>
+                    </div>
+                )}
                 
-                {/* ✅ Banner Image */}
+                {/* ✅ Banner Image*/}
                 <img
                     src={displayImage}
                     alt="Tambola Banner"
                     className={`
                         w-full
-                        h-62.5
-                        xs:h-[300px]
-                        sm:h-87.5
-                        md:h-75
-                        lg:h-87.5
-                        xl:h-100
-                        2xl:h-112.5
+                        h-auto
+                        max-h-100
+                        sm:max-h-125
+                        md:max-h-150
+                        lg:max-h-175
+                        xl:max-h-200
                         object-cover
                         object-center
                         transition-opacity duration-500

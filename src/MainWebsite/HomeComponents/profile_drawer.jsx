@@ -105,7 +105,6 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     };
 
     const menuItems = [
-        { icon: "🎫", label: "Buy Tickets", path: ROUTES.GAME },
         { icon: "📋", label: "My Tickets", path: ROUTES.MyTickets },
     ];
 
@@ -113,7 +112,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
         { icon: "✅", label: "My KYC", path: ROUTES.KYC_VIEW },
         { icon: "✅", label: "Add KYC", path: ROUTES.KYC_ADD},
         // { icon: "✅", label: "Update KYC", path: ROUTES.KYC_EDIT},
-        { icon: "🌐", label: "Language", path: ROUTES.LANG },
+        // { icon: "🌐", label: "Language", path: ROUTES.LANG },
         { icon: "⚙️", label: "Settings", path: ROUTES.SETTINGS },
         { icon: "📰", label: "News & Media", path: ROUTES.MEDIA },
         // { icon: "📊", label: "Ticket Results", path: "/ticket-results" },
