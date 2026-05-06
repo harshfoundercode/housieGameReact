@@ -425,34 +425,55 @@ const LiveResultTable = ({ limit = 4, showViewAll = true }) => {
     };
 
     // Process API data
-    const processGameData = (games) => {
-        if (!games || !Array.isArray(games)) return [];
+const processGameData = (games) => {
+    if (!games || !Array.isArray(games)) return [];
 
-        return games.map((game) => {
-            const { gameDate, roundTime } = parseDateTime(game.start_datetime);
-            const isLive = isGameLive(game.start_datetime);
-            const isCompleted = isGameCompleted(game.start_datetime);
-            const drawTime = formatDrawTime(roundTime, gameDate);
-            const days = formatDays(game.start_datetime);
-
-            // Determine game status
-            let status = 'upcoming';
-            if (isLive) status = 'live';
-            if (isCompleted) status = 'completed';
-
+    return games.map((game) => {
+        // Handle games without start_datetime first
+        if (!game.start_datetime) {
             return {
                 id: game.game_id,
                 gameName: game.title || game.name || "Game",
-                drawTime: drawTime,
-                days: days,
-                status: status,
-                roundTime: roundTime,
-                gameDate: gameDate,
-                startDateTime: game.start_datetime,
+                drawTime: "TBD",
+                days: "Upcoming",
+                status: game.status || 'upcoming', // Use API status
+                roundTime: null,
+                gameDate: null,
+                startDateTime: null,
                 ticketPrice: game.ticket_price
             };
-        });
-    };
+        }
+
+        const { gameDate, roundTime } = parseDateTime(game.start_datetime);
+        const drawTime = formatDrawTime(roundTime, gameDate);
+        const days = formatDays(game.start_datetime);
+
+        // PRIORITY: Use API status first, then fall back to time-based calculation
+        let status = game.status || 'upcoming';
+        
+        // Only use time-based calculation if API status is 'upcoming' 
+        // and we want to check if it should actually be live/completed
+        if (status === 'upcoming') {
+            const isLive = isGameLive(game.start_datetime);
+            const isCompleted = isGameCompleted(game.start_datetime);
+            
+            if (isLive) status = 'live';
+            else if (isCompleted) status = 'completed';
+        }
+
+        return {
+            id: game.game_id,
+            gameName: game.title || game.name || "Game",
+            drawTime: drawTime,
+            days: days,
+            status: status,
+            roundTime: roundTime,
+            gameDate: gameDate,
+            startDateTime: game.start_datetime,
+            ticketPrice: game.ticket_price
+        };
+    });
+};
 
     // Get games from API response and sort them
     const allGames = processGameData(gameRounds?.data?.games || []).sort((a, b) => {

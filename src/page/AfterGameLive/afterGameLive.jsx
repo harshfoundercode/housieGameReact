@@ -4,7 +4,6 @@ import { ROUTES } from "../../routes/routes";
 import logoImage from "../../assets/tambolaGame.jpeg";
 import PlayerRanking from "./GameResultComponents/player_ranking";
 import WinnerList from "./GameResultComponents/winner_list";
-import AnimatedTambolaCaller from "./animated_tambola_controller";
 import TambolaLive from "./animated_tambola_controller";
 
 const AfterGameLive = () => {
@@ -70,8 +69,7 @@ const AfterGameLive = () => {
         </div>
 
         {/* CONDITIONAL RENDERING */}
-        <TambolaLive />
-        
+        <TambolaLive gameId={34} />
 
         {/* PLAYER RANKING */}
         <PlayerRanking />

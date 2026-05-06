@@ -21,7 +21,7 @@ const FAQs = () => {
     // Parse FAQ HTML to extract questions and answers
     const parseFaqToArray = (htmlContent) => {
         if (!htmlContent) return [];
-        
+         
         const faqs = [];
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlContent, 'text/html');
