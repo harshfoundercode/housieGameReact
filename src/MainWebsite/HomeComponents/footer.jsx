@@ -103,7 +103,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="w-full bg-gradient-to-br from-[#001a33] via-[#002266] to-[#001a4d] text-white relative overflow-hidden">
+        <footer className="w-full bg-linear-to-br from-[#001a33] via-[#002266] to-[#001a4d] text-white relative overflow-hidden">
             
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-5">
@@ -118,7 +118,7 @@ const Footer = () => {
             <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[#004296] rounded-full blur-3xl opacity-10"></div>
 
             {/* Top Border Gradient */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#FBEFA4] to-transparent"></div>
+            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-[#FBEFA4] to-transparent"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 py-10 md:py-12">
                 
@@ -278,17 +278,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="flex flex-col md:flex-row items-center justify-between gap-3 pt-6 border-t border-white/10">
-                    <p className="text-white/40 text-xs text-center md:text-left">
-                        © {currentYear} Tambola.com. All rights reserved. 
-                        <span className="mx-2">|</span>
-                        <span className="text-[#FBEFA4]/60">Play Responsibly • 18+ Only</span>
-                    </p>
-                    <p className="text-white/30 text-xs">
-                        Made with <span className="text-red-500">❤️</span> in India
-                    </p>
-                </div>
+                
             </div>
         </footer>
     );

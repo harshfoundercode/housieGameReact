@@ -32,10 +32,12 @@ export const useAgentModal = (agents = []) => {
     setIsContacting(false);
   }, []);
 
-  const selectAgent = useCallback((agent) => {
-    setSelectedAgent(agent);
-    setSelectedAgentData(null);
-  }, []);
+const selectAgent = useCallback((agent) => {
+  console.log("Selecting agent:", agent);
+  console.log("Agent ID:", agent?.agent_id);
+  setSelectedAgent(agent);
+  setSelectedAgentData(null);
+}, []);
 
   const clearSelectedAgent = useCallback(() => {
     setSelectedAgent(null);
@@ -50,25 +52,33 @@ export const useAgentModal = (agents = []) => {
     setSearchAgent("");
   }, []);
 
-  const handleContactViaWhatsApp = useCallback((agent, cartItems = [], cartTotal = 0) => {
-    setIsContacting(true);
-    
-    const itemsList = cartItems.length > 0 
-      ? cartItems.map(item => `Ticket #${item.id} - ${item.name}`).join('\n')
-      : 'No specific tickets';
-    
-    const message = encodeURIComponent(
-      `Hello ${agent.name},\n\nI want to purchase the following tickets:\n\n${itemsList}\n\nTotal Amount: ₹${cartTotal}\n\nPlease help me complete the booking.\n\nThank you!`
-    );
-    
-    window.open(`https://wa.me/${agent.phone}?text=${message}`, '_blank');
-    
-    setTimeout(() => {
-      setIsContacting(false);
-      closeAgentModal();
-      alert("🎉 Booking request sent! The agent will contact you shortly to complete the payment and booking.");
-    }, 1000);
-  }, [closeAgentModal]);
+ // In handleContactViaWhatsApp - Use agent_id if available
+const handleContactViaWhatsApp = useCallback((agent, cartItems = [], cartTotal = 0) => {
+  setIsContacting(true);
+  
+  const itemsList = cartItems.length > 0 
+    ? cartItems.map(item => `Ticket #${item.ticketNumber || item.id} - ₹${item.price || 100}`).join('\n')
+    : 'No specific tickets';
+  
+  // Use whatsapp_number from agent data
+  const phoneNumber = agent?.whatsapp_number || agent?.phone;
+  
+  const message = encodeURIComponent(
+    `Hello ${agent.name},\n\nI want to purchase the following tickets:\n\n${itemsList}\n\nTotal Amount: ₹${cartTotal}\n\nPlease help me complete the booking.\n\nThank you!`
+  );
+  
+  if (phoneNumber) {
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+  } else {
+    alert("Agent phone number not available");
+  }
+  
+  setTimeout(() => {
+    setIsContacting(false);
+    closeAgentModal();
+    alert("🎉 Booking request sent! The agent will contact you shortly to complete the payment and booking.");
+  }, 1000);
+}, [closeAgentModal]);
 
   const handleCallAgent = useCallback((agent) => {
     window.location.href = `tel:${agent.phone}`;

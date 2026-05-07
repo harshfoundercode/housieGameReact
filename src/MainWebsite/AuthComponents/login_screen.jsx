@@ -1,38 +1,94 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import tambolaLogo from "../../assets/tambolaGame.jpeg";
 import { sendOTP, verifyOTP, LoginUser } from "../../services/login_user"; // Import your API functions
+import { getFeedbackVideos } from "../../services/user_feedback_services";
+import { ROUTES } from "../../routes/routes";
+
 
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        phone: "", 
+        phone: "",
         otp: "",
     });
     const [otpSent, setOtpSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const testimonials = [
-        {
-            id: 1,
-            title: "Rahul won ₹50,000",
-            thumbnail: "https://img.youtube.com/vi/5yMfIQSsHJg/mqdefault.jpg",
-            videoUrl: "https://www.youtube.com/watch?v=5yMfIQSsHJg"
-        },
-        {
-            id: 2,
-            title: "Priya's First Win",
-            thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-            videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        },
-        {
-            id: 3,
-            title: "How Tambola Works",
-            thumbnail: "https://img.youtube.com/vi/5yMfIQSsHJg/mqdefault.jpg",
-            videoUrl: "https://www.youtube.com/watch?v=5yMfIQSsHJg"
-        },
-    ];
+    // Feedback videos state
+    const [testimonials, setTestimonials] = useState([]);
+    const [loadingVideos, setLoadingVideos] = useState(false);
+
+    // Fetch feedback videos on component mount
+    useEffect(() => {
+        fetchFeedbackVideos();
+    }, []);
+
+    const fetchFeedbackVideos = async () => {
+        setLoadingVideos(true);
+        try {
+            const response = await getFeedbackVideos();
+            console.log("Feedback Videos Response:", response);
+
+            if (response.data && response.data.length > 0) {
+                // Map API data to testimonials format
+                const formattedVideos = response.data
+                    .filter(video => video.status === 'active') // Only show active videos
+                    .map(video => ({
+                        id: video.id,
+                        title: video.name || video.description || "Player Feedback",
+                        thumbnail: getYouTubeThumbnail(video.video_url),
+                        videoUrl: video.video_url,
+                        description: video.description || ""
+                    }));
+
+                setTestimonials(formattedVideos);
+            } else {
+                // Fallback to static data if no videos
+                setTestimonials(getStaticTestimonials());
+            }
+        } catch (error) {
+            console.error("Error fetching feedback videos:", error);
+            // Fallback to static data on error
+            setTestimonials(getStaticTestimonials());
+        } finally {
+            setLoadingVideos(false);
+        }
+    };
+
+    // Extract YouTube video ID and generate thumbnail URL
+    const getYouTubeThumbnail = (url) => {
+        if (!url) return "https://img.youtube.com/vi/default/mqdefault.jpg";
+
+        try {
+            // Handle different YouTube URL formats
+            let videoId = "";
+
+            // Format: https://www.youtube.com/watch?v=VIDEO_ID
+            if (url.includes("watch?v=")) {
+                videoId = url.split("watch?v=")[1]?.split("&")[0];
+            }
+            // Format: https://youtu.be/VIDEO_ID
+            else if (url.includes("youtu.be/")) {
+                videoId = url.split("youtu.be/")[1]?.split("?")[0];
+            }
+            // Format: https://www.youtube.com/embed/VIDEO_ID
+            else if (url.includes("embed/")) {
+                videoId = url.split("embed/")[1]?.split("?")[0];
+            }
+
+            if (videoId) {
+                return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+            }
+
+            // If thumbnail URL is provided in API
+            return url;
+        } catch (e) {
+            return "https://img.youtube.com/vi/default/mqdefault.jpg";
+        }
+    };
+
 
     const handlePhoneChange = (e) => {
         const value = e.target.value;
@@ -56,15 +112,15 @@ const Login = () => {
             setError("Please enter a valid 10-digit phone number");
             return;
         }
-        
+
         setLoading(true);
         setError("");
-        
+
         try {
             // Call your send OTP API
             const response = await sendOTP(formData.phone);
             console.log("Send OTP Response:", response);
-            
+
             // Check if API call was successful (status 200)
             if (response.status === 200 || response.success) {
                 setOtpSent(true);
@@ -86,26 +142,26 @@ const Login = () => {
             setError("Please enter a valid OTP");
             return;
         }
-        
+
         setLoading(true);
         setError("");
-        
+
         try {
             // Step 2a: First verify OTP
             const verifyResponse = await verifyOTP(formData.phone, formData.otp);
             console.log("Verify OTP Response:", verifyResponse);
-            
+
             // Check if OTP verification was successful (status 200)
             if (verifyResponse.status === 200 || verifyResponse.success) {
                 console.log("OTP verified successfully");
-                
+
                 // Step 2b: Now call login API
                 const loginResponse = await LoginUser(formData.phone);
                 console.log("Login Response:", loginResponse);
-                
+
                 // Check if login was successful (status 200)
                 if (loginResponse.status === 200 || loginResponse.success) {
-                    
+
                     // Extract data from login response (adjust based on your API structure)
                     const { data } = loginResponse;
                     const authToken = data?.token;
@@ -118,13 +174,13 @@ const Login = () => {
                         credits: data?.credits,
                         referral_code: data?.referral_code
                     };
-                    
+
                     // Save user data to localStorage
                     saveUserData(authToken, userData);
-                    
+
                     // Success message
                     alert(`Welcome back ${userData.first_name || 'User'}! Login successful!`);
-                    
+
                     // Navigate to home page
                     navigate("/");
                     window.location.reload(); // Refresh to update navbar
@@ -153,12 +209,12 @@ const Login = () => {
             }
             localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("loginTime", new Date().toISOString());
-            
+
             // Save individual fields for quick access
             if (userData?.user_id) localStorage.setItem("userId", userData.user_id.toString());
             if (userData?.phone) localStorage.setItem("userPhone", userData.phone);
             if (userData?.credits) localStorage.setItem("credits", userData.credits.toString());
-            
+
             console.log("User data saved successfully");
         } catch (error) {
             console.error("Error saving user data:", error);
@@ -276,8 +332,8 @@ const Login = () => {
                                     maxLength="10"
                                     disabled={otpSent}
                                     className={`w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 transition-all outline-none text-sm sm:text-base text-gray-800 ${otpSent
-                                            ? 'bg-gray-100 border-gray-200 cursor-not-allowed'
-                                            : 'border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20'
+                                        ? 'bg-gray-100 border-gray-200 cursor-not-allowed'
+                                        : 'border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20'
                                         }`}
                                 />
                             </div>
@@ -320,8 +376,8 @@ const Login = () => {
                                     </button>
                                 </div>
                                 <p className="text-right mt-1">
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         onClick={handleResendOTP}
                                         disabled={loading}
                                         className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium disabled:opacity-50"
@@ -377,42 +433,60 @@ const Login = () => {
                         <h3 className="text-center text-white/90 font-semibold mb-3 sm:mb-4 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
                             <span>🎥</span> What Players Say <span>🎥</span>
                         </h3>
-
-                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                            {testimonials.map((video) => (
-                                <div
-                                    key={video.id}
-                                    onClick={() => window.open(video.videoUrl, '_blank')}
-                                    className="cursor-pointer group"
-                                >
-                                    <div className="relative rounded-lg overflow-hidden shadow-lg group-hover:shadow-xl transition-all border-2 border-white/20">
-                                        <img
-                                            src={video.thumbnail}
-                                            alt={video.title}
-                                            className="w-full h-14 sm:h-16 md:h-20 object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
-                                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 flex items-center justify-center">
-                                            <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-[#FBEFA4] rounded-full flex items-center justify-center shadow-lg">
-                                                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#004296] ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M8 5v14l11-7L8 5z" />
-                                                </svg>
+                        {loadingVideos ? (
+                            // Loading skeleton
+                            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="animate-pulse">
+                                        <div className="bg-white/10 rounded-lg h-14 sm:h-16 md:h-20"></div>
+                                        <div className="bg-white/10 h-3 rounded mt-1 w-3/4 mx-auto"></div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : testimonials.length > 0 ? (
+                            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                                {testimonials.slice(0, 3).map((video) => (
+                                    <div
+                                        key={video.id}
+                                        onClick={() => window.open(video.videoUrl, '_blank')}
+                                        className="cursor-pointer group"
+                                    >
+                                        <div className="relative rounded-lg overflow-hidden shadow-lg group-hover:shadow-xl transition-all border-2 border-white/20 group-hover:border-[#FBEFA4]/50">
+                                            <img
+                                                src={video.thumbnail}
+                                                alt={video.title}
+                                                className="w-full h-14 sm:h-16 md:h-20 object-cover group-hover:scale-105 transition-transform duration-300"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = "https://img.youtube.com/vi/default/mqdefault.jpg";
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 flex items-center justify-center">
+                                                <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-[#FBEFA4] rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                                    <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#004296] ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M8 5v14l11-7L8 5z" />
+                                                    </svg>
+                                                </div>
                                             </div>
                                         </div>
+                                        <p className="text-[9px] sm:text-[10px] md:text-xs text-white/80 mt-1 truncate text-center group-hover:text-[#FBEFA4] transition-colors">
+                                            {video.title}
+                                        </p>
                                     </div>
-                                    <p className="text-[9px] sm:text-[10px] md:text-xs text-white/80 mt-1 truncate text-center">
-                                        {video.title}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-center text-white/50 text-xs">No testimonials available</p>
+                        )}
                     </div>
+
 
                     {/* Terms Links */}
                     <div className="text-center mt-4 sm:mt-5 text-[10px] sm:text-xs text-white/50">
                         By continuing, you agree to our{" "}
-                        <Link to="/rules" className="text-[#FBEFA4] hover:underline font-medium">Terms</Link>{" "}
+                        <Link to={ROUTES.RULES} className="text-[#FBEFA4] hover:underline font-medium">Terms</Link>{" "}
                         and{" "}
-                        <Link to="/privacy" className="text-[#FBEFA4] hover:underline font-medium">Privacy Policy</Link>
+                        <Link to={ROUTES.PRIVACYPOLICY} className="text-[#FBEFA4] hover:underline font-medium">Privacy Policy</Link>
                     </div>
                 </div>
             </div>

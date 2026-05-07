@@ -21,7 +21,6 @@ const TodaysWinner = () => {
       const winnersList = await getWinnerList();
 
       console.log("📦 Winners list received in component:", winnersList);
-      console.log("📦 Total winners:", winnersList.length);
 
       // Convert models to plain objects for component use
       const formattedWinnersList = winnersList.map(winner => winner.toJSON());

@@ -91,7 +91,7 @@ const Navbar = () => {
 
     const navItems = [
         { name: "Home", path: ROUTES.HomeScreenWebsite },
-        { name: "Result", path: ROUTES.AFTERGAME },
+        // { name: "Result", path: ROUTES.AFTERGAME },
         { name: "Rules", path: ROUTES.RULES },
         { name: "FAQs", path: ROUTES.FAQS },
     ];

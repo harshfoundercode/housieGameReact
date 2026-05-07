@@ -5,6 +5,7 @@ import { ROUTES } from "../../routes/routes";
 import { sendOTP, verifyOTP, registerUser } from "../../services/register_user";
 
 
+
 const Register = () => {
     const navigate = useNavigate();
     
@@ -29,7 +30,7 @@ const Register = () => {
     const [error, setError] = useState("");
 
     // Check if all checkboxes are checked
-    const allChecked =  checkboxes.termsAgree;
+    const allChecked =  checkboxes.termsAgree;      
 
     const handlePhoneChange = (e) => {
         const value = e.target.value;
@@ -367,9 +368,9 @@ const Register = () => {
                                         </div>
                                         <span className="text-gray-600 text-xs sm:text-sm">
                                             I agree to the{" "}
-                                            <Link to="/rules" className="text-[#004296] hover:underline font-medium">Terms</Link>{" "}
+                                            <Link to={ROUTES.RULES} className="text-[#004296] hover:underline font-medium">Terms</Link>{" "}
                                             and{" "}
-                                            <Link to="/privacy" className="text-[#004296] hover:underline font-medium">Privacy Policy</Link>
+                                            <Link to={ROUTES.PRIVACYPOLICY} className="text-[#004296] hover:underline font-medium">Privacy Policy</Link>
                                         </span>
                                     </label>
                                 </div>
@@ -543,9 +544,9 @@ const Register = () => {
                     {/* Footer Text */}
                     <div className="text-center mt-4 sm:mt-5 text-[10px] sm:text-xs text-white/50">
                         By registering, you agree to our{" "}
-                        <Link to="/rules" className="text-[#FBEFA4] hover:underline">Terms</Link>{" "}
+                        <Link to={ROUTES.RULES} className="text-[#FBEFA4] hover:underline">Terms</Link>{" "}
                         and{" "}
-                        <Link to="/privacy" className="text-[#FBEFA4] hover:underline">Privacy Policy</Link>
+                        <Link to={ROUTES.PRIVACYPOLICY} className="text-[#FBEFA4] hover:underline">Privacy Policy</Link>
                     </div>
                 </div>
             </div>

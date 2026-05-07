@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation  } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
 import logoImage from "../../assets/tambolaGame.jpeg";
 import PlayerRanking from "./GameResultComponents/player_ranking";
@@ -8,8 +8,28 @@ import TambolaLive from "./animated_tambola_controller";
 
 const AfterGameLive = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+
+
+   // Get game data from navigation state
+  const gameData = location.state;
+  const gameId = gameData?.gameId;
+  const gameName = gameData?.gameName;
+  const gameDate = gameData?.gameDate;
+  const roundTime = gameData?.roundTime;
+
+  // Debug: Print received game data
+  useEffect(() => {
+    console.log("=== RECEIVED GAME DATA ===");
+    console.log("Full State:", location.state);
+    console.log("Game ID:", gameId);
+    console.log("Game Name:", gameName);
+    console.log("Game Date:", gameDate);
+    console.log("Round Time:", roundTime);
+    console.log("=========================");
+  }, [location.state]);
 
 
   // Check screen size
@@ -29,7 +49,11 @@ const AfterGameLive = () => {
     console.log("Searching for:", searchQuery);
   };
 
-
+   // Agar gameId nahi mili to fallback
+  if (!gameId) {
+    console.warn("⚠️ No gameId received in AfterGameLive! Using default 34");
+    return navigate(ROUTES.HOME);
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white p-4 md:p-6 relative">
@@ -69,7 +93,7 @@ const AfterGameLive = () => {
         </div>
 
         {/* CONDITIONAL RENDERING */}
-        <TambolaLive gameId={34} />
+        <TambolaLive gameId={gameId} />
 
         {/* PLAYER RANKING */}
         <PlayerRanking />

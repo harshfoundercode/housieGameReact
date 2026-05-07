@@ -16,8 +16,9 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
   const [loading, setLoading] = useState(false);
   const [fetchingIFSC, setFetchingIFSC] = useState(false);
   const [kycId, setKycId] = useState(null);
+  const [ifscVerified, setIfscVerified] = useState(false);
 
-  // Form Data
+  // Form Data - Only API parameters
   const [formData, setFormData] = useState({
     // Tab 1: Personal Info
     first_name: "",
@@ -26,16 +27,16 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
     // Tab 2: ID Proof
     id_type: "aadhaar",
     id_number: "",
-    id_name: "",
     id_front_image: null,
     id_back_image: null,
+    pancard_number: "",
+    pancard_image: null,
     // Tab 3: Bank Details
     account_holder_name: "",
     bank_name: "",
     account_number: "",
-    confirm_account_number: "",
+    confirm_account_number: "", // Only for UI confirmation
     ifsc_code: "",
-    cheque_image: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -55,15 +56,6 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
       return dateString.split('T')[0];
     }
     return dateString;
-  };
-
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
   };
 
   // Fetch user profile
@@ -123,18 +115,22 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
       first_name: data.first_name || "",
       last_name: data.last_name || "",
       dob: formattedDob,
-      id_type: data.id_type || "aadhaar",
+      id_type: "aadhaar",
       id_number: data.id_number || "",
-      id_name: data.id_name || "",
-      id_front_image: data.id_front_image,
-      id_back_image: data.id_back_image,
+      id_front_image: data.id_front_image || null,
+      id_back_image: data.id_back_image || null,
+      pancard_number: data.pancard_number || "",
+      pancard_image: data.pancard_image || null,
       account_holder_name: data.account_holder_name || "",
       bank_name: data.bank_name || "",
       account_number: data.account_number || "",
       confirm_account_number: data.account_number || "",
       ifsc_code: data.ifsc_code || "",
-      cheque_image: null,
     });
+
+    if (data.ifsc_code) {
+      setIfscVerified(true);
+    }
 
     setCompletedTabs({
       tab1: !!(data.first_name && data.dob),
@@ -144,27 +140,88 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
   };
 
   // IFSC verification
-  const handleIFSCBlur = async () => {
-    const ifscCode = formData.ifsc_code.toUpperCase();
-    if (!ifscCode || ifscCode.length !== 11) {
-      setErrors({ ...errors, ifsc_code: "Please enter valid IFSC code" });
-      return;
+  const handleIFSCChange = async (e) => {
+    const { value } = e.target;
+    const upperValue = value.toUpperCase();
+    
+    setFormData(prev => ({
+      ...prev,
+      ifsc_code: upperValue,
+      bank_name: ifscVerified && upperValue.length === 11 ? prev.bank_name : "",
+    }));
+    
+    if (errors.ifsc_code) {
+      setErrors(prev => ({ ...prev, ifsc_code: "" }));
     }
 
+    setIfscVerified(false);
+    
+    if (upperValue.length === 11) {
+      setFetchingIFSC(true);
+      
+      try {
+        const response = await verifyIFSC(upperValue);
+        
+        if (response.success && response.data && response.data.bank) {
+          setFormData(prev => ({
+            ...prev,
+            bank_name: response.data.bank,
+          }));
+          setIfscVerified(true);
+          setErrors(prev => ({ ...prev, ifsc_code: "" }));
+        } else {
+          setFormData(prev => ({
+            ...prev,
+            bank_name: "",
+          }));
+          setErrors(prev => ({ ...prev, ifsc_code: "Invalid IFSC code. Please check and try again." }));
+        }
+      } catch (error) {
+        console.error("IFSC verification error:", error);
+        setFormData(prev => ({
+          ...prev,
+          bank_name: "",
+        }));
+        setErrors(prev => ({ ...prev, ifsc_code: "Failed to verify IFSC code. Please try again." }));
+      } finally {
+        setFetchingIFSC(false);
+      }
+    }
+  };
+
+  const handleIFSCBlur = async () => {
+    const ifscCode = formData.ifsc_code;
+    
+    if (!ifscCode || ifscCode.length < 11) {
+      if (ifscCode.length > 0) {
+        setErrors(prev => ({ ...prev, ifsc_code: "IFSC code must be 11 characters" }));
+      }
+      return;
+    }
+    
+    if (ifscVerified) return;
+    
     setFetchingIFSC(true);
     try {
       const response = await verifyIFSC(ifscCode);
-      if (response.success && response.data) {
+      
+      if (response.success && response.data && response.data.bank) {
         setFormData(prev => ({
           ...prev,
           bank_name: response.data.bank,
         }));
-        setErrors({ ...errors, ifsc_code: "" });
+        setIfscVerified(true);
+        setErrors(prev => ({ ...prev, ifsc_code: "" }));
       } else {
-        setErrors({ ...errors, ifsc_code: "Invalid IFSC code" });
+        setFormData(prev => ({
+          ...prev,
+          bank_name: "",
+        }));
+        setErrors(prev => ({ ...prev, ifsc_code: "Invalid IFSC code. Please check and try again." }));
       }
     } catch (error) {
-      setErrors({ ...errors, ifsc_code: "Failed to verify IFSC code" });
+      console.error("IFSC verification error:", error);
+      setErrors(prev => ({ ...prev, ifsc_code: "Failed to verify IFSC code" }));
     } finally {
       setFetchingIFSC(false);
     }
@@ -198,13 +255,20 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
 
   const validateTab2 = () => {
     const newErrors = {};
-    if (!formData.id_number) newErrors.id_number = "ID number is required";
-    if (formData.id_type === "aadhaar" && formData.id_number.length !== 12) {
+    if (!formData.id_number) newErrors.id_number = "Aadhaar number is required";
+    if (formData.id_number && formData.id_number.length !== 12) {
       newErrors.id_number = "Aadhaar must be 12 digits";
     }
-    if (!formData.id_name) newErrors.id_name = "Name as per ID is required";
-    if (!formData.id_front_image) newErrors.id_front_image = "Front image is required";
-    if (!formData.id_back_image) newErrors.id_back_image = "Back image is required";
+    if (!formData.id_front_image) newErrors.id_front_image = "Aadhaar front image is required";
+    if (!formData.id_back_image) newErrors.id_back_image = "Aadhaar back image is required";
+    
+    // PAN Card validations
+    if (!formData.pancard_number) newErrors.pancard_number = "PAN card number is required";
+    if (formData.pancard_number && formData.pancard_number.length !== 10) {
+      newErrors.pancard_number = "PAN card must be 10 characters";
+    }
+    if (!formData.pancard_image) newErrors.pancard_image = "PAN card image is required";
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -219,7 +283,9 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
       newErrors.confirm_account_number = "Account numbers do not match";
     }
     if (!formData.ifsc_code) newErrors.ifsc_code = "IFSC code is required";
-    if (!formData.cheque_image) newErrors.cheque_image = "Cheque/Passbook image is required";
+    if (formData.ifsc_code && formData.ifsc_code.length !== 11) {
+      newErrors.ifsc_code = "IFSC code must be 11 characters";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -277,29 +343,30 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
     setIsSubmitting(true);
     
     try {
-      // Convert files to base64
-      const idFrontBase64 = formData.id_front_image && typeof formData.id_front_image !== 'string' 
-        ? await fileToBase64(formData.id_front_image) : formData.id_front_image;
-      const idBackBase64 = formData.id_back_image && typeof formData.id_back_image !== 'string'
-        ? await fileToBase64(formData.id_back_image) : formData.id_back_image;
-      const chequeBase64 = formData.cheque_image && typeof formData.cheque_image !== 'string'
-        ? await fileToBase64(formData.cheque_image) : formData.cheque_image;
-
+      // Only sending parameters that are in the API
       const submitData = {
         first_name: formData.first_name,
         last_name: formData.last_name,
-        dob: new Date(formData.dob).toISOString(),
-        id_type: formData.id_type,
+        dob: formData.dob,
+        id_type: "aadhaar",
         id_number: formData.id_number,
-        id_name: formData.id_name,
-        id_front_image: idFrontBase64,
-        id_back_image: idBackBase64,
         account_number: formData.account_number,
         ifsc_code: formData.ifsc_code,
         bank_name: formData.bank_name,
         account_holder_name: formData.account_holder_name,
-        cheque_image: chequeBase64,
+        pancard_number: formData.pancard_number,
       };
+      
+      // Append files only
+      if (formData.id_front_image && typeof formData.id_front_image !== 'string') {
+        submitData.id_front_image = formData.id_front_image;
+      }
+      if (formData.id_back_image && typeof formData.id_back_image !== 'string') {
+        submitData.id_back_image = formData.id_back_image;
+      }
+      if (formData.pancard_image && typeof formData.pancard_image !== 'string') {
+        submitData.pancard_image = formData.pancard_image;
+      }
       
       let response;
       if (isEditMode && (kycId || existingData)) {
@@ -447,59 +514,36 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
                     <h3 className="text-xl font-bold text-[#004296]">ID Proof Details</h3>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 font-medium mb-1.5 text-sm">
-                        ID Type <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        name="id_type"
-                        value={formData.id_type}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#004296] outline-none transition-all"
-                      >
-                        <option value="aadhaar">Aadhaar Card</option>
-                        <option value="pan">PAN Card</option>
-                        <option value="voter">Voter ID</option>
-                        <option value="passport">Passport</option>
-                      </select>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-600 font-semibold">ID Type:</span>
+                      <span className="text-blue-800 font-bold">Aadhaar Card</span>
                     </div>
+                    <p className="text-xs text-blue-600 mt-1">Please provide your Aadhaar card details below</p>
+                  </div>
 
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
                       <label className="block text-gray-700 font-medium mb-1.5 text-sm">
-                        ID Number <span className="text-red-500">*</span>
+                        Aadhaar Number <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         name="id_number"
                         value={formData.id_number}
                         onChange={handleChange}
-                        placeholder={formData.id_type === "aadhaar" ? "Enter 12-digit Aadhaar number" : "Enter ID number"}
+                        placeholder="Enter 12-digit Aadhaar number"
+                        maxLength="12"
                         className={`w-full px-4 py-3 rounded-lg border ${errors.id_number ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:border-[#004296] outline-none transition-all`}
                       />
                       {errors.id_number && <p className="text-red-500 text-xs mt-1">{errors.id_number}</p>}
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <label className="block text-gray-700 font-medium mb-1.5 text-sm">
-                        Name as on ID <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="id_name"
-                        value={formData.id_name}
-                        onChange={handleChange}
-                        placeholder="Full name exactly as it appears on your ID"
-                        className={`w-full px-4 py-3 rounded-lg border ${errors.id_name ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:border-[#004296] outline-none transition-all`}
-                      />
-                      {errors.id_name && <p className="text-red-500 text-xs mt-1">{errors.id_name}</p>}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-gray-700 font-medium mb-1.5 text-sm">
-                        ID Front Image <span className="text-red-500">*</span>
+                        Aadhaar Front Image <span className="text-red-500">*</span>
                       </label>
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center ${errors.id_front_image ? 'border-red-500 bg-red-50' : 'border-gray-300'} hover:border-[#004296] transition-all cursor-pointer`}>
                         <input type="file" name="id_front_image" onChange={handleFileChange} accept="image/*" className="hidden" id="id_front_image" />
@@ -513,7 +557,7 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
 
                     <div>
                       <label className="block text-gray-700 font-medium mb-1.5 text-sm">
-                        ID Back Image <span className="text-red-500">*</span>
+                        Aadhaar Back Image <span className="text-red-500">*</span>
                       </label>
                       <div className={`border-2 border-dashed rounded-lg p-4 text-center ${errors.id_back_image ? 'border-red-500 bg-red-50' : 'border-gray-300'} hover:border-[#004296] transition-all cursor-pointer`}>
                         <input type="file" name="id_back_image" onChange={handleFileChange} accept="image/*" className="hidden" id="id_back_image" />
@@ -523,6 +567,42 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
                         </label>
                       </div>
                       {errors.id_back_image && <p className="text-red-500 text-xs mt-1">{errors.id_back_image}</p>}
+                    </div>
+                  </div>
+
+                  {/* PAN Card Section */}
+                  <div className="border-t border-gray-200 pt-4 mt-4">
+                    <h4 className="text-lg font-semibold text-[#004296] mb-3">PAN Card Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-gray-700 font-medium mb-1.5 text-sm">
+                          PAN Card Number <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="pancard_number"
+                          value={formData.pancard_number}
+                          onChange={handleChange}
+                          placeholder="Enter 10-digit PAN number"
+                          maxLength="10"
+                          className={`w-full px-4 py-3 rounded-lg border uppercase ${errors.pancard_number ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:border-[#004296] outline-none transition-all`}
+                        />
+                        {errors.pancard_number && <p className="text-red-500 text-xs mt-1">{errors.pancard_number}</p>}
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-700 font-medium mb-1.5 text-sm">
+                          PAN Card Image <span className="text-red-500">*</span>
+                        </label>
+                        <div className={`border-2 border-dashed rounded-lg p-4 text-center ${errors.pancard_image ? 'border-red-500 bg-red-50' : 'border-gray-300'} hover:border-[#004296] transition-all cursor-pointer`}>
+                          <input type="file" name="pancard_image" onChange={handleFileChange} accept="image/*" className="hidden" id="pancard_image" />
+                          <label htmlFor="pancard_image" className="cursor-pointer block">
+                            <span className="text-3xl mb-2 block">🪪</span>
+                            <p className="text-gray-600 text-sm">{formData.pancard_image ? (typeof formData.pancard_image === 'string' ? "Image loaded" : formData.pancard_image.name) : "Click to upload PAN card"}</p>
+                          </label>
+                        </div>
+                        {errors.pancard_image && <p className="text-red-500 text-xs mt-1">{errors.pancard_image}</p>}
+                      </div>
                     </div>
                   </div>
 
@@ -556,17 +636,46 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
                         IFSC Code <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
-                        <input type="text" name="ifsc_code" value={formData.ifsc_code} onChange={handleChange} onBlur={handleIFSCBlur} placeholder="e.g., SBIN0001234" className={`w-full px-4 py-3 rounded-lg border uppercase ${errors.ifsc_code ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:border-[#004296] outline-none transition-all`} />
-                        {fetchingIFSC && <div className="absolute right-3 top-3"><div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#004296]"></div></div>}
+                        <input 
+                          type="text" 
+                          name="ifsc_code" 
+                          value={formData.ifsc_code} 
+                          onChange={handleIFSCChange}
+                          onBlur={handleIFSCBlur}
+                          placeholder="e.g., SBIN0001234" 
+                          maxLength="11"
+                          className={`w-full px-4 py-3 rounded-lg border uppercase ${errors.ifsc_code ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:border-[#004296] outline-none transition-all`} 
+                        />
+                        {fetchingIFSC && (
+                          <div className="absolute right-3 top-3">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#004296]"></div>
+                          </div>
+                        )}
+                        {ifscVerified && !fetchingIFSC && (
+                          <div className="absolute right-3 top-3">
+                            <span className="text-green-500 text-lg">✓</span>
+                          </div>
+                        )}
                       </div>
                       {errors.ifsc_code && <p className="text-red-500 text-xs mt-1">{errors.ifsc_code}</p>}
+                      {!errors.ifsc_code && formData.ifsc_code.length === 11 && ifscVerified && (
+                        <p className="text-green-600 text-xs mt-1">IFSC code verified successfully!</p>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-gray-700 font-medium mb-1.5 text-sm">
                         Bank Name <span className="text-red-500">*</span>
                       </label>
-                      <input type="text" name="bank_name" value={formData.bank_name} readOnly placeholder="Auto-filled from IFSC" className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 cursor-not-allowed" />
+                      <input 
+                        type="text" 
+                        name="bank_name" 
+                        value={formData.bank_name} 
+                        readOnly 
+                        placeholder={fetchingIFSC ? "Fetching bank name..." : "Auto-filled from IFSC"} 
+                        className={`w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 cursor-not-allowed ${fetchingIFSC ? 'animate-pulse' : ''}`} 
+                      />
+                      {errors.bank_name && <p className="text-red-500 text-xs mt-1">{errors.bank_name}</p>}
                     </div>
 
                     <div>
@@ -583,20 +692,6 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
                       </label>
                       <input type="text" name="confirm_account_number" value={formData.confirm_account_number} onChange={handleChange} placeholder="Re-enter account number" className={`w-full px-4 py-3 rounded-lg border ${errors.confirm_account_number ? 'border-red-500 bg-red-50' : 'border-gray-300'} focus:border-[#004296] outline-none transition-all`} />
                       {errors.confirm_account_number && <p className="text-red-500 text-xs mt-1">{errors.confirm_account_number}</p>}
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-medium mb-1.5 text-sm">
-                        Cheque/Passbook Image <span className="text-red-500">*</span>
-                      </label>
-                      <div className={`border-2 border-dashed rounded-lg p-4 text-center ${errors.cheque_image ? 'border-red-500 bg-red-50' : 'border-gray-300'} hover:border-[#004296] transition-all cursor-pointer`}>
-                        <input type="file" name="cheque_image" onChange={handleFileChange} accept="image/*" className="hidden" id="cheque_image" />
-                        <label htmlFor="cheque_image" className="cursor-pointer block">
-                          <span className="text-3xl mb-2 block">📄</span>
-                          <p className="text-gray-600 text-sm">{formData.cheque_image ? (typeof formData.cheque_image === 'string' ? "Image loaded" : formData.cheque_image.name) : "Click to upload cancelled cheque or passbook"}</p>
-                        </label>
-                      </div>
-                      {errors.cheque_image && <p className="text-red-500 text-xs mt-1">{errors.cheque_image}</p>}
                     </div>
                   </div>
 
