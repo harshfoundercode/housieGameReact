@@ -274,12 +274,13 @@ const GamePage = () => {
         handleDirectPayment={() => checkoutModal.handleDirectPayment(
           cartModal.getCartTotal(),
           cartModal.cart,
-          cartModal.clearCart
+          () => cartModal.clearCart()  
         )}
         handleAgentPayment={() => checkoutModal.handleAgentPayment(
           () => agentModal.openAgentModal('agent')
         )}
       />
+
 
       <AgentModal
         showAgentModal={agentModal.showAgentModal}

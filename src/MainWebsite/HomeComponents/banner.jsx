@@ -19,11 +19,8 @@ const Banner = () => {
             const response = await getBanner();
             
             console.log("Full Response:", response);
-            console.log("Success:", response.success);
-            console.log("Data:", response.data);
-            console.log("Image URL:", response.data?.image_url);
             
-            if (response.success && response.data?.image_url) {
+            if (response.ok && response.data?.image_url) {
                 setBannerImage(response.data.image_url); 
             } else {
                 setBannerImage(null); 

@@ -1,5 +1,6 @@
 // const API_BASE_URL = 'https://tambola.fctesting.shop/';
 // const API_BASE_URL = 'http://192.168.31.45:4000/';
+// const API_BASE_URL = 'http://192.168.31.45:4001/';
 const API_BASE_URL = 'https://tambola.honeywithmoon.com/';
 
 
@@ -42,11 +43,14 @@ export const API = {
     MY_TICKETS_URL: `${API_CONFIG_URL}booking/my-tickets`,
 
     FEEDBACK_URL: `${API_CONFIG_URL}user/feedback-video`,
+    DELETE_ACCOUNT_URL: `${API_CONFIG_URL}user/delete/`,
+
 
    
 
     ///Socket Url
 
     SOCKET_URL: "https://tambola.honeywithmoon.com"
+    // SOCKET_URL: "http://192.168.31.45:4001"
 
 };

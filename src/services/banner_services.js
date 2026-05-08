@@ -1,9 +1,7 @@
 import { API } from './api_url';
 
 export const getBanner = async () => {
-  try {
-    console.log("🎯 Fetching banner...");
-    
+  try {    
     const response = await fetch(`${API.BANNER_URL}`, {
       method: 'GET',
       headers: {

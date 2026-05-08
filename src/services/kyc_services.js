@@ -45,7 +45,7 @@ export const submitKYC = async (kycData) => {
         if (!response.ok) {
             throw new Error(data.message || 'KYC submission failed');
         }
-        
+        console.log("KYC submission successful:", data);
         return data;
     } catch (error) {
         throw error;
@@ -72,10 +72,7 @@ export const updateKYC = async (kycData) => {
         formData.append('account_holder_name', kycData.account_holder_name);
         formData.append('pancard_number', kycData.pancard_number || '');
         
-        
-        // For update, append "_method" to indicate PUT request
-        // (Some servers require this workaround for multipart PUT requests)
-        formData.append('_method', 'PUT');
+    
         
         // Append files if they are new file objects (not existing URLs)
     
@@ -91,7 +88,7 @@ export const updateKYC = async (kycData) => {
         }
         
         const response = await fetch(`${API.UPDATE_KYC_URL}`, {
-            method: 'POST', 
+            method: 'PUT', 
             headers: {
                 'Authorization': `Bearer ${token}`,
             },

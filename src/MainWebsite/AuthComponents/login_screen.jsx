@@ -44,14 +44,10 @@ const Login = () => {
                     }));
 
                 setTestimonials(formattedVideos);
-            } else {
-                // Fallback to static data if no videos
-                setTestimonials(getStaticTestimonials());
             }
         } catch (error) {
             console.error("Error fetching feedback videos:", error);
-            // Fallback to static data on error
-            setTestimonials(getStaticTestimonials());
+            
         } finally {
             setLoadingVideos(false);
         }

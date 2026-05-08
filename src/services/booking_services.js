@@ -26,27 +26,3 @@ export const bookTicket = async (bookingData) => {
     }
 };
 
-// Get Wallet Balance
-export const getWalletBalance = async () => {
-    try {
-        const token = localStorage.getItem("token");
-        
-        const response = await fetch(`${API.PROFILE_URL}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.message || 'Failed to fetch wallet balance');
-        }
-        
-        return data;
-    } catch (error) {
-        throw error;
-    }
-};

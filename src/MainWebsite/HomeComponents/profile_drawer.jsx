@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
 import { API } from "../../services/api_url";
+import { setLoggingOut } from "../../ServerError/api_interceptor"; // Add this import
+
 
 const ProfileDrawer = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
@@ -82,21 +84,41 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("userPhone");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("referralCode");
-        localStorage.removeItem("credits");
-        localStorage.removeItem("registrationTime");
-        localStorage.removeItem("loginTime");
+    // const handleLogout = () => {
+    //     localStorage.removeItem("token");
+    //     localStorage.removeItem("user");
+    //     localStorage.removeItem("isLoggedIn");
+    //     localStorage.removeItem("userId");
+    //     localStorage.removeItem("userPhone");
+    //     localStorage.removeItem("userName");
+    //     localStorage.removeItem("referralCode");
+    //     localStorage.removeItem("credits");
+    //     localStorage.removeItem("registrationTime");
+    //     localStorage.removeItem("loginTime");
 
+    //     onClose();
+    //     navigate(ROUTES.HomeScreenWebsite);
+    //     window.location.reload();
+    // };
+
+    const handleLogout = () => {
+        // Set logging out flag FIRST - this prevents any 401 popups
+        setLoggingOut(true);
+
+        // Close the drawer
         onClose();
+
+        // Clear all storage
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // Navigate to home page
         navigate(ROUTES.HomeScreenWebsite);
-        window.location.reload();
+
+        // Small delay then reload to ensure clean state
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
     };
 
     const handleNavigate = (path) => {
@@ -110,7 +132,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
 
     const moreItems = [
         { icon: "✅", label: "My KYC", path: ROUTES.KYC_VIEW },
-        { icon: "✅", label: "Add KYC", path: ROUTES.KYC_ADD},
+        { icon: "✅", label: "Add KYC", path: ROUTES.KYC_ADD },
         // { icon: "✅", label: "Update KYC", path: ROUTES.KYC_EDIT},
         // { icon: "🌐", label: "Language", path: ROUTES.LANG },
         { icon: "⚙️", label: "Settings", path: ROUTES.SETTINGS },

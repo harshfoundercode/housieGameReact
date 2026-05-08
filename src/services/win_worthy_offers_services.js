@@ -4,8 +4,6 @@ import OfferModel from '../model/win_worthy_offers_model';
 
 export const getWinWorthyOffers = async () => {
   try {
-    console.log("Fetching offers...");
-    
     const response = await fetch(`${API.WIN_WORHTY_OFFERS_URL}`, {
       method: 'GET',
       headers: {
@@ -24,10 +22,8 @@ export const getWinWorthyOffers = async () => {
     
     //  API response se OfferModel array create karo
     const offersList = OfferModel.fromAPIResponse(result);
-    console.log("Offers List (Models):", offersList);
-    console.log("Total Offers:", offersList.length);
+
     
-  
     return offersList; 
     
   } catch (error) {

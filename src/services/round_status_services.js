@@ -22,10 +22,7 @@ export const getRoundStatus = async (roundId) => {
 
     // Convert API response to model
     const roundStatusModel = RoundStatusResponseModel.fromAPIResponse(result);
-    console.log("✅ Round Status Model created");
-    console.log("🔢 Total Called Numbers:", roundStatusModel.data?.totalCalled);
-    console.log("🏆 Total Winners:", roundStatusModel.data?.winners.length);
-    
+   
     return roundStatusModel;
     
   } catch (error) {

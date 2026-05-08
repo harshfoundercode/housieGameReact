@@ -1,10 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
-
+import { getUserProfile } from "../../services/profile_services";
 
 const ReferAndEarn = () => {
     const navigate = useNavigate();
+    const [referralCode, setReferralCode] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Sirf referral code fetch karo
+    useEffect(() => {
+        fetchReferralCode();
+    }, []);
+
+    const fetchReferralCode = async () => {
+        setIsLoading(true);
+        try {
+            const response = await getUserProfile();
+            
+            if (response.success) {
+                // Sirf referral code set karo
+                setReferralCode(
+                    response.data.referral_code || 
+                    response.data.referralCode || 
+                    "TAMBOLA123"
+                );
+            }
+        } catch (err) {
+            console.error("Error fetching referral code:", err);
+            // Fallback code
+            setReferralCode("TAMBOLA123");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <section className="w-full bg-linear-to-r from-[#3d366d] to-[#b10b00] py-14 px-4 relative overflow-hidden">
@@ -56,14 +85,22 @@ const ReferAndEarn = () => {
 
                     {/* RIGHT SIDE - Steps */}
                     <div className="space-y-4">
-                        {/* Step 1 */}
+                        {/* Step 1 - Ab yahan referral code show hoga */}
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-white/20 flex items-start gap-4">
                             <div className="w-10 h-10 md:w-12 md:h-12 bg-[#FBEFA4] rounded-full flex items-center justify-center text-[#3d366d] font-bold text-lg shrink-0">
                                 1
                             </div>
                             <div>
                                 <h4 className="text-white font-bold text-base md:text-lg mb-1">Get Your Link</h4>
-                                <p className="text-white/70 text-sm">Copy your unique referral link from your dashboard</p>
+                                <p className="text-white/70 text-sm">
+                                    Copy your unique referral link from your dashboard
+                                </p>
+                                {/* Referral Code yahan show hoga */}
+                                <div className="mt-2 bg-white/5 rounded-lg p-2 inline-block">
+                                    <p className="text-[#FBEFA4] text-sm font-mono tracking-wider">
+                                        {isLoading ? "Loading..." : referralCode}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 

@@ -15,18 +15,12 @@ export const getWinnerList = async () => {
     });
 
     const result = await response.json();
-    console.log(" Raw API Response:", result);
 
     if (!response.ok) {
       throw new Error(result.message || 'Failed to winners list');
     }
-
     
-       // Convert API response to WinnersListModel array
-    const winnersList = WinnersListModel.fromAPIResponse(result);
-    console.log("Winners List (Models):", winnersList);
-    console.log("Total Winners:", winnersList.length);
-    
+    const winnersList = WinnersListModel.fromAPIResponse(result);    
     return winnersList;
     
   } catch (error) {

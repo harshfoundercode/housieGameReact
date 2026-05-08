@@ -1,13 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
 import Navbar from "./nav_bar";
 import Footer from "./footer";
+import { getUserProfile } from "../../services/profile_services";
+
 
 const ReferralGuide = () => {
   const navigate = useNavigate();
-  const [referralLink] = useState("https://tambola.com/ref/USER123");
+  const [referralCode, setReferralCode] = useState(""); 
   const [copied, setCopied] = useState(false);
+      const [isLoading, setIsLoading] = useState(true);
+  
+
+    // Sirf referral code fetch karo
+      useEffect(() => {
+          fetchReferralCode();
+      }, []);
+  
+      const fetchReferralCode = async () => {
+          setIsLoading(true);
+          try {
+              const response = await getUserProfile();
+              
+              if (response.success) {
+                  // Sirf referral code set karo
+                  setReferralCode(
+                      response.data.referral_code || 
+                      response.data.referralCode || 
+                      "TAMBOLA123"
+                  );
+              }
+          } catch (err) {
+              console.error("Error fetching referral code:", err);
+              // Fallback code
+              setReferralCode("TAMBOLA123");
+          } finally {
+              setIsLoading(false);
+          }
+      };
+
+  // Referral link generate karo code se
+  const referralLink = referralCode ? `https://tambola.com/ref/${referralCode}` : `https://tambola.com/ref/${referralCode}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -109,12 +143,8 @@ const ReferralGuide = () => {
                 >
                   💬 WhatsApp
                 </button>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2">
-                  📧 Email
-                </button>
-                <button className="bg-black/20 hover:bg-black/30 text-white px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2">
-                  🔗 More
-                </button>
+               
+               
               </div>
             </div>
           </div>

@@ -371,8 +371,12 @@ const KYCAddEdit = ({ isEditMode = false, existingData = null }) => {
       let response;
       if (isEditMode && (kycId || existingData)) {
         response = await updateKYC(submitData);
+        console.log("Update KYC response:", response);
+        console.log("Updated data:", submitData);
       } else {
         response = await submitKYC(submitData);
+        console.log("Submit KYC response:", response);
+        console.log("Submitted data:", submitData);
       }
       
       if (response.success) {

@@ -26,8 +26,6 @@ const OffersCarousel = () => {
             const offersList = await getWinWorthyOffers();
             
             console.log("📦 Offers received in component:", offersList);
-            console.log("📦 Total offers:", offersList.length);
-            console.log("📦 First offer image:", offersList[0]?.imageUrl);
             
             // ✅ Convert models to plain objects for component use
             const formattedOffers = offersList.map(offer => offer.toJSON());
