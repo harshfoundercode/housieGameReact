@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TICKET_TYPES } from '../utils/constants';
+import { TICKET_TYPES } from '../../BuyTickets/Utils/constants';
 
 const BookingModal = ({ 
   showBookingModal, 

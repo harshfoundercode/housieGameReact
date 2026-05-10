@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getTicketsByGame } from "../../../services/ticket_services";
-import { formatTickets } from '../utils/parsers';
+import { formatTickets } from '../../BuyTickets/Utils/parsers';
 
 export const useTickets = (gameId) => {
   const [tickets, setTickets] = useState([]);

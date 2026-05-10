@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TICKETS_PER_PAGE, MAX_VISIBLE_PAGES } from '../utils/constants';
+import { TICKETS_PER_PAGE, MAX_VISIBLE_PAGES } from '../../BuyTickets/Utils/constants';
 
 export const usePagination = (tickets, search) => {
   const [currentPage, setCurrentPage] = useState(1);
