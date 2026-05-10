@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
-import { parseGameDateTime } from "./utils/parsers";
+import { parseGameDateTime } from "../../styles/constants/DateTimeHelper";
 
 // Custom Hooks
 import { useTimer } from "./hooks/useTimer";
