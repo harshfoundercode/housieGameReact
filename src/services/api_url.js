@@ -1,7 +1,8 @@
 // const API_BASE_URL = 'https://tambola.fctesting.shop/';
 // const API_BASE_URL = 'http://192.168.31.45:4000/';
 // const API_BASE_URL = 'http://192.168.31.45:4001/';
-const API_BASE_URL = 'https://tambola.honeywithmoon.com/';
+// const API_BASE_URL = 'https://tambola.honeywithmoon.com/';
+const API_BASE_URL = 'https://testingtambola.honeywithmoon.com/';
 
 
 
@@ -50,7 +51,7 @@ export const API = {
 
     ///Socket Url
 
-    SOCKET_URL: "https://tambola.honeywithmoon.com"
+    SOCKET_URL: "https://testingtambola.honeywithmoon.com"
     // SOCKET_URL: "http://192.168.31.45:4001"
 
 };
