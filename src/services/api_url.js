@@ -11,9 +11,11 @@ const API_CONFIG_URL = `${API_BASE_URL}api/`;
 
 export const API = {
     REGISTER_URL: `${API_CONFIG_URL}auth/user_register`,
+
     LOGIN_URL: `${API_CONFIG_URL}auth/user/login`,
 
     OTP_SEND_URL: `${API_CONFIG_URL}otp/send-otp`,
+    
     OTP_VERIFY_URL: `${API_CONFIG_URL}otp/verify-otp`,
 
     PROFILE_URL: `${API_CONFIG_URL}auth/profile`,
