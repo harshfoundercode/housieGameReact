@@ -96,10 +96,10 @@ const AfterGameLive = () => {
         <TambolaLive gameId={gameId} />
 
         {/* PLAYER RANKING */}
-        <PlayerRanking />
+        {/* <PlayerRanking /> */}
 
         {/* TICKET SEARCH SECTION */}
-        <div className="w-full max-w-7xl mx-auto mt-6">
+        {/* <div className="w-full max-w-7xl mx-auto mt-6">
           <div className="bg-[#004296]/40 backdrop-blur-sm rounded-3xl shadow-xl border-2 border-[#FBEFA4]/30">
             <div className="bg-linear-to-r from-[#004296] to-[#003380] rounded-3xl p-4 shadow-xl border-b-2 border-[#FBEFA4]/30">
               <h2 className="text-[#FBEFA4] text-xl md:text-2xl font-semibold text-center">
@@ -123,10 +123,10 @@ const AfterGameLive = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* WINNER LIST */}
-        <WinnerList />
+        {/* <WinnerList /> */}
       </div>
 
       {/* Bottom decoration */}

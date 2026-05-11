@@ -2,11 +2,11 @@
 // const API_BASE_URL = 'http://192.168.31.45:4000/';
 // const API_BASE_URL = 'http://192.168.31.45:4001/';
 // const API_BASE_URL = 'https://tambola.honeywithmoon.com/';
-const API_BASE_URL = 'https://testingtambola.honeywithmoon.com/';
+const API_BASE_URL = 'https://testingtambola.honeywithmoon.com';
 
 
 
-const API_CONFIG_URL = `${API_BASE_URL}api/`;
+const API_CONFIG_URL = `${API_BASE_URL}/api/`;
 
 
 export const API = {
@@ -53,7 +53,14 @@ export const API = {
 
     ///Socket Url
 
-    SOCKET_URL: "https://testingtambola.honeywithmoon.com"
+    SOCKET_URL: "https://testingtambola.honeywithmoon.com",
+    
+    LOAD_CURRENT_ROUND_URL: `${API_CONFIG_URL}round/current-game/`,
+    BOOKING_ALL_TICKET_SOCKET_URL: `${API_CONFIG_URL}booking/all-tickets/`,
+    ROUND_ID_SOCKET_URL: `${API_CONFIG_URL}game/status?round_id=`,
+    WINNER_LIST_SOCKET_URL: `${API_CONFIG_URL}game/winners-list?round_id=`,
+
+
     // SOCKET_URL: "http://192.168.31.45:4001"
 
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const WinnerList = () => {
+const WinnerList = () => { 
   const calledNumbers = new Set([5, 12, 23, 34, 45, 56, 67, 78, 89]);
 
   const [selectedWinner, setSelectedWinner] = useState(null);
