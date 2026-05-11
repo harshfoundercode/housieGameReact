@@ -96,7 +96,7 @@ const AfterGameLive = () => {
         <TambolaLive gameId={gameId} />
 
         {/* PLAYER RANKING */}
-        {/* <PlayerRanking /> */}
+        <PlayerRanking />
 
         {/* TICKET SEARCH SECTION */}
         {/* <div className="w-full max-w-7xl mx-auto mt-6">
