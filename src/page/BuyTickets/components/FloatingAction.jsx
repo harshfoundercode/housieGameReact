@@ -13,7 +13,7 @@ const FloatingActionButtons = ({
     <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 flex flex-col items-end gap-2 sm:gap-3">
       {showFabMenu && (
         <div className="flex flex-col gap-2 sm:gap-3 mb-2 sm:mb-3">
-          <button
+          {/* <button
             onClick={() => {
               setShowFabMenu(false);
               setShowBookingModal(true);
@@ -25,7 +25,7 @@ const FloatingActionButtons = ({
             <span className="font-semibold">
               {isMobile ? availableTickets : `${availableTickets} Tickets Available`}
             </span>
-          </button>
+          </button> */}
 
           <button
             onClick={() => {

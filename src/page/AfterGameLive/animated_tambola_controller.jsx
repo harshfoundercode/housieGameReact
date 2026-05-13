@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { io } from "socket.io-client";
-import { API } from "../../services/api_url";
 
 /* ─────────────────────────────────────────────
    PALETTE — Navy & Gold
@@ -52,9 +50,7 @@ function ballBoxShadow(n, mode = "big") {
   return "0 1px 4px rgba(0,0,0,0.3), inset -1px -1px 5px rgba(0,0,0,0.4)";
 }
 
-/* ─────────────────────────────────────────────
-   PARTICLES
-───────────────────────────────────────────── */
+/* ─── Particles ─── */
 function Particles({ active, color, size }) {
   if (!active) return null;
   const particles = Array.from({ length: 14 }, (_, i) => {
@@ -70,69 +66,51 @@ function Particles({ active, color, size }) {
   return (
     <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10 }}>
       {particles.map((p, i) => (
-        <div
-          key={i}
-          style={{
-            position: "absolute",
-            left: "50%", top: "50%",
-            width: p.s, height: p.s,
-            borderRadius: "50%",
-            background: color,
-            boxShadow: `0 0 5px ${color}`,
-            animation: `tl-particle${i % 3} ${p.dur}s ${p.delay}s ease-out forwards`,
-            transform: "translate(-50%, -50%)",
-            "--px": `${p.px}px`,
-            "--py": `${p.py}px`,
-          }}
-        />
+        <div key={i} style={{
+          position: "absolute", left: "50%", top: "50%",
+          width: p.s, height: p.s, borderRadius: "50%",
+          background: color, boxShadow: `0 0 5px ${color}`,
+          animation: `tl-particle${i % 3} ${p.dur}s ${p.delay}s ease-out forwards`,
+          transform: "translate(-50%, -50%)",
+          "--px": `${p.px}px`, "--py": `${p.py}px`,
+        }} />
       ))}
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────
-   BIG DISPLAY BALL
-───────────────────────────────────────────── */
+/* ─── BigBall ─── */
 function BigBall({ number, animKey, size = 148 }) {
   const fontSize = size * 0.34;
   return (
-    <div
-      key={`wrapper-${animKey}`}
+    <div key={`wrapper-${animKey}`}
       style={{
         animation: number ? "tl-ballReveal 1.8s ease-in-out forwards" : "none",
-        willChange: "transform",
-        width: size,
-        height: size,
+        willChange: "transform", width: size, height: size,
       }}
     >
       <div style={{
-        width: size,
-        height: size,
-        borderRadius: "50%",
+        width: size, height: size, borderRadius: "50%",
         background: number
           ? ballGradient(number)
           : "radial-gradient(circle at 35% 25%, #1e2a4a, #001433)",
         boxShadow: number
           ? ballBoxShadow(number, "big")
-          : `inset -8px -8px 22px rgba(0,0,0,0.6),
-             inset 6px 6px 16px rgba(255,255,255,0.04)`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-        flexShrink: 0,
+          : `inset -8px -8px 22px rgba(0,0,0,0.6), inset 6px 6px 16px rgba(255,255,255,0.04)`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        position: "relative", flexShrink: 0,
       }}>
         <div style={{
-          position: "absolute", top: size * 0.10, left: size * 0.18, width: size * 0.32, height: size * 0.18,
-          background: "rgba(255,255,255,0.30)", borderRadius: "50%", transform: "rotate(-30deg)", filter: `blur(${size < 100 ? 2 : 4}px)`
+          position: "absolute", top: size * 0.10, left: size * 0.18,
+          width: size * 0.32, height: size * 0.18,
+          background: "rgba(255,255,255,0.30)", borderRadius: "50%",
+          transform: "rotate(-30deg)", filter: `blur(${size < 100 ? 2 : 4}px)`,
         }} />
         <div style={{
-          position: "absolute", top: size * 0.14, left: size * 0.22, width: size * 0.20, height: size * 0.10,
-          background: "rgba(255,255,255,0.50)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(2px)"
-        }} />
-        <div style={{
-          position: "absolute", bottom: size * 0.14, right: size * 0.18, width: size * 0.18, height: size * 0.08,
-          background: "rgba(255,255,255,0.10)", borderRadius: "50%", transform: "rotate(20deg)", filter: "blur(3px)"
+          position: "absolute", top: size * 0.14, left: size * 0.22,
+          width: size * 0.20, height: size * 0.10,
+          background: "rgba(255,255,255,0.50)", borderRadius: "50%",
+          transform: "rotate(-30deg)", filter: "blur(2px)",
         }} />
         <span style={{
           fontSize: number ? fontSize : fontSize * 0.35,
@@ -149,9 +127,7 @@ function BigBall({ number, animKey, size = 148 }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   TRAY BALL
-───────────────────────────────────────────── */
+/* ─── TrayBall ─── */
 function TrayBall({ number, size = 64, isNew = false }) {
   return (
     <div style={{
@@ -160,22 +136,21 @@ function TrayBall({ number, size = 64, isNew = false }) {
       boxShadow: ballBoxShadow(number, "tray"),
       display: "flex", alignItems: "center", justifyContent: "center",
       position: "relative", flexShrink: 0,
-      animation: isNew ? "tl-traySettle 0.6s cubic-bezier(0.16,1.2,0.3,1) forwards" : "none",
-      willChange: "transform",
+      // 👇 Animation slow & smooth karo - 0.6s se badhakar 1.2s
+      animation: isNew ? "tl-traySettle 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards" : "none",
+      // 👇 Will-change add karo for smooth rendering
+      willChange: "transform, opacity",
     }}>
       <div style={{
-        position: "absolute", top: size * 0.14, left: size * 0.20, width: size * 0.28, height: size * 0.14,
-        background: "rgba(255,255,255,0.42)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(2px)"
-      }} />
-      <div style={{
-        position: "absolute", top: size * 0.18, left: size * 0.24, width: size * 0.16, height: size * 0.08,
-        background: "rgba(255,255,255,0.58)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(1px)"
+        position: "absolute", top: size * 0.14, left: size * 0.20,
+        width: size * 0.28, height: size * 0.14,
+        background: "rgba(255,255,255,0.42)", borderRadius: "50%",
+        transform: "rotate(-30deg)", filter: "blur(2px)",
       }} />
       <span style={{
         fontSize: size * 0.32, fontWeight: 900,
         fontFamily: "'Cinzel', serif", color: "#fff",
-        textShadow: "0 1px 6px rgba(0,0,0,0.7)",
-        zIndex: 1, lineHeight: 1,
+        textShadow: "0 1px 6px rgba(0,0,0,0.7)", zIndex: 1, lineHeight: 1,
       }}>
         {number}
       </span>
@@ -183,16 +158,12 @@ function TrayBall({ number, size = 64, isNew = false }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   GRID BALL
-───────────────────────────────────────────── */
+/* ─── GridBall ─── */
 function GridBall({ number, called, arriving, size = 44 }) {
   return (
     <div style={{
       width: size, height: size, borderRadius: "50%",
-      background: called
-        ? ballGradient(number)
-        : "radial-gradient(circle at 35% 25%, #1e2640, #000d1a)",
+      background: called ? ballGradient(number) : "radial-gradient(circle at 35% 25%, #1e2640, #000d1a)",
       boxShadow: arriving
         ? ballBoxShadow(number, "grid-arriving")
         : called
@@ -205,12 +176,13 @@ function GridBall({ number, called, arriving, size = 44 }) {
       cursor: "default", userSelect: "none",
       transform: called ? "scale(1.04)" : "scale(1)",
       opacity: called ? 1 : 0.45,
-      willChange: "transform",
     }}>
       {called && (
         <div style={{
-          position: "absolute", top: size * 0.12, left: size * 0.20, width: size * 0.28, height: size * 0.14,
-          background: "rgba(255,255,255,0.38)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(1.5px)"
+          position: "absolute", top: size * 0.12, left: size * 0.20,
+          width: size * 0.28, height: size * 0.14,
+          background: "rgba(255,255,255,0.38)", borderRadius: "50%",
+          transform: "rotate(-30deg)", filter: "blur(1.5px)",
         }} />
       )}
       <span style={{
@@ -226,36 +198,25 @@ function GridBall({ number, called, arriving, size = 44 }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   FLYING BALL
-───────────────────────────────────────────── */
+/* ─── FlyingBall ─── */
 function FlyingBall({ from, to, number, size, targetSize, onDone, duration = 900 }) {
   const ref = useRef(null);
   useEffect(() => {
     if (!ref.current || !from || !to) return;
     let cancelled = false;
-
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const scale = targetSize / size;
     const arcX = dx * 0.5;
     const arcY = dy * 0.3 - Math.abs(dx) * 0.15;
-
     const anim = ref.current.animate([
       { transform: "translate(0px, 0px) scale(1)", opacity: 1, offset: 0 },
       { transform: `translate(${arcX}px, ${arcY}px) scale(${0.9 + scale * 0.1})`, opacity: 1, offset: 0.45 },
       { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0.65, offset: 1 },
     ], { duration, easing: "cubic-bezier(0.4,0,0.2,1)", fill: "forwards" });
-
-    anim.onfinish = () => {
-      if (!cancelled) onDone();  // double-fire guard
-    };
-
-    return () => {
-      cancelled = true;
-      anim.cancel();  // cleanup on unmount
-    };
-  }, []); // empty deps — intentional, ek baar hi run ho
+    anim.onfinish = () => { if (!cancelled) onDone(); };
+    return () => { cancelled = true; anim.cancel(); };
+  }, []); // eslint-disable-line
 
   return (
     <div ref={ref} style={{
@@ -273,25 +234,27 @@ function FlyingBall({ from, to, number, size, targetSize, onDone, duration = 900
     }}>
       <div style={{
         position: "absolute", top: "12%", left: "20%", width: "28%", height: "14%",
-        background: "rgba(255,255,255,0.38)", borderRadius: "50%", transform: "rotate(-30deg)", filter: "blur(2px)"
+        background: "rgba(255,255,255,0.38)", borderRadius: "50%",
+        transform: "rotate(-30deg)", filter: "blur(2px)",
       }} />
       {number}
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════
+/* ════════════════════════════════════════════════════════════════
    MAIN COMPONENT
-═══════════════════════════════════════════ */
-export default function TambolaLive({ gameId }) {
-  /* ── Socket state ── */
-  const socketRef = useRef(null);
-  const [gameStatus, setGameStatus] = useState("waiting");
-  const [connected, setConnected] = useState(false);
-
-  /* ── Game state ── */
+════════════════════════════════════════════════════════════════ */
+export default function TambolaLive({
+  gameId,
+  connected = false,
+  gameStatus = "waiting",
+  calledNumbers = [],
+  calledCount = 0,
+  lastCalledNum = null,
+}) {
+  /* ── Local animation state ── */
   const [calledSet, setCalledSet] = useState(new Set());
-  const [calledCount, setCalledCount] = useState(0);
   const [bigNum, setBigNum] = useState(null);
   const [bigKey, setBigKey] = useState(0);
   const [showPulse, setShowPulse] = useState(false);
@@ -302,10 +265,179 @@ export default function TambolaLive({ gameId }) {
   const [arrivingCell, setArrivingCell] = useState(null);
   const [done, setDone] = useState(false);
 
-  /* ── Backend state ── */
-  const [currentRoundId, setCurrentRoundId] = useState(null);
-  const [allTickets, setAllTickets] = useState([]);
-  const [winners, setWinners] = useState([]);
+  /* ── Sync calledSet from prop ── */
+  useEffect(() => {
+    setCalledSet(new Set(calledNumbers));
+  }, [calledNumbers]);
+
+  /* ── Watch gameStatus ── */
+  useEffect(() => {
+    if (gameStatus === "over") setDone(true);
+    else if (gameStatus === "started") setDone(false);
+  }, [gameStatus]);
+
+  /* ══════════════════════════════════════════
+     SOUND & QUEUE SYSTEM
+     4-Second Delay Between Numbers
+  ══════════════════════════════════════════ */
+  const currentAudioRef = useRef(null);
+  const numberQueueRef = useRef([]);
+  const isProcessingRef = useRef(false);
+  const lastProcessedTimeRef = useRef(0);
+  const processingTimeoutRef = useRef(null);
+
+  const ANIMATION_DURATION = 1800; // Ball animation duration (ms)
+  const NUMBER_GAP = 4000; // Gap between numbers (ms) - 4 seconds
+
+  /* ── Play sound function ── */
+  const playNumberSound = useCallback((number) => {
+    try {
+      // Stop any currently playing sound
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+        currentAudioRef.current.currentTime = 0;
+        currentAudioRef.current = null;
+      }
+
+      const audio = new Audio(`/sounds/${number}.mp3`);
+      console.log(`🔊 Playing sound for number ${number}`);
+      audio.volume = 1.0;
+      currentAudioRef.current = audio;
+
+      audio.onerror = (e) => {
+        console.error(`Failed to load sound for number ${number}`, e);
+        currentAudioRef.current = null;
+      };
+
+      audio.play().catch(err => {
+        console.warn(`Autoplay blocked for ${number}. Waiting for user interaction.`, err);
+
+        const playOnClick = () => {
+          audio.play().catch(e => console.error("Still failed:", e));
+          document.removeEventListener('click', playOnClick);
+        };
+        document.addEventListener('click', playOnClick);
+      });
+
+      audio.onended = () => {
+        console.log(`✅ Sound completed for ${number}`);
+        currentAudioRef.current = null;
+      };
+    } catch (e) {
+      console.warn("Sound playback error:", e);
+    }
+  }, []);
+
+  /* ── Process single number (animation + sound together) ── */
+  const processNumber = useCallback((number) => {
+    console.log(`🎯 STARTING ANIMATION & SOUND for: ${number}`);
+
+    // Play sound FIRST
+    playNumberSound(number);
+
+    // Mark as processing
+    isProcessingRef.current = true;
+
+    // Start big ball animation
+    setBigNum(number);
+    setBigKey(k => k + 1);
+    setShowPulse(true);
+    setShowParticles(false);
+    setTimeout(() => setShowParticles(true), 200);
+
+    if (processingTimeoutRef.current) {
+      clearTimeout(processingTimeoutRef.current);
+    }
+
+    // After animation completes
+    processingTimeoutRef.current = setTimeout(() => {
+      console.log(`✨ Big ball animation done for ${number}`);
+      setShowPulse(false);
+      setShowParticles(false);
+      setBigNum(null);
+
+      const currentTray = trayRef.current;
+      const s1 = currentTray[1];
+      const s0 = currentTray[0];
+
+      if (s1 !== null) {
+        doFlySlot1ToBoard(s1, () => {
+          if (trayRef.current[0] !== null) {
+            doFlySlot0ToSlot1(trayRef.current[0], () => doFlyBigToSlot0(number));
+          } else {
+            doFlyBigToSlot0(number);
+          }
+        });
+      } else if (s0 !== null) {
+        doFlySlot0ToSlot1(s0, () => doFlyBigToSlot0(number));
+      } else {
+        doFlyBigToSlot0(number);
+      }
+
+      // Mark animation as complete
+      lastProcessedTimeRef.current = Date.now();
+      isProcessingRef.current = false;
+
+      // Process next number from queue
+      processQueue();
+
+    }, ANIMATION_DURATION);
+
+  }, [playNumberSound, /* other dependencies will be fixed below */]);
+
+  /* ── Process queue with 4-second delay ── */
+  const processQueue = useCallback(() => {
+    if (isProcessingRef.current) {
+      console.log("⏳ Still processing current number, waiting...");
+      return;
+    }
+
+    if (numberQueueRef.current.length === 0) {
+      console.log("📭 Queue empty");
+      return;
+    }
+
+    const now = Date.now();
+    const timeSinceLastProcess = now - lastProcessedTimeRef.current;
+
+    if (timeSinceLastProcess < NUMBER_GAP) {
+      // Wait before processing next number
+      const waitTime = NUMBER_GAP - timeSinceLastProcess;
+      console.log(`⏰ Waiting ${waitTime}ms before next number (${numberQueueRef.current.length} in queue)`);
+
+      setTimeout(() => {
+        if (numberQueueRef.current.length > 0) {
+          const nextNumber = numberQueueRef.current.shift();
+          console.log(`📤 Processing from queue: ${nextNumber}, remaining: ${numberQueueRef.current.length}`);
+          processNumber(nextNumber);
+        }
+      }, waitTime);
+    } else {
+      // Process immediately
+      const nextNumber = numberQueueRef.current.shift();
+      console.log(`📤 Processing immediately: ${nextNumber}, remaining: ${numberQueueRef.current.length}`);
+      processNumber(nextNumber);
+    }
+  }, [processNumber]);
+
+  /* ── Add number to queue ── */
+  const triggerAnimationForNumber = useCallback((number) => {
+    console.log(`📥 Number received: ${number}, queue size: ${numberQueueRef.current.length}`);
+
+    // Add to queue
+    numberQueueRef.current.push(number);
+
+    // Try to process
+    processQueue();
+  }, [processQueue]);
+
+  /* ── Handle lastCalledNum changes ── */
+  useEffect(() => {
+    if (lastCalledNum && !done) {
+      console.log(`🆕 New number detected: ${lastCalledNum}`);
+      triggerAnimationForNumber(lastCalledNum);
+    }
+  }, [lastCalledNum, done, triggerAnimationForNumber]);
 
   /* ── Responsive ── */
   const containerRef = useRef(null);
@@ -322,7 +454,6 @@ export default function TambolaLive({ gameId }) {
 
   const isMobile = containerW < 520;
   const isNarrow = containerW < 820;
-
   const BIG_BALL_SIZE = isMobile ? 92 : isNarrow ? 116 : 148;
   const TRAY_BALL_SIZE = isMobile ? 46 : isNarrow ? 54 : 64;
   const TRAY_SLOT_SIZE = isMobile ? 54 : isNarrow ? 62 : 76;
@@ -336,12 +467,6 @@ export default function TambolaLive({ gameId }) {
   const cellRefs = useRef({});
   const trayRef = useRef([null, null]);
   const flyRef = useRef(null);
-  const pendingNumRef = useRef(null);
-  const busyRef = useRef(false);
-  const animatingRef = useRef(false); // FIX: blocks polling during animation
-  const animationTimeoutRef = useRef(null);
-  // FIX: store triggerAnimationForNumber in a ref to avoid circular dep in releaseBusy
-  const triggerRef = useRef(null);
 
   trayRef.current = tray;
 
@@ -351,25 +476,6 @@ export default function TambolaLive({ gameId }) {
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   }
 
-  /* ─────────────────────────────────────────────
-     FIX: releaseBusy — no longer checks flyRef
-     toSlot0 is ALWAYS the terminal animation step,
-     so we release unconditionally from there.
-  ───────────────────────────────────────────── */
-  const releaseBusyAndProcessNext = useCallback(() => {
-    animatingRef.current = false; // re-enable polling
-    busyRef.current = false;
-    if (pendingNumRef.current !== null) {
-      const next = pendingNumRef.current;
-      pendingNumRef.current = null;
-      // Small delay so React state settles before next animation starts
-      setTimeout(() => {
-        if (triggerRef.current) triggerRef.current(next);
-      }, 50);
-    }
-  }, []);
-
-  /* ── Fly helpers ── */
   const doFlySlot1ToBoard = useCallback((num, onDone) => {
     setTray(p => { const t = [...p]; t[1] = null; return t; });
     setFly({
@@ -409,12 +515,6 @@ export default function TambolaLive({ gameId }) {
     });
   }, [TRAY_BALL_SIZE, GRID_BALL_SIZE]);
 
-  /* ─────────────────────────────────────────────
-     FIX: handleFlyDone
-     - toBoard   → always release after landing
-     - toSlot1   → don't release (more steps follow in chain)
-     - toSlot0   → always release (terminal step in every chain)
-  ───────────────────────────────────────────── */
   const handleFlyDone = useCallback(() => {
     const f = flyRef.current;
     setFly(null);
@@ -425,288 +525,43 @@ export default function TambolaLive({ gameId }) {
       setArrivingCell(f.boardTarget);
       setTimeout(() => setArrivingCell(null), 800);
       if (f.onDone) setTimeout(f.onDone, 100);
-      // toBoard is terminal when there's no further chain (slot0→board directly)
-      // Release is safe here; subsequent steps (if any) are driven by onDone callback
-      setTimeout(releaseBusyAndProcessNext, 200);
 
     } else if (f.type === "toSlot1") {
       setTray(p => { const t = [...p]; t[1] = f.num; return t; });
       setTrayKey(p => { const k = [...p]; k[1]++; return k; });
-      // Do NOT release here — the chain continues (big → slot0 follows via onDone)
       if (f.onDone) setTimeout(f.onDone, 140);
 
     } else if (f.type === "toSlot0") {
       setTray(p => { const t = [...p]; t[0] = f.num; return t; });
       setTrayKey(p => { const k = [...p]; k[0]++; return k; });
-      // toSlot0 is ALWAYS the last step — release unconditionally
-      setTimeout(releaseBusyAndProcessNext, 200);
     }
-  }, [releaseBusyAndProcessNext]);
+  }, []);
 
-  // Keep flyRef in sync with fly state
   useEffect(() => { flyRef.current = fly; }, [fly]);
 
-  // Cleanup on unmount
+  // Cleanup
   useEffect(() => {
     return () => {
-      if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+      if (processingTimeoutRef.current) clearTimeout(processingTimeoutRef.current);
     };
   }, []);
 
-  /* ─────────────────────────────────────────────
-     FIX: triggerAnimationForNumber
-     Sets animatingRef=true so polling is blocked
-     while any animation sequence is in progress.
-  ───────────────────────────────────────────── */
-  const triggerAnimationForNumber = useCallback((n) => {
-    if (busyRef.current) {
-      // Queue only the latest number (discard older pending)
-      pendingNumRef.current = n;
-      return;
-    }
-    busyRef.current = true;
-    animatingRef.current = true; // block polling from overwriting calledSet
-
-    setBigNum(n);
-    setBigKey(k => k + 1);
-    setShowPulse(true);
-    setShowParticles(false);
-    setTimeout(() => setShowParticles(true), 200);
-
-    if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
-
-    animationTimeoutRef.current = setTimeout(() => {
-      setShowPulse(false);
-      setShowParticles(false);
-      setBigNum(null);
-
-      const currentTray = trayRef.current;
-      const s1 = currentTray[1];
-      const s0 = currentTray[0];
-
-      if (s1 !== null) {
-        // slot1 → board, then slot0 → slot1, then big → slot0
-        doFlySlot1ToBoard(s1, () => {
-          if (trayRef.current[0] !== null) {
-            doFlySlot0ToSlot1(trayRef.current[0], () => {
-              doFlyBigToSlot0(n);
-            });
-          } else {
-            doFlyBigToSlot0(n);
-          }
-        });
-      } else if (s0 !== null) {
-        // slot0 → slot1, then big → slot0
-        doFlySlot0ToSlot1(s0, () => {
-          doFlyBigToSlot0(n);
-        });
-      } else {
-        // tray empty — big → slot0 directly
-        doFlyBigToSlot0(n);
-      }
-    }, 1800);
-  }, [doFlySlot1ToBoard, doFlySlot0ToSlot1, doFlyBigToSlot0]);
-
-  // Keep triggerRef in sync (used by releaseBusy to avoid circular dep)
-  useEffect(() => { triggerRef.current = triggerAnimationForNumber; }, [triggerAnimationForNumber]);
-
-  /* ═══════════════════════════════════════════
-     API HELPERS
-  ═══════════════════════════════════════════ */
-
-  const loadCurrentRound = useCallback(async () => {
-    if (!gameId) return;
-    try {
-      const res = await fetch(`${API.LOAD_CURRENT_ROUND_URL}${gameId}`);
-      const result = await res.json();
-      if (result.success && result.data) {
-        setCurrentRoundId(result.data.round_id);
-        setGameStatus(result.data.status || "waiting");
-      }
-    } catch (e) { console.warn("loadCurrentRound:", e); }
-  }, [gameId]);
-
-  const loadAllTickets = useCallback(async () => {
-    if (!gameId) return;
-    try {
-      const res = await fetch(`${API.BOOKING_ALL_TICKET_SOCKET_URL}${gameId}`);
-      const result = await res.json();
-      if (result.success && result.data?.length) setAllTickets(result.data);
-    } catch (e) { console.warn("loadAllTickets:", e); }
-  }, [gameId]);
-
-  /* ─────────────────────────────────────────────
-     FIX: updateCalledNumbers
-     Skips update entirely while an animation is
-     running — prevents polling from clobbering
-     calledSet mid-flight and killing grid animations.
-  ───────────────────────────────────────────── */
-  const updateCalledNumbers = useCallback(async () => {
-    if (!currentRoundId) return;
-    // Don't overwrite state while animation is in progress
-    if (animatingRef.current) return;
-    try {
-      const res = await fetch(`${API.ROUND_ID_SOCKET_URL}${currentRoundId}`);
-      const result = await res.json();
-      if (result.success && result.data) {
-        const data = result.data;
-        if (data.called_numbers) {
-          setCalledSet(new Set(data.called_numbers));
-          setCalledCount(data.total_called || data.called_numbers.length);
-        }
-        if (data.round_status) setGameStatus(data.round_status);
-      }
-    } catch (e) { console.warn("updateCalledNumbers:", e); }
-  }, [currentRoundId]);
-
-  const loadWinners = useCallback(async () => {
-    if (!currentRoundId) return;
-    try {
-      const res = await fetch(`${API.WINNER_LIST_SOCKET_URL}${currentRoundId}`);
-      const result = await res.json();
-      if (result.success && result.data) setWinners(result.data);
-    } catch (e) { console.warn("loadWinners:", e); }
-  }, [currentRoundId]);
-
-  /* ── Initial load ── */
-  useEffect(() => {
-    loadCurrentRound();
-    loadAllTickets();
-  }, [loadCurrentRound, loadAllTickets]);
-
-  useEffect(() => {
-    if (currentRoundId) {
-      updateCalledNumbers();
-      loadWinners();
-    }
-  }, [currentRoundId, updateCalledNumbers, loadWinners]);
-
-  /* ── Polling intervals (2s numbers, 3s winners) ── */
-  useEffect(() => {
-    const t1 = setInterval(updateCalledNumbers, 2000);
-    const t2 = setInterval(loadWinners, 3000);
-    return () => { clearInterval(t1); clearInterval(t2); };
-  }, [updateCalledNumbers, loadWinners]);
-
-  /* ═══════════════════════════════════════════
-     SOCKET CONNECTION
-  ═══════════════════════════════════════════ */
-  useEffect(() => {
-    const socket = io(API.SOCKET_URL, {
-         transports: ["websocket", "polling"],
-        // secure: true,
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-    });
-    socketRef.current = socket;
-
-    socket.on("connect", () => {
-      setConnected(true);
-      socket.emit("get_game_data", { game_id: gameId });
-    });
-    socket.on("disconnect", () => setConnected(false));
-    socket.on("connect_error", () => setConnected(false));
-
-    socket.on("game_started", () => { setGameStatus("started"); setDone(false); });
-    socket.on("game_paused", () => setGameStatus("paused"));
-    socket.on("game_resumed", () => setGameStatus("started"));
-    socket.on("game_over", (data) => {
-      if (data?.round_id === currentRoundId || data?.game_id === gameId) {
-        setGameStatus("over");
-        setDone(true);
-      }
-    });
-
-    // socket.on("number_called", (data) => {
-    //   if (data.game_id !== gameId) return;
-    //   const number = data.number;
-    //   setCalledCount(prev => prev + 1);
-
-    //   loadAllTickets();
-
-    //   try {
-    //     const audio = new Audio(`/sounds/${number}.mp3`);
-    //     audio.volume = 0.85;
-    //     audio.play().catch(() => { });
-    //   } catch (e) { }
-
-    //   triggerAnimationForNumber(number);
-    // });
-
-    socket.on("number_called", (data) => {
-      if (data.game_id !== gameId) return;
-      const number = data.number;
-      setCalledCount(prev => prev + 1);
-      loadAllTickets();
-
-      // 3 second delay — phir sound + animation dono saath
-      setTimeout(() => {
-        try {
-          const audio = new Audio(`/sounds/${number}.mp3`);
-          audio.volume = 0.85;
-          audio.play().catch(() => { });
-        } catch (e) { }
-        triggerAnimationForNumber(number);
-      }, 3000);
-    });
-
-    socket.on("old_numbers", (data) => {
-      if (data.calledNumbers && data.calledNumbers.length > 0) {
-        const nums = data.calledNumbers;
-        setCalledSet(new Set(nums));
-        setCalledCount(nums.length);
-        if (nums.length >= 2) {
-          setTray([nums[nums.length - 1], nums[nums.length - 2]]);
-        } else if (nums.length === 1) {
-          setTray([nums[0], null]);
-        }
-      }
-    });
-
-    socket.on("winner_update", (data) => {
-      if (data.round_id === currentRoundId) {
-        loadWinners();
-        loadAllTickets();
-      }
-    });
-
-    socket.on("winner_created", (data) => {
-      if (data.round_id === currentRoundId || data.game_id === gameId) {
-        loadWinners();
-        loadAllTickets();
-      }
-    });
-
-    return () => {
-      if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
-      socket.disconnect();
-    };
-  }, [gameId, currentRoundId, triggerAnimationForNumber, loadAllTickets, loadWinners]);
-
-  /* ── Derived values ── */
+  /* ── Derived ── */
   const pct = Math.round((calledCount / 90) * 100);
   const numColor = bigNum ? `linear-gradient(135deg, ${dc(bigNum).light}, ${dc(bigNum).base})` : null;
 
-  /* ═══════════════════════════════════════════
-     SUB-COMPONENTS
-  ═══════════════════════════════════════════ */
+  /* ── Sub-components ── */
   const BoardGrid = ({ mobile = false }) => (
     <div style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(10, 1fr)",
-      gap: mobile ? 3 : isNarrow ? 5 : 7,
-      width: "100%",
+      display: "grid", gridTemplateColumns: "repeat(10, 1fr)",
+      gap: mobile ? 3 : isNarrow ? 5 : 7, width: "100%",
       padding: mobile ? "6px" : isNarrow ? "8px" : "12px",
     }}>
       {Array.from({ length: 90 }, (_, i) => {
         const n = i + 1;
         return (
-          <div key={n}
-            ref={el => { cellRefs.current[n] = el; }}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", aspectRatio: "1" }}
-          >
+          <div key={n} ref={el => { cellRefs.current[n] = el; }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", aspectRatio: "1" }}>
             <GridBall number={n} called={calledSet.has(n)} arriving={arrivingCell === n} size={GRID_BALL_SIZE} />
           </div>
         );
@@ -717,8 +572,7 @@ export default function TambolaLive({ gameId }) {
   const TraySlots = ({ vertical = false }) => (
     <div style={{ display: "flex", flexDirection: vertical ? "column" : "row", gap: 14, alignItems: "center" }}>
       {[0, 1].map(i => (
-        <div key={i}
-          ref={i === 0 ? slot0Ref : slot1Ref}
+        <div key={i} ref={i === 0 ? slot0Ref : slot1Ref}
           style={{
             width: TRAY_SLOT_SIZE, height: TRAY_SLOT_SIZE, borderRadius: "50%",
             background: "rgba(0,10,30,0.55)",
@@ -757,8 +611,7 @@ export default function TambolaLive({ gameId }) {
       ].map(s => (
         <div key={s.lbl} style={{
           flex: 1, textAlign: "center",
-          padding: compact ? "6px 4px" : "10px 6px",
-          borderRadius: 10,
+          padding: compact ? "6px 4px" : "10px 6px", borderRadius: 10,
           background: "rgba(0,20,51,0.45)",
           border: "1px solid rgba(251,239,164,0.09)",
           backdropFilter: "blur(8px)",
@@ -791,28 +644,6 @@ export default function TambolaLive({ gameId }) {
     </div>
   );
 
-  const Legend = () => (
-    <div style={{ width: "100%", display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "center" }}>
-      {DECADE_COLORS.map((d, i) => (
-        <div key={i} style={{
-          display: "flex", alignItems: "center", gap: 3,
-          padding: "2px 6px", borderRadius: 6,
-          background: "rgba(0,20,51,0.4)",
-          border: "1px solid rgba(251,239,164,0.05)",
-        }}>
-          <div style={{
-            width: 7, height: 7, borderRadius: "50%",
-            background: `radial-gradient(circle at 35% 25%, ${d.light}, ${d.base})`,
-            boxShadow: `0 0 4px ${d.glow}`,
-          }} />
-          <span style={{ fontSize: 6, color: "rgba(251,239,164,0.30)", fontFamily: "'Raleway',sans-serif" }}>
-            {i * 10 + 1}–{(i + 1) * 10}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-
   const StatusIndicator = () => (
     <div style={{
       display: "flex", alignItems: "center", gap: 8,
@@ -827,47 +658,37 @@ export default function TambolaLive({ gameId }) {
         boxShadow: connected ? `0 0 8px ${gameStatus === "started" ? "#1abc9c" : "#FBEFA4"}` : "0 0 8px #ff4444",
         animation: connected && gameStatus === "started" ? "tl-breathe 2s ease-in-out infinite" : "none",
       }} />
-      <span style={{
-        fontSize: 9, color: "rgba(255,255,255,0.70)",
-        fontFamily: "'Cinzel',serif", letterSpacing: 1.5,
-      }}>
+      <span style={{ fontSize: 9, color: "rgba(255,255,255,0.70)", fontFamily: "'Cinzel',serif", letterSpacing: 1.5 }}>
         {connected ? gameStatus.toUpperCase() : "OFFLINE MODE"}
       </span>
     </div>
   );
 
-  /* ═══════════════════════════════════════════
-     RENDER
-  ═══════════════════════════════════════════ */
   return (
     <>
-      {/* ── Global styles ── */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Raleway:wght@300;400;600&display=swap');
-
         @keyframes tl-ballReveal {
-          0%   { transform: rotate(0deg)   scale(0.2); opacity: 0; animation-timing-function: ease-in; }
-          50%  { transform: rotate(360deg) scale(0.6); opacity: 0.8; animation-timing-function: ease-out; }
+          0%   { transform: rotate(0deg)   scale(0.2); opacity: 0; }
+          50%  { transform: rotate(360deg) scale(0.6); opacity: 0.8; }
           100% { transform: rotate(360deg) scale(1);   opacity: 1; }
         }
-        @keyframes tl-traySettle {
-          0%   { transform: scale(0.3) translateY(-10px); opacity: 0; }
-          60%  { transform: scale(1.06) translateY(1px);  opacity: 1; }
-          80%  { transform: scale(0.97); }
-          100% { transform: scale(1); opacity: 1; }
-        }
+       @keyframes tl-trayFadeIn {
+          0%   { opacity: 0; }
+          100% { opacity: 1; }
+}
         @keyframes tl-gridArrive {
-          0%   { transform: scale(0.2);    opacity: 0; filter: brightness(3); }
-          55%  { transform: scale(1.14);   opacity: 1; filter: brightness(1.5); }
-          80%  { transform: scale(0.97);   filter: brightness(1.1); }
-          100% { transform: scale(1.04);   opacity: 1; filter: brightness(1); }
+          0%   { transform: scale(0.2); opacity: 0; filter: brightness(3); }
+          55%  { transform: scale(1.14); opacity: 1; filter: brightness(1.5); }
+          80%  { transform: scale(0.97); filter: brightness(1.1); }
+          100% { transform: scale(1.04); opacity: 1; filter: brightness(1); }
         }
         @keyframes tl-softPulse {
-          0%,100% { transform: scale(1);    opacity: 0.7; }
+          0%,100% { transform: scale(1); opacity: 0.7; }
           50%     { transform: scale(1.55); opacity: 0; }
         }
         @keyframes tl-floatDrift {
-          0%,100% { transform: translateY(0px)  rotate(0deg); }
+          0%,100% { transform: translateY(0px) rotate(0deg); }
           33%     { transform: translateY(-8px) rotate(1deg); }
           66%     { transform: translateY(-4px) rotate(-0.8deg); }
         }
@@ -889,7 +710,7 @@ export default function TambolaLive({ gameId }) {
         }
         @keyframes tl-doneGlow {
           0%,100% { text-shadow: 0 0 20px rgba(251,239,164,0.6),  0 0 40px  rgba(251,239,164,0.25); }
-          50%     { text-shadow: 0 0 50px rgba(251,239,164,0.95), 0 0 100px rgba(251,239,164,0.45), 0 0 160px rgba(251,239,164,0.18); }
+          50%     { text-shadow: 0 0 50px rgba(251,239,164,0.95), 0 0 100px rgba(251,239,164,0.45); }
         }
         @keyframes tl-particle0 {
           0%   { transform: translate(-50%,-50%) translate(0,0) scale(1); opacity: 1; }
@@ -903,7 +724,6 @@ export default function TambolaLive({ gameId }) {
           0%   { transform: translate(-50%,-50%) scale(1); opacity: 1; }
           100% { transform: translate(-50%,-50%) translate(calc(var(--px)*1.2),calc(var(--py)*0.6)) scale(0); opacity: 0; }
         }
-
         .tl-shimmer {
           background: linear-gradient(90deg, #c9b86c 0%, #ffe066 28%, #FBEFA4 50%, #ffe066 72%, #c9b86c 100%);
           background-size: 600px 100%;
@@ -916,7 +736,6 @@ export default function TambolaLive({ gameId }) {
         .tl-breathe { animation: tl-breathe 2s ease-in-out infinite; }
       `}</style>
 
-      {/* ── Root wrapper ── */}
       <div ref={containerRef} style={{
         width: "100%", overflow: "hidden", borderRadius: 18,
         background: `
@@ -925,21 +744,15 @@ export default function TambolaLive({ gameId }) {
           linear-gradient(160deg, #002b66 0%, #001433 100%)
         `,
         border: "1px solid rgba(251,239,164,0.10)",
-        boxShadow: `
-          0 0 0 1px rgba(0,66,150,0.40),
-          0 30px 80px rgba(0,8,25,0.85),
-          inset 0 1px 0 rgba(251,239,164,0.06)
-        `,
+        boxShadow: `0 0 0 1px rgba(0,66,150,0.40), 0 30px 80px rgba(0,8,25,0.85), inset 0 1px 0 rgba(251,239,164,0.06)`,
         color: "#fff", position: "relative",
         fontFamily: "'Raleway', sans-serif",
       }}>
 
-        {/* Status indicator */}
         <div style={{ position: "absolute", top: 14, right: 14, zIndex: 20 }}>
           <StatusIndicator />
         </div>
 
-        {/* Ambient grid */}
         <div style={{
           position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
           backgroundImage: `
@@ -949,7 +762,6 @@ export default function TambolaLive({ gameId }) {
           backgroundSize: "52px 52px",
         }} />
 
-        {/* Decorative rings */}
         {[
           { s: 280, t: -90, l: -90, anim: "tl-rotateSlow 32s linear infinite", c: "rgba(0,66,150,0.18)" },
           { s: 180, t: -50, l: -50, anim: "tl-rotateSlow 20s linear infinite reverse", c: "rgba(251,239,164,0.07)" },
@@ -965,7 +777,6 @@ export default function TambolaLive({ gameId }) {
           }} />
         ))}
 
-        {/* Flying ball layer */}
         {fly && (
           <FlyingBall
             from={fly.from} to={fly.to} number={fly.number}
@@ -977,40 +788,33 @@ export default function TambolaLive({ gameId }) {
         {/* ══ MOBILE ══ */}
         {isMobile && (
           <div style={{ display: "flex", flexDirection: "column", padding: "14px 10px 20px", gap: 12, position: "relative", zIndex: 1 }}>
-
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
               <h1 className="tl-shimmer" style={{ fontSize: 12, fontWeight: 900, letterSpacing: 3, flexShrink: 0, fontFamily: "'Cinzel',serif" }}>
                 TAMBOLA
               </h1>
               <StatsBar compact />
             </div>
-
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20 }}>
               <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 {showPulse && bigNum && (<>
                   {[0, 1, 2].map(k => (
                     <div key={k} style={{
-                      position: "absolute",
-                      inset: -(6 * (k + 1) + 2),
-                      borderRadius: "50%",
+                      position: "absolute", inset: -(6 * (k + 1) + 2), borderRadius: "50%",
                       border: `${k < 1 ? "1.5" : "1"}px solid ${k === 0 ? dc(bigNum).light + "55" : dc(bigNum).base + (k === 1 ? "33" : "18")}`,
                       animation: `tl-softPulse 2.2s ease-out ${k * 0.55}s infinite`,
                     }} />
                   ))}
                   <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
                 </>)}
-                <div ref={bigBallRef} className={bigNum ? "tl-float" : ""}>
+                {/* <div ref={bigBallRef} className={bigNum ? "tl-float" : ""}>
                   <BigBall number={bigNum} animKey={bigKey} size={BIG_BALL_SIZE} />
-                </div>
+                </div> */}
               </div>
-
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
                 <TraySlots vertical />
               </div>
             </div>
-
             <ProgressBar />
-
             <div style={{ background: "rgba(0,0,0,0.22)", borderRadius: 12, border: "1px solid rgba(251,239,164,0.05)" }}>
               <BoardGrid mobile />
             </div>
@@ -1020,7 +824,6 @@ export default function TambolaLive({ gameId }) {
         {/* ══ TABLET ══ */}
         {!isMobile && isNarrow && (
           <div style={{ display: "flex", alignItems: "stretch", position: "relative", zIndex: 1, minHeight: 500 }}>
-
             <div style={{
               flexShrink: 0, width: LEFT_PANEL_W,
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -1031,9 +834,7 @@ export default function TambolaLive({ gameId }) {
               <div style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 7, color: "rgba(251,239,164,0.38)", letterSpacing: 5, marginBottom: 5, fontFamily: "'Raleway',sans-serif" }}>✦ LIVE DRAW ✦</div>
                 <h1 className="tl-shimmer" style={{ fontSize: 13, fontWeight: 900, letterSpacing: 4, fontFamily: "'Cinzel',serif" }}>TAMBOLA</h1>
-                <div style={{ fontSize: 7, color: "rgba(255,255,255,0.16)", letterSpacing: 3, marginTop: 3, fontFamily: "'Cinzel',serif" }}>90 BALL · LIVE DRAW</div>
               </div>
-
               <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
                 {showPulse && bigNum && (<>
                   {[0, 1, 2].map(k => (
@@ -1046,46 +847,21 @@ export default function TambolaLive({ gameId }) {
                   ))}
                   <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
                 </>)}
-                <div style={{
-                  position: "absolute", bottom: -18, left: "50%", transform: "translateX(-50%)",
-                  width: bigNum ? BIG_BALL_SIZE * 0.8 : 0, height: 10, borderRadius: "50%",
-                  background: bigNum ? `radial-gradient(ellipse, ${dc(bigNum).glow} 0%, transparent 70%)` : "none",
-                  transition: "width 0.8s ease",
-                }} />
                 <div ref={bigBallRef} className={bigNum ? "tl-float" : ""}>
                   <BigBall number={bigNum} animKey={bigKey} size={BIG_BALL_SIZE} />
                 </div>
-                <div style={{ minHeight: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {bigNum ? (
-                    <div style={{
-                      fontSize: 28, fontWeight: 900, fontFamily: "'Cinzel',serif",
-                      background: numColor,
-                      WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1,
-                    }}>{bigNum}</div>
-                  ) : (
-                    <div style={{ fontSize: 7, color: "rgba(255,255,255,0.14)", letterSpacing: 3, fontFamily: "'Cinzel',serif" }}>
-                      {done ? "COMPLETE" : "WAITING…"}
-                    </div>
-                  )}
-                </div>
+                {/* <div style={{ minHeight: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {bigNum
+                    ? <div style={{ fontSize: 28, fontWeight: 900, fontFamily: "'Cinzel',serif", background: numColor, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1 }}>{bigNum}</div>
+                    : <div style={{ fontSize: 7, color: "rgba(255,255,255,0.14)", letterSpacing: 3, fontFamily: "'Cinzel',serif" }}>{done ? "COMPLETE" : "WAITING…"}</div>
+                  }
+                </div> */}
               </div>
-
               <TraySlots />
               <StatsBar />
               <ProgressBar />
             </div>
-
             <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", padding: "16px 14px 14px 12px", gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 2, height: 16, background: "linear-gradient(180deg, #FBEFA4, rgba(251,239,164,0))", borderRadius: 2 }} />
-                  <span style={{ fontSize: 9, fontWeight: 600, fontFamily: "'Cinzel',serif", color: "rgba(251,239,164,0.35)", letterSpacing: 3 }}>FULL BOARD</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, background: "rgba(0,20,51,0.50)", border: "1px solid rgba(251,239,164,0.08)" }}>
-                  <div className="tl-breathe" style={{ width: 5, height: 5, borderRadius: "50%", background: pct === 100 ? "#1abc9c" : "#FBEFA4", boxShadow: pct === 100 ? "0 0 6px #1abc9c" : "0 0 6px #FBEFA4" }} />
-                  <span style={{ fontSize: 8, color: "rgba(255,255,255,0.38)", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}>{calledCount} / 90</span>
-                </div>
-              </div>
               <div style={{ flex: 1, background: "rgba(0,8,24,0.35)", borderRadius: 14, border: "1px solid rgba(251,239,164,0.05)", display: "flex", alignItems: "center", overflow: "hidden" }}>
                 <BoardGrid />
               </div>
@@ -1096,7 +872,6 @@ export default function TambolaLive({ gameId }) {
         {/* ══ DESKTOP ══ */}
         {!isMobile && !isNarrow && (
           <div style={{ display: "flex", alignItems: "stretch", position: "relative", zIndex: 1, minHeight: 560 }}>
-
             <div style={{
               flexShrink: 0, width: LEFT_PANEL_W,
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -1105,19 +880,11 @@ export default function TambolaLive({ gameId }) {
               background: "rgba(0,0,0,0.18)",
               backdropFilter: "blur(6px)",
             }}>
-
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "rgba(251,239,164,0.40)", letterSpacing: 5, marginBottom: 6, fontFamily: "'Raleway',sans-serif" }}>
-                  ✦ LIVE DRAW ✦
-                </div>
-                <h1 className="tl-shimmer" style={{ fontSize: 18, fontWeight: 900, letterSpacing: 4, fontFamily: "'Cinzel',serif" }}>
-                  TAMBOLA
-                </h1>
-                <div style={{ fontSize: 7, color: "rgba(255,255,255,0.18)", letterSpacing: 3, marginTop: 4, fontFamily: "'Cinzel',serif" }}>
-                  90 BALL · LIVE DRAW
-                </div>
+                <div style={{ fontSize: 7, color: "rgba(251,239,164,0.40)", letterSpacing: 5, marginBottom: 6, fontFamily: "'Raleway',sans-serif" }}>✦ LIVE DRAW ✦</div>
+                <h1 className="tl-shimmer" style={{ fontSize: 18, fontWeight: 900, letterSpacing: 4, fontFamily: "'Cinzel',serif" }}>TAMBOLA</h1>
+                <div style={{ fontSize: 7, color: "rgba(255,255,255,0.18)", letterSpacing: 3, marginTop: 4, fontFamily: "'Cinzel',serif" }}>90 BALL · LIVE DRAW</div>
               </div>
-
               <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
                 {showPulse && bigNum && (<>
                   {[0, 1, 2].map(k => (
@@ -1130,38 +897,25 @@ export default function TambolaLive({ gameId }) {
                   ))}
                   <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
                 </>)}
-                <div style={{
-                  position: "absolute", bottom: -22, left: "50%", transform: "translateX(-50%)",
-                  width: bigNum ? BIG_BALL_SIZE * 0.82 : 0, height: 12, borderRadius: "50%",
-                  background: bigNum ? `radial-gradient(ellipse, ${dc(bigNum).glow} 0%, transparent 70%)` : "none",
-                  transition: "width 0.8s ease", pointerEvents: "none",
-                }} />
                 <div ref={bigBallRef} className={bigNum ? "tl-float" : ""}>
                   <BigBall number={bigNum} animKey={bigKey} size={BIG_BALL_SIZE} />
                 </div>
               </div>
-
               <TraySlots />
               <StatsBar />
               <ProgressBar />
-              <Legend />
             </div>
-
             <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", padding: "24px 24px 20px 18px", gap: 14 }}>
-
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <div style={{ width: 2, height: 18, background: "linear-gradient(180deg,#FBEFA4,rgba(251,239,164,0))", borderRadius: 2 }} />
-                  <span style={{ fontSize: 11, fontWeight: 600, fontFamily: "'Cinzel',serif", color: "rgba(251,239,164,0.35)", letterSpacing: 3 }}>
-                    FULL BOARD
-                  </span>
+                  <span style={{ fontSize: 11, fontWeight: 600, fontFamily: "'Cinzel',serif", color: "rgba(251,239,164,0.35)", letterSpacing: 3 }}>FULL BOARD</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 20, background: "rgba(0,20,51,0.50)", border: "1px solid rgba(251,239,164,0.08)", backdropFilter: "blur(8px)" }}>
                   <div className="tl-breathe" style={{ width: 5, height: 5, borderRadius: "50%", background: pct === 100 ? "#1abc9c" : "#FBEFA4", boxShadow: pct === 100 ? "0 0 6px #1abc9c" : "0 0 6px #FBEFA4" }} />
                   <span style={{ fontSize: 8, color: "rgba(255,255,255,0.40)", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}>{calledCount} / 90</span>
                 </div>
               </div>
-
               <div style={{ flex: 1, background: "rgba(0,8,24,0.35)", borderRadius: 14, border: "1px solid rgba(251,239,164,0.05)", display: "flex", alignItems: "center", overflow: "hidden" }}>
                 <BoardGrid />
               </div>
@@ -1173,47 +927,24 @@ export default function TambolaLive({ gameId }) {
         {done && (
           <div style={{
             position: "absolute", inset: 0, zIndex: 50,
-            background: "rgba(0,8,25,0.92)",
-            backdropFilter: "blur(14px)",
+            background: "rgba(0,8,25,0.92)", backdropFilter: "blur(14px)",
             borderRadius: 18,
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            gap: 16,
-            animation: "tl-doneFade 0.8s ease forwards",
+            gap: 16, animation: "tl-doneFade 0.8s ease forwards",
           }}>
-            {[
-              { s: 320, a: "tl-rotateSlow 12s linear infinite", c: "rgba(251,239,164,0.09)" },
-              { s: 220, a: "tl-rotateSlow 8s linear infinite reverse", c: "rgba(0,66,150,0.22)" },
-            ].map((r, i) => (
-              <div key={i} style={{ position: "absolute", width: r.s, height: r.s, borderRadius: "50%", border: `1px solid ${r.c}`, animation: r.a }} />
-            ))}
-            <div style={{ fontSize: isMobile ? 11 : 13, letterSpacing: 6, color: "rgba(251,239,164,0.55)", fontFamily: "'Cinzel',serif" }}>✦ ✦ ✦</div>
-            <div style={{
-              fontSize: isMobile ? 24 : 36, fontWeight: 900,
-              fontFamily: "'Cinzel',serif", color: "#FBEFA4",
-              animation: "tl-doneGlow 2s ease-in-out infinite",
-              letterSpacing: 4, textAlign: "center",
-            }}>
+            <div style={{ fontSize: isMobile ? 24 : 36, fontWeight: 900, fontFamily: "'Cinzel',serif", color: "#FBEFA4", animation: "tl-doneGlow 2s ease-in-out infinite", letterSpacing: 4 }}>
               FULL HOUSE
             </div>
-            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", letterSpacing: 4, fontFamily: "'Raleway',sans-serif" }}>
-              ALL 90 NUMBERS CALLED
-            </div>
-            <div style={{ fontSize: isMobile ? 11 : 13, letterSpacing: 6, color: "rgba(251,239,164,0.55)", fontFamily: "'Cinzel',serif" }}>✦ ✦ ✦</div>
+            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", letterSpacing: 4, fontFamily: "'Raleway',sans-serif" }}>ALL 90 NUMBERS CALLED</div>
             <button
               onClick={() => window.location.reload()}
               style={{
                 marginTop: 12, padding: "12px 36px",
-                fontSize: 10, fontWeight: 700,
-                fontFamily: "'Cinzel',serif", letterSpacing: 3,
-                background: "linear-gradient(135deg, #FBEFA4, #c9b86c)",
-                color: "#001433",
-                border: "none", borderRadius: 30,
-                cursor: "pointer",
-                boxShadow: "0 4px 24px rgba(251,239,164,0.38), 0 0 50px rgba(251,239,164,0.12)",
-                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                fontSize: 10, fontWeight: 700, fontFamily: "'Cinzel',serif", letterSpacing: 3,
+                background: "linear-gradient(135deg, #FBEFA4, #c9b86c)", color: "#001433",
+                border: "none", borderRadius: 30, cursor: "pointer",
+                boxShadow: "0 4px 24px rgba(251,239,164,0.38)",
               }}
-              onMouseOver={e => { e.currentTarget.style.transform = "scale(1.07)"; e.currentTarget.style.boxShadow = "0 6px 32px rgba(251,239,164,0.58)"; }}
-              onMouseOut={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 24px rgba(251,239,164,0.38)"; }}
             >
               PLAY AGAIN
             </button>
