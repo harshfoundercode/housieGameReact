@@ -282,7 +282,7 @@ const AfterGameLive = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white p-4 md:p-6 relative">
+    <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white p-4 md:p-6 relative">
 
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div
@@ -303,7 +303,7 @@ const AfterGameLive = () => {
             className="relative group cursor-pointer"
           >
             <div className="absolute inset-0 bg-[#FBEFA4] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity" />
-            <div className="relative w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-2 border-[#FBEFA4] shadow-xl overflow-hidden">
+            <div className="relative w-12 h-12 md:w-14 md:h-14 bg-linear-to-br from-[#004296] to-[#002b66] rounded-full flex items-center justify-center border-2 border-[#FBEFA4] shadow-xl overflow-hidden">
               <img src={logoImage} alt="Tambola Logo" className="w-full h-full object-cover rounded-full" />
             </div>
           </div>
@@ -356,7 +356,7 @@ const AfterGameLive = () => {
 
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FBEFA4] to-transparent opacity-60" />
+      <div className="fixed bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-[#FBEFA4] to-transparent opacity-60" />
 
       <style>{`
         @keyframes pulse-dot {

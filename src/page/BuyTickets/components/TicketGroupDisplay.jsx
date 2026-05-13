@@ -66,7 +66,7 @@ const TicketGroupDisplay = ({ cart }) => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
         {/* Full Sheet */}
         {groups.fullSheet.length > 0 && (
-          <div className="bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-400/50 rounded-lg md:rounded-xl p-3 md:p-4">
+          <div className="bg-linear-to-br from-green-500/20 to-green-600/20 border border-green-400/50 rounded-lg md:rounded-xl p-3 md:p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-green-400 font-bold text-xs md:text-sm">FULL SHEET</h4>
               <span className="text-green-400 text-xs md:text-sm font-semibold">
@@ -98,7 +98,7 @@ const TicketGroupDisplay = ({ cart }) => {
 
         {/* Half Sheet */}
         {groups.halfSheet.length > 0 && (
-          <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-400/50 rounded-lg md:rounded-xl p-3 md:p-4">
+          <div className="bg-linear-to-br from-blue-500/20 to-blue-600/20 border border-blue-400/50 rounded-lg md:rounded-xl p-3 md:p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-blue-400 font-bold text-xs md:text-sm">HALF SHEET</h4>
               <span className="text-blue-400 text-xs md:text-sm font-semibold">
@@ -130,7 +130,7 @@ const TicketGroupDisplay = ({ cart }) => {
 
         {/* Random */}
         {groups.random.length > 0 && (
-          <div className="bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 border border-yellow-400/50 rounded-lg md:rounded-xl p-3 md:p-4">
+          <div className="bg-linear-to-br from-yellow-500/20 to-yellow-600/20 border border-yellow-400/50 rounded-lg md:rounded-xl p-3 md:p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-yellow-400 font-bold text-xs md:text-sm">RANDOM</h4>
               <span className="text-yellow-400 text-xs md:text-sm font-semibold">

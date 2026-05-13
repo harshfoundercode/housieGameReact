@@ -157,7 +157,7 @@ const GamePage = () => {
   // Loading state
   if (loadingTickets) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative">
+      <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative">
         <div className="relative z-10 max-w-8xl mx-auto space-y-3">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
@@ -173,7 +173,7 @@ const GamePage = () => {
   // Error state
   if (ticketError) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative">
+      <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative">
         <div className="relative z-10 max-w-8xl mx-auto space-y-3">
           <div className="text-center py-12">
             <div className="text-red-400 text-6xl mb-4">⚠️</div>
@@ -193,7 +193,7 @@ const GamePage = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative">
+      <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] text-white game-container p-4 md:p-6 relative">
         {/* Animated background elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -317,7 +317,7 @@ const GamePage = () => {
       />
 
       {/* Bottom decoration */}
-      <div className="fixed bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-[#FBEFA4] to-transparent shadow-lg shadow-[#FBEFA4]/50"></div>
+      <div className="fixed bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-linear-to-r from-transparent via-[#FBEFA4] to-transparent shadow-lg shadow-[#FBEFA4]/50"></div>
     </>
   );
 };

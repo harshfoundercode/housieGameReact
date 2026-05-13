@@ -27,9 +27,9 @@ const AgentModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm">
-      <div className="agent-modal bg-gradient-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-5xl max-h-[90vh] overflow-hidden border-2 border-[#FBEFA4]/50 shadow-2xl">
+      <div className="agent-modal bg-linear-to-br from-[#004296] to-[#002b66] rounded-2xl sm:rounded-3xl w-full max-w-[95%] sm:max-w-5xl max-h-[90vh] overflow-hidden border-2 border-[#FBEFA4]/50 shadow-2xl">
         {/* Modal Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#004296] to-[#003380] p-4 sm:p-6 border-b-2 border-[#FBEFA4]/50 z-10">
+        <div className="sticky top-0 bg-linear-to-r from-[#004296] to-[#003380] p-4 sm:p-6 border-b-2 border-[#FBEFA4]/50 z-10">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FBEFA4] flex items-center gap-2 sm:gap-3">
@@ -99,11 +99,11 @@ const AgentModal = ({
                 filteredAgents.map((agent) => (
                   <div
                     key={agent.agent_id}
-                    className="agent-card bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-3 sm:p-4 md:p-5 border-2 border-[#FBEFA4]/30"
+                    className="agent-card bg-linear-to-br from-white/10 to-white/5 rounded-xl p-3 sm:p-4 md:p-5 border-2 border-[#FBEFA4]/30"
                   >
                     <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
                       <div className="relative">
-                        <div className="w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-2xl sm:text-3xl border-2 border-[#FBEFA4]/50">
+                        <div className="w-12 h-12 sm:w-14 md:w-16 sm:h-14 md:h-16 bg-linear-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-2xl sm:text-3xl border-2 border-[#FBEFA4]/50">
                           👨‍💼
                         </div>
                         <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white bg-green-500"></div>
@@ -127,7 +127,7 @@ const AgentModal = ({
                       <div className="agent-actions flex flex-row sm:flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                         <button
                           onClick={() => handleContactAgent(agent)}
-                          className="flex-1 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
+                          className="flex-1 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 bg-linear-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
                         >
                           <span>💬</span> WhatsApp
                         </button>
@@ -160,10 +160,10 @@ const AgentModal = ({
                 ← Back to all agents
               </button>
 
-              <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
+              <div className="bg-linear-to-br from-white/10 to-white/5 rounded-xl p-4 sm:p-6 border border-[#FBEFA4]/30">
                 <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                   <div className="relative">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-4xl sm:text-5xl border-3 border-[#FBEFA4]">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-linear-to-br from-[#004296] to-[#003380] rounded-full flex items-center justify-center text-4xl sm:text-5xl border-3 border-[#FBEFA4]">
                       👨‍💼
                     </div>
                     <div className="absolute -bottom-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-3 border-white bg-green-500"></div>
@@ -198,13 +198,13 @@ const AgentModal = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6">
                   <button
                     onClick={() => handleCallAgent(selectedAgent)}
-                    className="p-3 sm:p-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 text-white"
+                    className="p-3 sm:p-4 bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 text-white"
                   >
                     <span className="text-xl sm:text-2xl">📞</span> Call Now
                   </button>
                   <button
                     onClick={() => handleContactAgent(selectedAgent)}
-                    className="p-3 sm:p-4 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 text-white"
+                    className="p-3 sm:p-4 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 sm:gap-3 text-white"
                   >
                     <span className="text-xl sm:text-2xl">💬</span> WhatsApp
                   </button>
@@ -220,7 +220,7 @@ const AgentModal = ({
           )}
         </div>
 
-        <div className="sticky bottom-0 bg-gradient-to-r from-[#004296] to-[#003380] p-3 sm:p-4 border-t border-[#FBEFA4]/30">
+        <div className="sticky bottom-0 bg-linear-to-r from-[#004296] to-[#003380] p-3 sm:p-4 border-t border-[#FBEFA4]/30">
           <p className="text-center text-white/50 text-xs sm:text-sm">
             All agents are verified. Your privacy is protected.
           </p>
