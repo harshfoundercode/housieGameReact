@@ -240,7 +240,7 @@ const GamePage = () => {
         </div>
 
         {/* Floating Action Buttons */}
-        <FloatingActionButtons
+        {/* <FloatingActionButtons
           isMobile={isMobile}
           availableTickets={availableTickets}
           showFabMenu={showFabMenu}
@@ -248,7 +248,7 @@ const GamePage = () => {
           setShowBookingModal={bookingModal.openBookingModal}
           setCurrentStep={bookingModal.setCurrentStep}
           setShowAgentModal={agentModal.openAgentModal}
-        />
+        /> */}
       </div>
 
       {/* Modals */}
