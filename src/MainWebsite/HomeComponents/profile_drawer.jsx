@@ -131,6 +131,7 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     ];
 
     const moreItems = [
+        { icon: "💰", label: "Withdraw", path: ROUTES.WITHDRAW },
         { icon: "✅", label: "My KYC", path: ROUTES.KYC_VIEW },
         { icon: "✅", label: "Add KYC", path: ROUTES.KYC_ADD },
         // { icon: "✅", label: "Update KYC", path: ROUTES.KYC_EDIT},

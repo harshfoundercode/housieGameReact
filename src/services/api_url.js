@@ -14,7 +14,7 @@ export const API = {
     LOGIN_URL: `${API_CONFIG_URL}auth/user/login`,
 
     OTP_SEND_URL: `${API_CONFIG_URL}otp/send-otp`,
-    
+
     OTP_VERIFY_URL: `${API_CONFIG_URL}otp/verify-otp`,
 
     PROFILE_URL: `${API_CONFIG_URL}auth/profile`,
@@ -36,7 +36,7 @@ export const API = {
     KYC_SUBMIT_URL: `${API_CONFIG_URL}kyc/submit`,
 
     ///GAME APIS
-    
+
     TICKET_LIST_BY_GAMEID_URL: `${API_CONFIG_URL}ticket/all?game_id=`,
     GET_AGENTS_URL: `${API_CONFIG_URL}agent/agent/list`,
     GET_AGENT_DETAILS_URL: `${API_CONFIG_URL}agent/`,
@@ -52,10 +52,18 @@ export const API = {
     HOW_IT_WORKS_URL: `${API_CONFIG_URL}admin/how-it-works`,
     WINNER_BANNER_URL: `${API_CONFIG_URL}admin/winner-banner`,
 
+    // withdrawalHistory: `${BASE_URL}/api/user/withdrawals/history`,
+    // walletBalance: `${BASE_URL}/api/user/wallet/balance`,
+    // requestWithdrawal: `${BASE_URL}/api/user/withdrawals/request`,
+    // withdrawalMethods: `${BASE_URL}/api/user/withdrawal-methods`,
+    // addWithdrawalMethod: `${BASE_URL}/api/user/withdrawal-methods/add`,
+    // deleteWithdrawalMethod: `${BASE_URL}/api/user/withdrawal-methods/delete`,
+    // withdrawalSettings: `${BASE_URL}/api/user/withdrawal/settings`,
+
     ///Socket Url
 
     SOCKET_URL: "https://api.luckyfunda.com",
-    
+
     LOAD_CURRENT_ROUND_URL: `${API_CONFIG_URL}round/current-game/`,
     BOOKING_ALL_TICKET_SOCKET_URL: `${API_CONFIG_URL}booking/all-tickets/`,
     ROUND_ID_SOCKET_URL: `${API_CONFIG_URL}game/status?round_id=`,

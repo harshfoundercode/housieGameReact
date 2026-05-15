@@ -28,5 +28,6 @@ export const ROUTES = {
     KYC_ADD: "/kyc-add",
     KYC_EDIT: "/kyc-edit",
     KYC_VIEW: "/kyc-view",
+    WITHDRAW: "/withdraw",
     ALL_LIVE_RESULTS: "/all_live_results",
 };

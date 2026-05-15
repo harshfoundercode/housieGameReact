@@ -28,6 +28,7 @@ const RulesAndTerms    = lazy(() => import("./MainWebsite/FooterComponents/rules
 const CancellationRefundPolicy = lazy(() => import("./MainWebsite/FooterComponents/cancellation_refund_policy"));
 const PrivacyPolicy    = lazy(() => import("./MainWebsite/FooterComponents/privacy_policy"));
 const FAQs             = lazy(() => import("./MainWebsite/FooterComponents/faqs"));
+const Withdraw             = lazy(() => import("./MainWebsite/ProfileDrawerComponents/withdraw_section"));
 
 // Global Server Error Popup
 const ServerErrorPopup = lazy(() => import("./ServerError/server_error_popup"));
@@ -415,6 +416,9 @@ const AppContent = () => {
           }/>
           <Route path={ROUTES.AllResults} element={
             <ProtectedRoute><AllResults /></ProtectedRoute>
+          }/>
+          <Route path={ROUTES.WITHDRAW} element={
+            <ProtectedRoute><Withdraw /></ProtectedRoute>
           }/>
 
        {/* 404 */}
