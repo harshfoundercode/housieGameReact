@@ -510,6 +510,10 @@ const KYCView = () => {
                   <p className="text-gray-500 text-sm">IFSC Code</p>
                   <p className="font-medium text-gray-800 text-lg uppercase">{kycData?.ifsc_code || "-"}</p>
                 </div>
+                <div>
+                  <p className="text-gray-500 text-sm">UPI ID</p>
+                  <p className="font-medium text-gray-800 text-lg uppercase">{kycData?.upi_id  || "-"}</p>
+                </div>
               </div>
             </div>
 

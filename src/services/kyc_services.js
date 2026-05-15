@@ -19,6 +19,7 @@ export const submitKYC = async (kycData) => {
         formData.append('bank_name', kycData.bank_name);
         formData.append('account_holder_name', kycData.account_holder_name);
         formData.append('pancard_number', kycData.pancard_number || '');
+        formData.append('upi_id', kycData.upi_id || '');
         
         // Append files
         if (kycData.id_front_image) {
@@ -71,6 +72,7 @@ export const updateKYC = async (kycData) => {
         formData.append('bank_name', kycData.bank_name);
         formData.append('account_holder_name', kycData.account_holder_name);
         formData.append('pancard_number', kycData.pancard_number || '');
+        formData.append('upi_id', kycData.upi_id || '');
         
     
         

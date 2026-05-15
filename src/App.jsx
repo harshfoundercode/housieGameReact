@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter , Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect, useCallback } from "react";
 import { ROUTES } from "./routes/routes";
 import ProtectedRoute from "./routes/protected_routes";
@@ -437,7 +437,6 @@ const AppContent = () => {
   );
 };
 
-// ... (rest of your App component remains the same)
 
 // ========== MAIN APP ==========
 function App() {
@@ -467,9 +466,9 @@ function App() {
     }
   }, []);
   return (
-    <HashRouter>
+    <BrowserRouter>
       <AppContent />
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
