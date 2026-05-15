@@ -1,16 +1,47 @@
 // export default TodaysWinner;
 import React, { useState, useEffect } from "react"; // Added missing imports
 import WinnerBg from "../../assets/winnerbg.png";
-import  {getWinnerList}  from "../../services/winner_list";
+import { getWinnerList } from "../../services/winner_list";
+import { getWinnerBannerApi } from "../../services/winner_banner_services";
 
 const TodaysWinner = () => {
   const [winnersList, setWinnersList] = useState([]); // Changed from null to []
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [bannerImage, setBannerImage] = useState(null);
+ 
+
   useEffect(() => {
     fetchWinnersListFromAPI();
+    fetchBannerFromAPI();
   }, []);
+
+  const fetchBannerFromAPI = async () => {
+    try {
+      setLoading(true);
+
+      const response = await getWinnerBannerApi();
+
+      console.log("Full Response:", response);
+
+      if (response.ok && response.data?.image_url) {
+        setBannerImage(response.data.image_url);
+      } else {
+        setBannerImage(null);
+      }
+
+    } catch (err) {
+      console.error("Error fetching banner:", err);
+      setError(err.message);
+      setBannerImage(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const displayImage = bannerImage || WinnerBg;
+
 
   const fetchWinnersListFromAPI = async () => {
     try {
@@ -105,7 +136,7 @@ const TodaysWinner = () => {
       {/* Winner Image Container */}
       <div className="mx-auto overflow-hidden w-full shadow-md rounded-lg sm:shadow-lg sm:rounded-xl lg:shadow-xl lg:rounded-2xl mb-6 sm:mb-8">
         <img
-          src={WinnerBg}
+          src={displayImage}
           alt="Today's Winners"
           className="w-full h-auto object-cover"
         />
@@ -118,9 +149,9 @@ const TodaysWinner = () => {
           {/* Mobile Grid - 1 column (shows first 6 winners) */}
           <div className="grid grid-cols-1 gap-2 sm:gap-3 md:hidden">
             {winnersList.slice(0, 6).map((winner, index) => (
-              <WinnerCard 
-                key={winner.winnerId || index} 
-                winner={winner} 
+              <WinnerCard
+                key={winner.winnerId || index}
+                winner={winner}
                 maskPhone={maskPhone}
                 getWinIcon={getWinIcon}
                 rank={index + 1}
@@ -131,9 +162,9 @@ const TodaysWinner = () => {
           {/* Tablet Grid - 2 columns */}
           <div className="hidden md:grid lg:hidden grid-cols-2 gap-3">
             {winnersList.map((winner, index) => (
-              <WinnerCard 
-                key={winner.winnerId || index} 
-                winner={winner} 
+              <WinnerCard
+                key={winner.winnerId || index}
+                winner={winner}
                 maskPhone={maskPhone}
                 getWinIcon={getWinIcon}
                 rank={index + 1}
@@ -144,9 +175,9 @@ const TodaysWinner = () => {
           {/* Desktop Grid - Row 1 */}
           <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-3">
             {winnersList.slice(0, 6).map((winner, index) => (
-              <WinnerCard 
-                key={winner.winnerId || index} 
-                winner={winner} 
+              <WinnerCard
+                key={winner.winnerId || index}
+                winner={winner}
                 maskPhone={maskPhone}
                 getWinIcon={getWinIcon}
                 rank={index + 1}
@@ -157,9 +188,9 @@ const TodaysWinner = () => {
           {/* Desktop Grid - Row 2 */}
           <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-6 gap-3 mt-3">
             {winnersList.slice(6, 12).map((winner, index) => (
-              <WinnerCard 
-                key={winner.winnerId || index + 6} 
-                winner={winner} 
+              <WinnerCard
+                key={winner.winnerId || index + 6}
+                winner={winner}
                 maskPhone={maskPhone}
                 getWinIcon={getWinIcon}
                 rank={index + 7}
@@ -177,7 +208,7 @@ const TodaysWinner = () => {
 const WinnerCard = ({ winner, maskPhone, getWinIcon, rank }) => {
   return (
     <div className="bg-white rounded-lg sm:rounded-xl shadow-sm sm:shadow-md hover:shadow-lg transition-all duration-300 p-2 sm:p-3 border border-gray-100 hover:border-[#FBEFA4]">
-      
+
       {/* Icon and Win Type */}
       <div className="flex items-center justify-between mb-1 sm:mb-2">
         <span className="text-xl sm:text-2xl">

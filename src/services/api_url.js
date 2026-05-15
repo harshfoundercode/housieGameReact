@@ -49,6 +49,9 @@ export const API = {
 
     ALL_GAMES_RESULT_URL: `${API_CONFIG_URL}user/results/`,
 
+    HOW_IT_WORKS_URL: `${API_CONFIG_URL}admin/how-it-works`,
+    WINNER_BANNER_URL: `${API_CONFIG_URL}admin/winner-banner`,
+
     ///Socket Url
 
     SOCKET_URL: "https://api.luckyfunda.com",
@@ -58,6 +61,5 @@ export const API = {
     ROUND_ID_SOCKET_URL: `${API_CONFIG_URL}game/status?round_id=`,
     WINNER_LIST_SOCKET_URL: `${API_CONFIG_URL}game/winners-list?round_id=`,
 
-    
 
 };
