@@ -1,15 +1,14 @@
-// const API_BASE_URL = 'https://tambola.fctesting.shop/';
-// const API_BASE_URL = 'http://192.168.31.45:4000/';
-// const API_BASE_URL = 'http://192.168.31.45:4001/';
-// const API_BASE_URL = 'https://tambola.honeywithmoon.com/';
-const API_BASE_URL = 'https://testingtambola.honeywithmoon.com';
+import { Upload } from "lucide-react";
 
+const API_BASE_URL = 'https://api.luckyfunda.com';
 
 
 const API_CONFIG_URL = `${API_BASE_URL}/api/`;
 
 
 export const API = {
+    UPLOAD_URL: `${API_BASE_URL}`,
+
     REGISTER_URL: `${API_CONFIG_URL}auth/user_register`,
 
     LOGIN_URL: `${API_CONFIG_URL}auth/user/login`,
@@ -48,19 +47,17 @@ export const API = {
     FEEDBACK_URL: `${API_CONFIG_URL}user/feedback-video`,
     DELETE_ACCOUNT_URL: `${API_CONFIG_URL}user/delete/`,
 
-
-   
+    ALL_GAMES_RESULT_URL: `${API_CONFIG_URL}user/results/`,
 
     ///Socket Url
 
-    SOCKET_URL: "https://testingtambola.honeywithmoon.com",
+    SOCKET_URL: "https://api.luckyfunda.com",
     
     LOAD_CURRENT_ROUND_URL: `${API_CONFIG_URL}round/current-game/`,
     BOOKING_ALL_TICKET_SOCKET_URL: `${API_CONFIG_URL}booking/all-tickets/`,
     ROUND_ID_SOCKET_URL: `${API_CONFIG_URL}game/status?round_id=`,
     WINNER_LIST_SOCKET_URL: `${API_CONFIG_URL}game/winners-list?round_id=`,
 
-
-    // SOCKET_URL: "http://192.168.31.45:4001"
+    
 
 };

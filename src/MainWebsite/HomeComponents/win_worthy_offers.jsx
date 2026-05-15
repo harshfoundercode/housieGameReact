@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getWinWorthyOffers } from "../../services/win_worthy_offers_services";
+import { API } from "../../services/api_url";
 
 
 const OffersCarousel = () => {
@@ -178,7 +179,7 @@ const OffersCarousel = () => {
                                     <div className="bg-white rounded-lg sm:rounded-xl lg:rounded-2xl shadow-md sm:shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
                                         <div className="relative overflow-hidden h-40 sm:h-48 md:h-56 lg:h-64 xl:h-72">
                                             <img
-                                                src={offer.image} 
+                                                src={`${API.UPLOAD_URL}${offer.image}`}
                                                 alt={`Offer ${offer.id}`}
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                 loading="lazy"
