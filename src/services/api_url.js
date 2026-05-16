@@ -52,6 +52,9 @@ export const API = {
     HOW_IT_WORKS_URL: `${API_CONFIG_URL}admin/how-it-works`,
     WINNER_BANNER_URL: `${API_CONFIG_URL}admin/winner-banner`,
 
+    WITHDRAWAL_REQUEST_URL: `${API_CONFIG_URL}wallet/withdraw-request`,
+    WITHDRAWAL_HISTORY_URL: `${API_CONFIG_URL}wallet/withdraw-history`,
+
     // withdrawalHistory: `${BASE_URL}/api/user/withdrawals/history`,
     // walletBalance: `${BASE_URL}/api/user/wallet/balance`,
     // requestWithdrawal: `${BASE_URL}/api/user/withdrawals/request`,
