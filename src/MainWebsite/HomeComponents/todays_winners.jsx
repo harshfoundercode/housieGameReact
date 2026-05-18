@@ -25,7 +25,7 @@ const TodaysWinner = () => {
 
       console.log("Full Response:", response);
 
-      if (response.ok && response.data?.image_url) {
+      if (response.data) {
         setBannerImage(response.data.image_url);
       } else {
         setBannerImage(null);
@@ -134,7 +134,7 @@ const TodaysWinner = () => {
       </div>
 
       {/* Winner Image Container */}
-      <div className="mx-auto overflow-hidden w-full shadow-md rounded-lg sm:shadow-lg sm:rounded-xl lg:shadow-xl lg:rounded-2xl mb-6 sm:mb-8">
+      <div className="mx-auto overflow-hidden w-3xl shadow-md rounded-lg sm:shadow-lg sm:rounded-xl lg:shadow-xl lg:rounded-2xl mb-6 sm:mb-8">
         <img
           src={displayImage}
           alt="Today's Winners"

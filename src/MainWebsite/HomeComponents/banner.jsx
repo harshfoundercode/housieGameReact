@@ -20,7 +20,7 @@ const Banner = () => {
             
             console.log("Full Response:", response);
             
-            if (response.ok && response.data?.image_url) {
+            if ( response.data) {
                 setBannerImage(response.data.image_url); 
             } else {
                 setBannerImage(null); 
