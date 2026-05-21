@@ -55,13 +55,6 @@ export const API = {
     WITHDRAWAL_REQUEST_URL: `${API_CONFIG_URL}wallet/withdraw-request`,
     WITHDRAWAL_HISTORY_URL: `${API_CONFIG_URL}wallet/withdraw-history`,
 
-    // withdrawalHistory: `${BASE_URL}/api/user/withdrawals/history`,
-    // walletBalance: `${BASE_URL}/api/user/wallet/balance`,
-    // requestWithdrawal: `${BASE_URL}/api/user/withdrawals/request`,
-    // withdrawalMethods: `${BASE_URL}/api/user/withdrawal-methods`,
-    // addWithdrawalMethod: `${BASE_URL}/api/user/withdrawal-methods/add`,
-    // deleteWithdrawalMethod: `${BASE_URL}/api/user/withdrawal-methods/delete`,
-    // withdrawalSettings: `${BASE_URL}/api/user/withdrawal/settings`,
 
     ///Socket Url
 
