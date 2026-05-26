@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
+import { getReferAndEarnData } from "../../services/refer_and_earn_services";
 import { getUserProfile } from "../../services/profile_services";
 
 const ReferAndEarn = () => {
@@ -13,22 +14,21 @@ const ReferAndEarn = () => {
     // Sirf referral code fetch karo
     useEffect(() => {
         fetchReferralCode();
+        getReferAndEarnData();
         getUserProfile();
+        getProfileDataApi();
+        
     }, []);
 
     const fetchReferralCode = async () => {
         setIsLoading(true);
         try {
-            const response = await getUserProfile();
+            const response = await getReferAndEarnData();
 
-            console.log("Profile Response:", response); 
+            console.log("Refer and earn Response:", response); 
 
             if (response.success) {
-                setReferralCode(
-                    response?.data?.data?.referral_code ||
-                    "TAMBOLA1234"
-                );
-
+               
                 // ✅ FIX: setUsersRewardAmount() function call karo
                 setUsersRewardAmount(
                     response?.data?.data?.referrer_reward_amount ||
@@ -51,6 +51,31 @@ const ReferAndEarn = () => {
             setIsLoading(false);
         }
     };
+
+     const getProfileDataApi = async () => {
+        setIsLoading(true);
+        try {
+            const response = await getUserProfile();
+
+            console.log("profile referal code Response:", response); 
+
+            if (response.success) {
+                setReferralCode(
+                    response?.data?.data?.referral_code ||
+                    "TAMBOLA1234"
+                );
+            }
+        } catch (err) {
+            console.error("Error fetching referral code:", err);
+            // Fallback values
+            setReferralCode("TAMBOLA123");
+            setUsersRewardAmount("₹500");
+            setUsersRewardCountText("10K");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
     return (
         <section className="w-full bg-linear-to-r from-[#3d366d] to-[#b10b00] py-14 px-4 relative overflow-hidden">

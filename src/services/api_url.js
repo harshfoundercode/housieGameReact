@@ -55,6 +55,8 @@ export const API = {
     WITHDRAWAL_REQUEST_URL: `${API_CONFIG_URL}wallet/withdraw-request`,
     WITHDRAWAL_HISTORY_URL: `${API_CONFIG_URL}wallet/withdraw-history`,
 
+    REFER_AND_EARN_URL: `${API_CONFIG_URL}auth/referral-data`,
+
 
     ///Socket Url
 

@@ -1,51 +1,91 @@
-// components/TicketGroupDisplay.jsx
+
 import React from 'react';
 
 const TicketGroupDisplay = ({ cart }) => {
-  // Group tickets into Random, Half Sheet, and Full Sheet
+  // Group tickets into Random, Half Sheet, and Full Sheet based on rows of 6
   const groupTickets = () => {
     if (!cart || cart.length === 0) return { random: [], halfSheet: [], fullSheet: [] };
 
-    const groups = {
-      random: [],
-      halfSheet: [],
-      fullSheet: []
-    };
+    // Extract ticket numbers and sort them
+    const ticketNumbers = cart.map(ticket => {
+      const num = parseInt(ticket.ticketNumber || ticket.id || '0');
+      return { ticket, number: num };
+    }).sort((a, b) => a.number - b.number);
 
-    // Sort tickets by some criteria (e.g., ticket number or ID)
-    const sortedTickets = [...cart].sort((a, b) => {
-      const numA = parseInt(a.ticketNumber || a.id || '0');
-      const numB = parseInt(b.ticketNumber || b.id || '0');
-      return numA - numB;
+    // Group tickets by their row (1-6 = row 1, 7-12 = row 2, etc.)
+    const rows = {};
+    ticketNumbers.forEach(({ ticket, number }) => {
+      // Calculate row number (1-based: 1-6 = row 1, 7-12 = row 2, etc.)
+      const rowNumber = Math.ceil(number / 6);
+      if (!rows[rowNumber]) {
+        rows[rowNumber] = [];
+      }
+      rows[rowNumber].push({ ticket, number });
     });
 
-    // Group tickets in sets of 1 (Random), 3 (Half Sheet), and 6 (Full Sheet)
-    let i = 0;
-    
-    // Full sheets (groups of 6)
-    while (i + 5 < sortedTickets.length) {
-      groups.fullSheet.push(sortedTickets.slice(i, i + 6));
-      i += 6;
-    }
-    
-    // Half sheets (groups of 3)
-    while (i + 2 < sortedTickets.length) {
-      groups.halfSheet.push(sortedTickets.slice(i, i + 3));
-      i += 3;
-    }
-    
-    // Random (single tickets)
-    while (i < sortedTickets.length) {
-      groups.random.push([sortedTickets[i]]);
-      i++;
-    }
+    const groups = {
+      fullSheet: [],
+      halfSheet: [],
+      random: []
+    };
+
+    // Process each row separately
+    Object.values(rows).forEach(rowTickets => {
+      // Sort tickets within the row by number
+      rowTickets.sort((a, b) => a.number - b.number);
+      
+      let i = 0;
+      while (i < rowTickets.length) {
+        // Check for full sheet (6 consecutive tickets in this row)
+        if (i + 5 < rowTickets.length && 
+            rowTickets[i + 5].number - rowTickets[i].number === 5) {
+          // Check if all 6 tickets are consecutive
+          let isConsecutive = true;
+          for (let j = 1; j < 6; j++) {
+            if (rowTickets[i + j].number - rowTickets[i + j - 1].number !== 1) {
+              isConsecutive = false;
+              break;
+            }
+          }
+          
+          if (isConsecutive) {
+            groups.fullSheet.push(rowTickets.slice(i, i + 6).map(t => t.ticket));
+            i += 6;
+            continue;
+          }
+        }
+        
+        // Check for half sheet (3 consecutive tickets in this row)
+        if (i + 2 < rowTickets.length && 
+            rowTickets[i + 2].number - rowTickets[i].number === 2) {
+          // Check if all 3 tickets are consecutive
+          let isConsecutive = true;
+          for (let j = 1; j < 3; j++) {
+            if (rowTickets[i + j].number - rowTickets[i + j - 1].number !== 1) {
+              isConsecutive = false;
+              break;
+            }
+          }
+          
+          if (isConsecutive) {
+            groups.halfSheet.push(rowTickets.slice(i, i + 3).map(t => t.ticket));
+            i += 3;
+            continue;
+          }
+        }
+        
+        // Random - single ticket
+        groups.random.push([rowTickets[i].ticket]);
+        i++;
+      }
+    });
 
     return groups;
   };
 
   const groups = groupTickets();
 
-  // Calculate prices (you can adjust these based on your pricing logic)
+  // Calculate prices
   const getGroupPrice = (tickets, type) => {
     const basePrice = tickets.reduce((sum, ticket) => sum + (ticket.price || 0), 0);
     
@@ -56,6 +96,12 @@ const TicketGroupDisplay = ({ cart }) => {
   };
 
   if (cart.length === 0) return null;
+
+  // Calculate total grouped tickets
+  const totalGrouped = 
+    groups.fullSheet.reduce((sum, group) => sum + group.length, 0) +
+    groups.halfSheet.reduce((sum, group) => sum + group.length, 0) +
+    groups.random.reduce((sum, group) => sum + group.length, 0);
 
   return (
     <div className="ticket-groups mb-4 md:mb-6">
@@ -86,7 +132,9 @@ const TicketGroupDisplay = ({ cart }) => {
                   ))}
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-green-400/70">Set {index + 1}</span>
+                  <span className="text-green-400/70">
+                    Row {Math.ceil((parseInt(sheet[0]?.ticketNumber || sheet[0]?.id || '0')) / 6)}
+                  </span>
                   <span className="text-green-400 font-semibold">
                     ₹{getGroupPrice(sheet, 'fullSheet').toFixed(2)}
                   </span>
@@ -118,7 +166,9 @@ const TicketGroupDisplay = ({ cart }) => {
                   ))}
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-blue-400/70">Set {index + 1}</span>
+                  <span className="text-blue-400/70">
+                    Row {Math.ceil((parseInt(sheet[0]?.ticketNumber || sheet[0]?.id || '0')) / 6)}
+                  </span>
                   <span className="text-blue-400 font-semibold">
                     ₹{getGroupPrice(sheet, 'halfSheet').toFixed(2)}
                   </span>

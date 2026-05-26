@@ -10,7 +10,7 @@ const TodaysWinner = () => {
   const [error, setError] = useState(null);
 
   const [bannerImage, setBannerImage] = useState(null);
- 
+
 
   useEffect(() => {
     fetchWinnersListFromAPI();
@@ -133,30 +133,35 @@ const TodaysWinner = () => {
         </h2>
       </div>
 
+
       {/* Winner Image Container */}
-   {/* Winner Image Container */}
-<div className="mx-auto overflow-hidden 
-w-full 
-max-w-[95%] 
-sm:max-w-[90%] 
-md:max-w-[85%] 
-lg:max-w-[80%] 
-xl:max-w-[75%]
-shadow-md rounded-lg 
-sm:shadow-lg sm:rounded-xl 
-lg:shadow-xl lg:rounded-2xl 
-mb-6 sm:mb-8"
+{/* Winner Image Container */}
+<div
+  className="
+    mx-auto overflow-hidden
+    w-full
+    md:w-[90%]
+    lg:w-[94%]
+    xl:w-[90%]
+    rounded-lg
+    sm:rounded-xl
+    lg:rounded-2xl
+    shadow-md
+    sm:shadow-lg
+    lg:shadow-xl
+    mb-6 sm:mb-8
+  "
 >
   <img
     src={displayImage}
     alt="Today's Winners"
     className="
-      w-full 
-      h-[180px] 
-      sm:h-[250px] 
-      md:h-[320px] 
-      lg:h-[400px] 
-      xl:h-[480px]
+      w-full
+      h-[140px]
+      sm:h-[150px]
+      md:h-[160px]
+      lg:h-[180px]
+      xl:h-[200px]
       object-cover
     "
   />

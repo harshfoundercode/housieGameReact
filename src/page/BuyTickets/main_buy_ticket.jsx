@@ -238,17 +238,6 @@ const GamePage = () => {
             />
           </div>
         </div>
-
-        {/* Floating Action Buttons */}
-        {/* <FloatingActionButtons
-          isMobile={isMobile}
-          availableTickets={availableTickets}
-          showFabMenu={showFabMenu}
-          setShowFabMenu={setShowFabMenu}
-          setShowBookingModal={bookingModal.openBookingModal}
-          setCurrentStep={bookingModal.setCurrentStep}
-          setShowAgentModal={agentModal.openAgentModal}
-        /> */}
       </div>
 
       {/* Modals */}

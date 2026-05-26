@@ -2,7 +2,7 @@ import React from 'react';
 
 const Pagination = ({ 
   currentPage, 
-  totalPages, 
+  totalPages,  
   getPageNumbers, 
   handlePageChange,
   filteredTickets,
