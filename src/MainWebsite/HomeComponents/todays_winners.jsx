@@ -134,13 +134,33 @@ const TodaysWinner = () => {
       </div>
 
       {/* Winner Image Container */}
-      <div className="mx-auto overflow-hidden w-3xl shadow-md rounded-lg sm:shadow-lg sm:rounded-xl lg:shadow-xl lg:rounded-2xl mb-6 sm:mb-8">
-        <img
-          src={displayImage}
-          alt="Today's Winners"
-          className="w-full h-auto object-cover"
-        />
-      </div>
+   {/* Winner Image Container */}
+<div className="mx-auto overflow-hidden 
+w-full 
+max-w-[95%] 
+sm:max-w-[90%] 
+md:max-w-[85%] 
+lg:max-w-[80%] 
+xl:max-w-[75%]
+shadow-md rounded-lg 
+sm:shadow-lg sm:rounded-xl 
+lg:shadow-xl lg:rounded-2xl 
+mb-6 sm:mb-8"
+>
+  <img
+    src={displayImage}
+    alt="Today's Winners"
+    className="
+      w-full 
+      h-[180px] 
+      sm:h-[250px] 
+      md:h-[320px] 
+      lg:h-[400px] 
+      xl:h-[480px]
+      object-cover
+    "
+  />
+</div>
 
       {/* Winners Grid Container */}
       <div className="mx-auto max-w-full px-1 sm:max-w-xl sm:px-2 md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
