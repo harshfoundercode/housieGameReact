@@ -29,24 +29,19 @@ const ReferAndEarn = () => {
 
             if (response.success) {
                
-                // ✅ FIX: setUsersRewardAmount() function call karo
                 setUsersRewardAmount(
                     response?.data?.data?.referrer_reward_amount ||
-                    "500"
+                    "--"
                 );
 
-                // ✅ FIX: setUsersRewardCountText() function call karo
                 setUsersRewardCountText(
                    response?.data?.data?.users_referred_text ||
-                    "10K"
+                    "--"
                 );
             }
         } catch (err) {
             console.error("Error fetching referral code:", err);
-            // Fallback values
-            setReferralCode("TAMBOLA123");
-            setUsersRewardAmount("₹500");
-            setUsersRewardCountText("10K");
+        
         } finally {
             setIsLoading(false);
         }
@@ -62,15 +57,12 @@ const ReferAndEarn = () => {
             if (response.success) {
                 setReferralCode(
                     response?.data?.data?.referral_code ||
-                    "TAMBOLA1234"
+                    "--"
                 );
             }
         } catch (err) {
             console.error("Error fetching referral code:", err);
-            // Fallback values
-            setReferralCode("TAMBOLA123");
-            setUsersRewardAmount("₹500");
-            setUsersRewardCountText("10K");
+
         } finally {
             setIsLoading(false);
         }
@@ -117,13 +109,13 @@ const ReferAndEarn = () => {
                             <div>
                                 {/* ✅ FIX: Variable use karo - usersRewardAmount */}
                                 <p className="text-2xl md:text-3xl font-bold text-[#FBEFA4]">
-                                    {usersRewardAmount || "500"}
+                                    {usersRewardAmount}
                                 </p>
                                 <p className="text-white/50 text-xs">Per Referral</p>
                             </div>
                             <div className="border-l border-white/20 pl-6">
                                 <p className="text-2xl md:text-3xl font-bold text-[#FBEFA4]">
-                                    {usersRewardCountText || "0"}
+                                    {usersRewardCountText}
                                 </p>
                                 <p className="text-white/50 text-xs">
                                     Users Referred
@@ -172,11 +164,11 @@ const ReferAndEarn = () => {
                             <div>
                                 {/* ✅ FIX: Variable use karo */}
                                 <h4 className="text-white font-bold text-base md:text-lg mb-1">
-                                    Earn {usersRewardAmount || "₹500"}
+                                    Earn {usersRewardAmount}
                                 </h4>
                                 {/* ✅ FIX: Variable use karo */}
                                 <p className="text-white/70 text-sm">
-                                    Get {usersRewardAmount || "₹500"} when your friend makes their first purchase
+                                    Get {usersRewardAmount} when your friend makes their first purchase
                                 </p>
                             </div>
                         </div>

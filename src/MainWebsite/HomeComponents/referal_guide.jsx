@@ -29,19 +29,19 @@ const ReferralGuide = () => {
 
         setUsersRewardAmount(
           response?.data?.data?.referrer_reward_amount ||
-          "500"
+          "--"
         );
 
         setReferralCode(
           response?.data?.data?.referral_code ||
-          "TAMBOLA1234"
+          "--"
         );
 
       }
     } catch (err) {
       console.error("Error fetching referral code:", err);
       // Fallback code
-      setReferralCode("TAMBOLA123");
+      setReferralCode("--");
     } finally {
       setIsLoading(false);
     }
