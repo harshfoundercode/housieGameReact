@@ -511,9 +511,9 @@ const MyTickets = () => {
                                 >
                                     Close
                                 </button>
-                                <button className="flex-1 py-3 rounded-xl font-medium text-white bg-[#004296] hover:bg-[#003380] transition-all shadow-md">
+                                {/* <button className="flex-1 py-3 rounded-xl font-medium text-white bg-[#004296] hover:bg-[#003380] transition-all shadow-md">
                                     📥 Download Ticket
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     </div>

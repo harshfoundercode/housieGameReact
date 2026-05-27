@@ -6,6 +6,8 @@ export const useTickets = (gameId) => {
   const [tickets, setTickets] = useState([]);
   const [loadingTickets, setLoadingTickets] = useState(true);
   const [ticketError, setTicketError] = useState(null);
+    const [apiPricing, setApiPricing] = useState(null);
+
 
   const fetchTickets = useCallback(async () => {
     if (!gameId) {
@@ -24,6 +26,13 @@ export const useTickets = (gameId) => {
       if (response.success) {
         const formattedTickets = formatTickets(response.data.tickets);
         setTickets(formattedTickets);
+         // Extract pricing from API response
+        if (response.data) {
+          setApiPricing({
+            half_sheet_price: response.data.half_sheet_price || "5.00",
+            full_sheet_price: response.data.full_sheet_price || "10.00"
+          });
+        }
       } else {
         throw new Error(response.message || "Failed to load tickets");
       }
@@ -44,6 +53,7 @@ export const useTickets = (gameId) => {
     tickets,
     loadingTickets,
     ticketError,
+    apiPricing,
     refetchTickets: fetchTickets
   };
 };
