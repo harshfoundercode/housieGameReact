@@ -8,37 +8,44 @@ import { getUserProfile } from "../../services/profile_services";
 
 const ReferralGuide = () => {
   const navigate = useNavigate();
-  const [referralCode, setReferralCode] = useState(""); 
+  const [referralCode, setReferralCode] = useState("");
   const [copied, setCopied] = useState(false);
-      const [isLoading, setIsLoading] = useState(true);
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [usersRewardAmount, setUsersRewardAmount] = useState("");
 
-    // Sirf referral code fetch karo
-      useEffect(() => {
-          fetchReferralCode();
-      }, []);
-  
-      const fetchReferralCode = async () => {
-          setIsLoading(true);
-          try {
-              const response = await getUserProfile();
-              
-              if (response.success) {
-                  // Sirf referral code set karo
-                  setReferralCode(
-                      response.data.referral_code || 
-                      response.data.referralCode || 
-                      "TAMBOLA123"
-                  );
-              }
-          } catch (err) {
-              console.error("Error fetching referral code:", err);
-              // Fallback code
-              setReferralCode("TAMBOLA123");
-          } finally {
-              setIsLoading(false);
-          }
-      };
+
+  // Sirf referral code fetch karo
+  useEffect(() => {
+    fetchReferralCode();
+  }, []);
+
+  const fetchReferralCode = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getUserProfile();
+
+      if (response.success) {
+        // Sirf referral code set karo
+
+        setUsersRewardAmount(
+          response?.data?.data?.referrer_reward_amount ||
+          "500"
+        );
+
+        setReferralCode(
+          response?.data?.data?.referral_code ||
+          "TAMBOLA1234"
+        );
+
+      }
+    } catch (err) {
+      console.error("Error fetching referral code:", err);
+      // Fallback code
+      setReferralCode("TAMBOLA123");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Referral link generate karo code se
   const referralLink = referralCode ? `https://tambola.com/ref/${referralCode}` : `https://tambola.com/ref/${referralCode}`;
@@ -59,10 +66,10 @@ const ReferralGuide = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
-      
+
       <main className="grow pt-24 md:pt-28 pb-12 px-4">
         <div className="max-w-4xl mx-auto">
-          
+
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-[#004296] mb-3">
@@ -76,7 +83,7 @@ const ReferralGuide = () => {
           {/* How It Works - Steps */}
           <div className="bg-white rounded-2xl shadow-md p-6 md:p-8 mb-8 border border-gray-100">
             <h2 className="text-xl font-bold text-[#004296] mb-6 text-center">How Referral Works</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Step 1 */}
               <div className="text-center">
@@ -107,7 +114,7 @@ const ReferralGuide = () => {
                 </div>
                 <h3 className="font-bold text-gray-800 mb-2">Earn Rewards</h3>
                 <p className="text-gray-500 text-sm">
-                  Get ₹500 credited when your friend makes their first purchase.
+                  Get ₹{usersRewardAmount} credited when your friend makes their first purchase.
                 </p>
               </div>
             </div>
@@ -119,7 +126,7 @@ const ReferralGuide = () => {
             <p className="text-white/70 text-sm text-center mb-6">
               Share this link with friends. When they sign up and play, you both win!
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
               <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20">
                 <code className="text-[#FBEFA4] text-sm md:text-base break-all">
@@ -137,28 +144,18 @@ const ReferralGuide = () => {
             <div className="text-center mt-6">
               <p className="text-white/60 text-xs mb-3">or share directly via</p>
               <div className="flex justify-center gap-4">
-                <button 
+                <button
                   onClick={handleShareWhatsApp}
                   className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2"
                 >
                   💬 WhatsApp
                 </button>
-               
-               
+
+
               </div>
             </div>
           </div>
 
-          {/* Terms & Conditions */}
-          <div className="bg-yellow-50 rounded-xl p-5 border border-[#FBEFA4]/30">
-            <h4 className="font-bold text-[#004296] mb-2">📋 Referral Terms</h4>
-            <ul className="text-gray-600 text-sm space-y-2">
-              <li>• Referral bonus is credited only after the referred friend makes their first ticket purchase.</li>
-              <li>• Maximum referral bonus per user is ₹5,000 per month.</li>
-              <li>• Referral links are unique to each account. Do not share your account credentials.</li>
-              <li>• Tambola reserves the right to modify or cancel the referral program at any time.</li>
-            </ul>
-          </div>
 
           {/* Back Button */}
           <div className="text-center mt-8">
@@ -171,7 +168,7 @@ const ReferralGuide = () => {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

@@ -182,7 +182,7 @@ const ReferAndEarn = () => {
                         </div>
 
                         {/* CTA Button */}
-                        <div className="pt-4">
+                        <div className="pt-4"> 
                             <button className="w-full sm:w-auto
                                 bg-[#FBEFA4] text-[#3d366d] 
                                 px-6 py-3 rounded-full font-bold text-base
