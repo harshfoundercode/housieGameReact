@@ -134,7 +134,7 @@ const Banner = () => {
                 md:max-h-125
                 lg:max-h-137.5
                 xl:max-h-150
-                object-cover
+                object-fill
                 object-center
                 transition-all
                 duration-700
