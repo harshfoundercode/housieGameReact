@@ -1,154 +1,120 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 /* ─────────────────────────────────────────────
-   PALETTE — Navy & Gold
+   PALETTE
 ───────────────────────────────────────────── */
 const DECADE_COLORS = [
-  { base: "#004296", light: "#1a6fd8", mid: "#002b66", glow: "rgba(0,66,150,0.55)" },
-  { base: "#005f8a", light: "#0090cc", mid: "#003a55", glow: "rgba(0,95,138,0.50)" },
-  { base: "#1a5276", light: "#2e86c1", mid: "#0f2e45", glow: "rgba(26,82,118,0.50)" },
-  { base: "#1a7a6a", light: "#1abc9c", mid: "#0d4d42", glow: "rgba(26,122,106,0.50)" },
-  { base: "#b8860b", light: "#FBEFA4", mid: "#7a5a05", glow: "rgba(251,239,164,0.50)" },
-  { base: "#c9a227", light: "#ffe066", mid: "#8a6d10", glow: "rgba(201,162,39,0.50)" },
-  { base: "#a07620", light: "#d4a017", mid: "#6b4f10", glow: "rgba(160,118,32,0.50)" },
-  { base: "#7d5a0b", light: "#b8860b", mid: "#4d3608", glow: "rgba(125,90,11,0.45)" },
-  { base: "#3a3a8c", light: "#6666cc", mid: "#1e1e5a", glow: "rgba(58,58,140,0.50)" },
+  { base: "#004296", light: "#1a6fd8", mid: "#002b66" },
+  { base: "#005f8a", light: "#0090cc", mid: "#003a55" },
+  { base: "#1a5276", light: "#2e86c1", mid: "#0f2e45" },
+  { base: "#1a7a6a", light: "#1abc9c", mid: "#0d4d42" },
+  { base: "#b8860b", light: "#FBEFA4", mid: "#7a5a05" },
+  { base: "#c9a227", light: "#ffe066", mid: "#8a6d10" },
+  { base: "#a07620", light: "#d4a017", mid: "#6b4f10" },
+  { base: "#7d5a0b", light: "#b8860b", mid: "#4d3608" },
+  { base: "#3a3a8c", light: "#6666cc", mid: "#1e1e5a" },
 ];
 
-function dc(n) { return DECADE_COLORS[Math.min(Math.floor((n - 1) / 10), 8)]; }
+function dc(n) {
+  if (!n || n < 1) return DECADE_COLORS[0];
+  return DECADE_COLORS[Math.min(Math.floor((n - 1) / 10), 8)];
+}
 
 function ballGradient(n) {
   const c = dc(n);
   return `radial-gradient(circle at 35% 25%, ${c.light} 0%, ${c.base} 45%, ${c.mid} 100%)`;
 }
 
-function ballBoxShadow(n, mode = "big") {
-  const c = dc(n);
-  if (mode === "big")
-    return `0 0 0 1px rgba(255,255,255,0.07),
-            0 0 50px ${c.glow},
-            0 0 100px ${c.glow.replace(/[\d.]+\)$/, "0.18)")},
-            inset -10px -10px 24px rgba(0,0,0,0.5),
-            inset 7px 7px 18px rgba(255,255,255,0.20)`;
-  if (mode === "tray")
-    return `inset -3px -3px 10px rgba(0,0,0,0.45),
-            inset 2px 2px 7px rgba(255,255,255,0.18),
-            0 0 20px ${c.glow},
-            0 4px 12px rgba(0,0,0,0.4)`;
-  if (mode === "grid-arriving")
-    return `0 0 0 2px rgba(255,255,255,0.12),
-            0 0 24px ${c.glow},
-            0 0 48px ${c.glow},
-            inset -3px -3px 10px rgba(0,0,0,0.5),
-            inset 2px 2px 8px rgba(255,255,255,0.25)`;
-  if (mode === "grid-called")
-    return `0 0 0 1px rgba(255,255,255,0.05),
-            0 2px 10px rgba(0,0,0,0.4),
-            0 0 12px ${c.glow.replace(/[\d.]+\)$/, "0.28)")},
-            inset -2px -2px 8px rgba(0,0,0,0.45),
-            inset 1px 1px 6px rgba(255,255,255,0.18)`;
-  return "0 1px 4px rgba(0,0,0,0.3), inset -1px -1px 5px rgba(0,0,0,0.4)";
-}
+/* ══════════════════════════════════════════════════
+   BALL COMPONENTS
+══════════════════════════════════════════════════ */
 
-/* ─── Particles ─── */
-function Particles({ active, color, size }) {
-  if (!active) return null;
-  const particles = Array.from({ length: 14 }, (_, i) => {
-    const angle = (i / 14) * 360;
-    const dist = size * 0.65 + Math.random() * size * 0.45;
-    const delay = Math.random() * 0.3;
-    const dur = 1.2 + Math.random() * 0.7;
-    const px = Math.cos((angle * Math.PI) / 180) * dist;
-    const py = Math.sin((angle * Math.PI) / 180) * dist;
-    const s = 2 + Math.random() * 3;
-    return { px, py, delay, dur, s };
-  });
+function BigBall({ number, size = 148 }) {
+  const hasNum = number !== null && number !== undefined;
+  const fontSize = size * 0.36;
+  
   return (
-    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10 }}>
-      {particles.map((p, i) => (
-        <div key={i} style={{
-          position: "absolute", left: "50%", top: "50%",
-          width: p.s, height: p.s, borderRadius: "50%",
-          background: color, boxShadow: `0 0 5px ${color}`,
-          animation: `tl-particle${i % 3} ${p.dur}s ${p.delay}s ease-out forwards`,
-          transform: "translate(-50%, -50%)",
-          "--px": `${p.px}px`, "--py": `${p.py}px`,
-        }} />
-      ))}
-    </div>
-  );
-}
-
-/* ─── BigBall ─── */
-function BigBall({ number, animKey, size = 148 }) {
-  const fontSize = size * 0.34;
-  return (
-    <div key={`wrapper-${animKey}`}
-      style={{
-        animation: number ? "tl-ballReveal 1.8s ease-in-out forwards" : "none",
-        willChange: "transform", width: size, height: size,
-      }}
-    >
+    <div style={{
+      width: size, height: size,
+      opacity: hasNum ? 1 : 0,
+      transition: "opacity 0.3s ease",
+    }}>
       <div style={{
-        width: size, height: size, borderRadius: "50%",
-        background: number
+        width: size, height: size,
+        borderRadius: "50%",
+        background: hasNum
           ? ballGradient(number)
           : "radial-gradient(circle at 35% 25%, #1e2a4a, #001433)",
-        boxShadow: number
-          ? ballBoxShadow(number, "big")
-          : `inset -8px -8px 22px rgba(0,0,0,0.6), inset 6px 6px 16px rgba(255,255,255,0.04)`,
+        boxShadow: hasNum
+          ? "0 0 40px rgba(0,66,150,0.5), 0 0 80px rgba(0,66,150,0.2), inset -8px -8px 22px rgba(0,0,0,0.5), inset 6px 6px 16px rgba(255,255,255,0.2)"
+          : "inset -8px -8px 22px rgba(0,0,0,0.6)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        position: "relative", flexShrink: 0,
+        position: "relative",
       }}>
-        <div style={{
-          position: "absolute", top: size * 0.10, left: size * 0.18,
-          width: size * 0.32, height: size * 0.18,
-          background: "rgba(255,255,255,0.30)", borderRadius: "50%",
-          transform: "rotate(-30deg)", filter: `blur(${size < 100 ? 2 : 4}px)`,
-        }} />
-        <div style={{
-          position: "absolute", top: size * 0.14, left: size * 0.22,
-          width: size * 0.20, height: size * 0.10,
-          background: "rgba(255,255,255,0.50)", borderRadius: "50%",
-          transform: "rotate(-30deg)", filter: "blur(2px)",
-        }} />
+        {hasNum && (
+          <div style={{
+            position: "absolute",
+            top: size * 0.10, left: size * 0.18,
+            width: size * 0.32, height: size * 0.18,
+            background: "rgba(255,255,255,0.25)",
+            borderRadius: "50%",
+            transform: "rotate(-30deg)",
+            filter: `blur(${size < 60 ? 1.5 : 4}px)`,
+            pointerEvents: "none",
+          }} />
+        )}
         <span style={{
-          fontSize: number ? fontSize : fontSize * 0.35,
-          fontWeight: 900, fontFamily: "'Cinzel', serif",
-          color: number ? "#fff" : "rgba(255,255,255,0.07)",
-          textShadow: number ? "0 2px 12px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.2)" : "none",
+          fontSize,
+          fontWeight: 900,
+          fontFamily: "'Cinzel', serif",
+          color: "#fff",
+          textShadow: "0 2px 12px rgba(0,0,0,0.8)",
           zIndex: 1, lineHeight: 1,
-          letterSpacing: number && number < 10 ? "2px" : "0px",
+          position: "relative",
         }}>
-          {number ?? "·"}
+          {hasNum ? number : ""}
         </span>
       </div>
     </div>
   );
 }
 
-/* ─── TrayBall ─── */
-function TrayBall({ number, size = 64, isNew = false }) {
+function TrayBall({ number, size = 64 }) {
+  if (number === null || number === undefined) {
+    return (
+      <div style={{
+        width: size * 0.45, height: size * 0.45,
+        borderRadius: "50%",
+        background: "rgba(251,239,164,0.04)",
+        border: "1px dashed rgba(251,239,164,0.12)",
+      }} />
+    );
+  }
+  
   return (
     <div style={{
-      width: size, height: size, borderRadius: "50%",
+      width: size, height: size,
+      borderRadius: "50%",
       background: ballGradient(number),
-      boxShadow: ballBoxShadow(number, "tray"),
+      boxShadow: "inset -3px -3px 10px rgba(0,0,0,0.45), inset 2px 2px 7px rgba(255,255,255,0.18), 0 0 18px rgba(0,66,150,0.4), 0 4px 12px rgba(0,0,0,0.4)",
       display: "flex", alignItems: "center", justifyContent: "center",
       position: "relative", flexShrink: 0,
-      animation: isNew ? "tl-traySettle 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards" : "none",
-      willChange: "transform, opacity",
     }}>
       <div style={{
-        position: "absolute", top: size * 0.14, left: size * 0.20,
-        width: size * 0.28, height: size * 0.14,
-        background: "rgba(255,255,255,0.42)", borderRadius: "50%",
-        transform: "rotate(-30deg)", filter: "blur(2px)",
+        position: "absolute",
+        top: size * 0.10, left: size * 0.18,
+        width: size * 0.32, height: size * 0.18,
+        background: "rgba(255,255,255,0.25)",
+        borderRadius: "50%",
+        transform: "rotate(-30deg)",
+        filter: "blur(2px)",
+        pointerEvents: "none",
       }} />
       <span style={{
-        fontSize: size * 0.32, fontWeight: 900,
+        fontSize: size * 0.33, fontWeight: 900,
         fontFamily: "'Cinzel', serif", color: "#fff",
-        textShadow: "0 1px 6px rgba(0,0,0,0.7)", zIndex: 1, lineHeight: 1,
+        textShadow: "0 1px 6px rgba(0,0,0,0.7)",
+        zIndex: 1, lineHeight: 1, position: "relative",
       }}>
         {number}
       </span>
@@ -156,31 +122,33 @@ function TrayBall({ number, size = 64, isNew = false }) {
   );
 }
 
-/* ─── GridBall ─── */
-function GridBall({ number, called, arriving, size = 44 }) {
+function GridBall({ number, called, size = 44 }) {
   return (
     <div style={{
-      width: size, height: size, borderRadius: "50%",
-      background: called ? ballGradient(number) : "radial-gradient(circle at 35% 25%, #1e2640, #000d1a)",
-      boxShadow: arriving
-        ? ballBoxShadow(number, "grid-arriving")
-        : called
-          ? ballBoxShadow(number, "grid-called")
-          : "0 1px 4px rgba(0,0,0,0.3), inset -1px -1px 5px rgba(0,0,0,0.4)",
+      width: size, height: size,
+      borderRadius: "50%",
+      background: called
+        ? ballGradient(number)
+        : "radial-gradient(circle at 35% 25%, #1e2640, #000d1a)",
+      boxShadow: called
+        ? "0 0 10px rgba(0,66,150,0.3), inset -2px -2px 8px rgba(0,0,0,0.45), inset 1px 1px 6px rgba(255,255,255,0.18)"
+        : "0 1px 4px rgba(0,0,0,0.3), inset -1px -1px 5px rgba(0,0,0,0.4)",
       display: "flex", alignItems: "center", justifyContent: "center",
       position: "relative",
-      transition: called ? "box-shadow 0.8s ease, background 0.6s ease" : "none",
-      animation: arriving ? "tl-gridArrive 0.7s cubic-bezier(0.16,1.3,0.3,1) forwards" : "none",
-      cursor: "default", userSelect: "none",
       transform: called ? "scale(1.04)" : "scale(1)",
       opacity: called ? 1 : 0.45,
+      transition: "all 0.3s ease",
     }}>
       {called && (
         <div style={{
-          position: "absolute", top: size * 0.12, left: size * 0.20,
-          width: size * 0.28, height: size * 0.14,
-          background: "rgba(255,255,255,0.38)", borderRadius: "50%",
-          transform: "rotate(-30deg)", filter: "blur(1.5px)",
+          position: "absolute",
+          top: size * 0.10, left: size * 0.18,
+          width: size * 0.28, height: size * 0.16,
+          background: "rgba(255,255,255,0.2)",
+          borderRadius: "50%",
+          transform: "rotate(-30deg)",
+          filter: "blur(1.5px)",
+          pointerEvents: "none",
         }} />
       )}
       <span style={{
@@ -188,7 +156,7 @@ function GridBall({ number, called, arriving, size = 44 }) {
         fontFamily: "'Cinzel', serif",
         color: called ? "#fff" : "rgba(255,255,255,0.20)",
         textShadow: called ? "0 1px 4px rgba(0,0,0,0.7)" : "none",
-        zIndex: 1, lineHeight: 1,
+        zIndex: 1, lineHeight: 1, position: "relative",
       }}>
         {number}
       </span>
@@ -196,550 +164,302 @@ function GridBall({ number, called, arriving, size = 44 }) {
   );
 }
 
-/* ─── FlyingBall ─── */
-function FlyingBall({ from, to, number, size, targetSize, onDone, duration = 900 }) {
-  const ref = useRef(null);
-  
-  useEffect(() => {
-    // Comprehensive validation for mobile & desktop
-    if (!ref.current || !from || !to) {
-      console.warn('FlyingBall: Missing positions', { hasRef: !!ref.current, hasFrom: !!from, hasTo: !!to });
-      onDone?.();
-      return;
-    }
-    
-    // Validate coordinates
-    const isValidX = typeof to.x === 'number' && !isNaN(to.x) && isFinite(to.x);
-    const isValidY = typeof to.y === 'number' && !isNaN(to.y) && isFinite(to.y);
-    
-    if (!isValidX || !isValidY) {
-      console.warn('FlyingBall: Invalid coordinates', to);
-      onDone?.();
-      return;
-    }
-    
-    let cancelled = false;
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const scale = targetSize / size;
-    const arcX = dx * 0.5;
-    const arcY = dy * 0.3 - Math.abs(dx) * 0.15;
-    
-    try {
-      const anim = ref.current.animate([
-        { transform: "translate(0px, 0px) scale(1)", opacity: 1, offset: 0 },
-        { transform: `translate(${arcX}px, ${arcY}px) scale(${0.9 + scale * 0.1})`, opacity: 1, offset: 0.45 },
-        { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0.65, offset: 1 },
-      ], { duration, easing: "cubic-bezier(0.4,0,0.2,1)", fill: "forwards" });
-      
-      anim.onfinish = () => { 
-        if (!cancelled) onDone?.(); 
-      };
-      
-      return () => { 
-        cancelled = true; 
-        if (anim) anim.cancel(); 
-      };
-    } catch (error) {
-      console.error('Animation error:', error);
-      onDone?.();
-    }
-  }, [from, to, size, targetSize, duration, onDone]);
-
-  // Don't render if positions are invalid
-  if (!from || !to || typeof to.x !== 'number' || typeof to.y !== 'number') {
-    return null;
-  }
-
-  return (
-    <div ref={ref} style={{
-      position: "fixed",
-      left: from.x - size / 2, 
-      top: from.y - size / 2,
-      width: size, 
-      height: size, 
-      borderRadius: "50%",
-      background: ballGradient(number),
-      boxShadow: ballBoxShadow(number, "tray"),
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "center",
-      zIndex: 9999, 
-      pointerEvents: "none",
-      fontSize: size * 0.3, 
-      fontWeight: 900,
-      fontFamily: "'Cinzel', serif", 
-      color: "#fff",
-      textShadow: "0 1px 4px rgba(0,0,0,0.7)",
-      willChange: "transform",
-    }}>
-      <div style={{
-        position: "absolute", 
-        top: "12%", 
-        left: "20%", 
-        width: "28%", 
-        height: "14%",
-        background: "rgba(255,255,255,0.38)", 
-        borderRadius: "50%",
-        transform: "rotate(-30deg)", 
-        filter: "blur(2px)",
-      }} />
-      {number}
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════
    MAIN COMPONENT
-════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════ */
 export default function TambolaLive({
   gameId,
-  connected = false,
-  gameStatus = "waiting",
+  connected    = false,
+  gameStatus   = "waiting",
   calledNumbers = [],
-  calledCount = 0,
+  calledCount   = 0,
   lastCalledNum = null,
 }) {
-  /* ── Mobile detection ── */
-  const [isMobileDevice, setIsMobileDevice] = useState(false);
-  
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      setIsMobileDevice(mobile);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  /* ── Local animation state ── */
-  const [calledSet, setCalledSet] = useState(new Set());
-  const [bigNum, setBigNum] = useState(null);
-  const [bigKey, setBigKey] = useState(0);
-  const [showPulse, setShowPulse] = useState(false);
-  const [showParticles, setShowParticles] = useState(false);
-  const [tray, setTray] = useState([null, null]);
-  const [trayKey, setTrayKey] = useState([0, 0]);
-  const [fly, setFly] = useState(null);
-  const [arrivingCell, setArrivingCell] = useState(null);
-  const [done, setDone] = useState(false);
-
-  /* ── Sync calledSet from prop ── */
-  useEffect(() => {
-    setCalledSet(new Set(calledNumbers));
-  }, [calledNumbers]);
-
-  /* ── Watch gameStatus ── */
-  useEffect(() => {
-    if (gameStatus === "over") setDone(true);
-    else if (gameStatus === "started") setDone(false);
-  }, [gameStatus]);
-
-  /* ══════════════════════════════════════════
-     SOUND & QUEUE SYSTEM
-     4-Second Delay Between Numbers
-  ══════════════════════════════════════════ */
-  const currentAudioRef = useRef(null);
-  const numberQueueRef = useRef([]);
-  const isProcessingRef = useRef(false);
-  const lastProcessedTimeRef = useRef(0);
-  const processingTimeoutRef = useRef(null);
-
-  const ANIMATION_DURATION = 1800;
-  const NUMBER_GAP = 4000;
-
-  const playNumberSound = useCallback((number) => {
-    try {
-      if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-        currentAudioRef.current.currentTime = 0;
-        currentAudioRef.current = null;
-      }
-
-      const audio = new Audio(`/sounds/${number}.mp3`);
-      console.log(`🔊 Playing sound for number ${number}`);
-      audio.volume = 1.0;
-      currentAudioRef.current = audio;
-
-      audio.onerror = (e) => {
-        console.error(`Failed to load sound for number ${number}`, e);
-        currentAudioRef.current = null;
-      };
-
-      audio.play().catch(err => {
-        console.warn(`Autoplay blocked for ${number}. Waiting for user interaction.`, err);
-        const playOnClick = () => {
-          audio.play().catch(e => console.error("Still failed:", e));
-          document.removeEventListener('click', playOnClick);
-        };
-        document.addEventListener('click', playOnClick);
-      });
-
-      audio.onended = () => {
-        console.log(`✅ Sound completed for ${number}`);
-        currentAudioRef.current = null;
-      };
-    } catch (e) {
-      console.warn("Sound playback error:", e);
-    }
-  }, []);
-
-  /* ── Helper: Get element center with validation ── */
-  const getCenter = useCallback((el) => {
-    if (!el) return null;
-    
-    try {
-      const r = el.getBoundingClientRect();
-      
-      if (!r || r.width === 0 || r.height === 0 || 
-          r.width === undefined || r.height === undefined) {
-        return null;
-      }
-      
-      const x = r.left + r.width / 2;
-      const y = r.top + r.height / 2;
-      
-      if (isNaN(x) || isNaN(y) || !isFinite(x) || !isFinite(y)) {
-        return null;
-      }
-      
-      return { x, y };
-    } catch (error) {
-      console.error('getCenter error:', error);
-      return null;
-    }
-  }, []);
-
-  /* ── Animation helper with mobile fallback ── */
-  const executeWithFallback = useCallback((action, fallback) => {
-    if (isMobileDevice) {
-      // On mobile, execute fallback immediately without animation
-      setTimeout(fallback, 50);
-    } else {
-      action();
-    }
-  }, [isMobileDevice]);
-
-  /* ── Process single number ── */
-  const processNumber = useCallback((number) => {
-    console.log(`🎯 STARTING for: ${number}`);
-    playNumberSound(number);
-    isProcessingRef.current = true;
-
-    setBigNum(number);
-    setBigKey(k => k + 1);
-    setShowPulse(true);
-    setShowParticles(false);
-    setTimeout(() => setShowParticles(true), 200);
-
-    if (processingTimeoutRef.current) {
-      clearTimeout(processingTimeoutRef.current);
-    }
-
-    processingTimeoutRef.current = setTimeout(() => {
-      console.log(`✨ Animation done for ${number}`);
-      setShowPulse(false);
-      setShowParticles(false);
-      setBigNum(null);
-
-      if (isMobileDevice) {
-        // Mobile: Direct update without flying animations
-        setTray(prev => [number, prev[0]]);
-        setTrayKey(prev => [prev[0] + 1, prev[1] + 1]);
-        setCalledSet(prev => new Set([...prev, number]));
-        setArrivingCell(number);
-        setTimeout(() => setArrivingCell(null), 800);
-        
-        lastProcessedTimeRef.current = Date.now();
-        isProcessingRef.current = false;
-        processQueue();
-      } else {
-        // Desktop: Full animation
-        const currentTray = trayRef.current;
-        const s1 = currentTray[1];
-        const s0 = currentTray[0];
-
-        if (s1 !== null) {
-          doFlySlot1ToBoard(s1, () => {
-            if (trayRef.current[0] !== null) {
-              doFlySlot0ToSlot1(trayRef.current[0], () => doFlyBigToSlot0(number));
-            } else {
-              doFlyBigToSlot0(number);
-            }
-          });
-        } else if (s0 !== null) {
-          doFlySlot0ToSlot1(s0, () => doFlyBigToSlot0(number));
-        } else {
-          doFlyBigToSlot0(number);
-        }
-
-        lastProcessedTimeRef.current = Date.now();
-        isProcessingRef.current = false;
-        processQueue();
-      }
-    }, ANIMATION_DURATION);
-  }, [playNumberSound, isMobileDevice]);
-
-  /* ── Process queue ── */
-  const processQueue = useCallback(() => {
-    if (isProcessingRef.current) {
-      console.log("⏳ Still processing...");
-      return;
-    }
-
-    if (numberQueueRef.current.length === 0) {
-      console.log("📭 Queue empty");
-      return;
-    }
-
-    const now = Date.now();
-    const timeSinceLastProcess = now - lastProcessedTimeRef.current;
-
-    if (timeSinceLastProcess < NUMBER_GAP) {
-      const waitTime = NUMBER_GAP - timeSinceLastProcess;
-      console.log(`⏰ Waiting ${waitTime}ms`);
-
-      setTimeout(() => {
-        if (numberQueueRef.current.length > 0) {
-          const nextNumber = numberQueueRef.current.shift();
-          console.log(`📤 Processing: ${nextNumber}`);
-          processNumber(nextNumber);
-        }
-      }, waitTime);
-    } else {
-      const nextNumber = numberQueueRef.current.shift();
-      console.log(`📤 Processing immediately: ${nextNumber}`);
-      processNumber(nextNumber);
-    }
-  }, [processNumber]);
-
-  const triggerAnimationForNumber = useCallback((number) => {
-    console.log(`📥 Number received: ${number}`);
-    numberQueueRef.current.push(number);
-    processQueue();
-  }, [processQueue]);
-
-  useEffect(() => {
-    if (lastCalledNum && !done) {
-      triggerAnimationForNumber(lastCalledNum);
-    }
-  }, [lastCalledNum, done, triggerAnimationForNumber]);
-
   /* ── Responsive ── */
   const containerRef = useRef(null);
   const [containerW, setContainerW] = useState(1000);
-
+  
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     setContainerW(el.offsetWidth);
-    const ro = new ResizeObserver(e => setContainerW(e[0].contentRect.width));
+    const ro = new ResizeObserver(([e]) => setContainerW(e.contentRect.width));
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  const isMobile = containerW < 520;
-  const isNarrow = containerW < 820;
-  const BIG_BALL_SIZE = isMobile ? 92 : isNarrow ? 116 : 148;
-  const TRAY_BALL_SIZE = isMobile ? 46 : isNarrow ? 54 : 64;
-  const TRAY_SLOT_SIZE = isMobile ? 54 : isNarrow ? 62 : 76;
-  const GRID_BALL_SIZE = isMobile ? 26 : isNarrow ? 36 : 44;
-  const LEFT_PANEL_W = isNarrow ? 210 : 340;
+  const isMobile    = containerW < 520;
+  const isNarrow    = containerW < 820;
+  const BIG         = isMobile ? 88  : isNarrow ? 112 : 144;
+  const TRAY        = isMobile ? 48  : isNarrow ? 58  : 68;
+  const TRAY_SLOT   = isMobile ? 58  : isNarrow ? 68  : 82;
+  const GRID        = isMobile ? 26  : isNarrow ? 35  : 44;
+  const LEFT_W      = isNarrow ? 215 : 345;
 
-  /* ── Refs ── */
-  const bigBallRef = useRef(null);
-  const slot0Ref = useRef(null);
-  const slot1Ref = useRef(null);
-  const cellRefs = useRef({});
-  const trayRef = useRef([null, null]);
-  const flyRef = useRef(null);
+  /* ── Board state ── */
+  const [calledSet, setCalledSet] = useState(new Set());
+  const [done, setDone] = useState(false);
 
-  trayRef.current = tray;
+  useEffect(() => { 
+    setCalledSet(new Set(calledNumbers)); 
+  }, [calledNumbers]);
+  
+  useEffect(() => {
+    if (gameStatus === "over")    setDone(true);
+    if (gameStatus === "started") setDone(false);
+  }, [gameStatus]);
 
-  // Desktop animation functions
-  const doFlySlot1ToBoard = useCallback((num, onDone) => {
-    setTimeout(() => {
-      const fromPos = getCenter(slot1Ref.current);
-      const toPos = getCenter(cellRefs.current[num]);
-      
-      if (!fromPos || !toPos) {
-        console.warn(`Cannot fly ball ${num} to board`);
-        setTray(p => { const t = [...p]; t[1] = null; return t; });
-        setCalledSet(prev => new Set([...prev, num]));
-        setArrivingCell(num);
-        setTimeout(() => setArrivingCell(null), 800);
-        onDone?.();
-        return;
+  /* ── Tray state - FIXED ── */
+  const [latestNum, setLatestNum] = useState(null);
+  const [prevNum, setPrevNum] = useState(null);
+
+  // Track previous value using ref to avoid stale state
+  const latestNumRef = useRef(null);
+
+  // Keep ref in sync
+  useEffect(() => {
+    latestNumRef.current = latestNum;
+  }, [latestNum]);
+
+  /* ══════════════════════════════════════════
+     QUEUE SYSTEM
+  ══════════════════════════════════════════ */
+  const GAP_BETWEEN_NUMBERS = 5000; // 5 seconds
+  
+  const queueRef = useRef([]);
+  const isProcessingRef = useRef(false);
+  const timerRef = useRef(null);
+  const lastNumRef = useRef(null);
+
+  /* ── SOUND - AUTO PLAY ── */
+  const audioRef = useRef(null);
+
+  // Force unlock audio immediately
+  useEffect(() => {
+    // Create a silent audio context to unlock audio
+    const unlockAudio = () => {
+      // Try AudioContext first (works better for auto-play)
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          const audioCtx = new AudioContext();
+          // Create silent buffer
+          const buffer = audioCtx.createBuffer(1, 1, 22050);
+          const source = audioCtx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(audioCtx.destination);
+          source.start(0);
+          source.onended = () => {
+            audioCtx.close();
+          };
+        }
+      } catch (e) {
+        // Fallback: try HTML5 Audio
+        const silentAudio = new Audio("data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYlmKQsAAAAAAD/+1DEAAAHAAb/AAAAIAAAP8AAAARMQUAABMQUAABLAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAvheh4PxQQBAEAQBP+8y0AABAABBwAAAABBwAAAAAAAAAAAAAAAP/zEMQAAAADSAAAAABQqb0y0AAAADAAAAA0TEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+        silentAudio.volume = 0.01;
+        silentAudio.play().then(() => {
+          silentAudio.pause();
+          silentAudio.currentTime = 0;
+        }).catch(() => {});
       }
-      
-      setTray(p => { const t = [...p]; t[1] = null; return t; });
-      setFly({
-        from: fromPos,
-        to: toPos,
-        number: num, 
-        size: TRAY_BALL_SIZE, 
-        targetSize: GRID_BALL_SIZE,
-        type: "toBoard", 
-        boardTarget: num, 
-        onDone, 
-        duration: 800,
-      });
-    }, 50);
-  }, [TRAY_BALL_SIZE, GRID_BALL_SIZE, getCenter]);
+    };
 
-  const doFlySlot0ToSlot1 = useCallback((num, onDone) => {
-    setTimeout(() => {
-      const fromPos = getCenter(slot0Ref.current);
-      const toPos = getCenter(slot1Ref.current);
-      
-      if (!fromPos || !toPos) {
-        console.warn(`Cannot fly ball ${num} to slot1`);
-        setTray(p => { const t = [...p]; t[0] = null; return t; });
-        setTray(p => { const t = [...p]; t[1] = num; return t; });
-        setTrayKey(p => { const k = [...p]; k[1]++; return k; });
-        onDone?.();
-        return;
+    // Try immediately
+    unlockAudio();
+
+    // Also try on events
+    const events = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
+    events.forEach(event => {
+      document.addEventListener(event, unlockAudio, { once: true });
+    });
+
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, unlockAudio);
+      });
+    };
+  }, []);
+
+  // Play sound function
+  const playSoundOnly = useCallback((number) => {
+    try {
+      // Stop previous
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
       }
-      
-      setTray(p => { const t = [...p]; t[0] = null; return t; });
-      setFly({
-        from: fromPos,
-        to: toPos,
-        number: num, 
-        size: TRAY_BALL_SIZE, 
-        targetSize: TRAY_BALL_SIZE,
-        type: "toSlot1", 
-        num, 
-        onDone, 
-        duration: 600,
-      });
-    }, 50);
-  }, [TRAY_BALL_SIZE, getCenter]);
 
-  const doFlyBigToSlot0 = useCallback((num) => {
-    setTimeout(() => {
-      const fromPos = getCenter(bigBallRef.current);
-      const toPos = getCenter(slot0Ref.current);
+      const audio = new Audio(`/sounds/${number}.mp3`);
+      audio.volume = 1.0;
+      audio.preload = 'auto';
+      audioRef.current = audio;
+
+      // Try to play
+      const playPromise = audio.play();
       
-      if (!fromPos || !toPos) {
-        console.warn(`Cannot fly ball ${num} to slot0`);
-        setTray(p => { const t = [...p]; t[0] = num; return t; });
-        setTrayKey(p => { const k = [...p]; k[0]++; return k; });
-        return;
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // If failed, try again with user gesture simulation
+          const tryPlay = () => {
+            audio.play().catch(() => {
+              console.warn('Cannot play sound for', number);
+            });
+          };
+          // Add click handler as fallback
+          document.addEventListener('click', tryPlay, { once: true });
+        });
       }
-      
-      setFly({
-        from: fromPos,
-        to: toPos,
-        number: num, 
-        size: BIG_BALL_SIZE * 0.68, 
-        targetSize: TRAY_BALL_SIZE,
-        type: "toSlot0", 
-        num, 
-        duration: 950,
-      });
-    }, 50);
-  }, [BIG_BALL_SIZE, TRAY_BALL_SIZE, getCenter]);
 
-  const handleFlyDone = useCallback(() => {
-    const f = flyRef.current;
-    setFly(null);
-    if (!f) return;
-
-    if (f.type === "toBoard") {
-      setCalledSet(prev => new Set([...prev, f.boardTarget]));
-      setArrivingCell(f.boardTarget);
-      setTimeout(() => setArrivingCell(null), 800);
-      if (f.onDone) setTimeout(f.onDone, 100);
-    } else if (f.type === "toSlot1") {
-      setTray(p => { const t = [...p]; t[1] = f.num; return t; });
-      setTrayKey(p => { const k = [...p]; k[1]++; return k; });
-      if (f.onDone) setTimeout(f.onDone, 140);
-    } else if (f.type === "toSlot0") {
-      setTray(p => { const t = [...p]; t[0] = f.num; return t; });
-      setTrayKey(p => { const k = [...p]; k[0]++; return k; });
+      audio.onended = () => { audioRef.current = null; };
+      audio.onerror = () => { audioRef.current = null; };
+    } catch (e) {
+      console.warn('Sound error:', e);
     }
   }, []);
 
-  useEffect(() => { flyRef.current = fly; }, [fly]);
+  // Process next number
+  const processNextNumber = useCallback(() => {
+    if (queueRef.current.length === 0) {
+      isProcessingRef.current = false;
+      return;
+    }
 
+    isProcessingRef.current = true;
+    const nextNumber = queueRef.current.shift();
+    
+    // FIXED: Update prev first, then latest
+    setPrevNum(latestNumRef.current);  // Current latest becomes prev
+    setLatestNum(nextNumber);          // New number becomes latest
+    
+    // Play sound
+    playSoundOnly(nextNumber);
+    
+    // Schedule next
+    timerRef.current = setTimeout(() => {
+      processNextNumber();
+    }, GAP_BETWEEN_NUMBERS);
+    
+  }, [playSoundOnly]);
+
+  // Watch for new numbers
+  useEffect(() => {
+    if (lastCalledNum !== null && lastCalledNum !== lastNumRef.current) {
+      lastNumRef.current = lastCalledNum;
+      queueRef.current.push(lastCalledNum);
+      
+      if (!isProcessingRef.current) {
+        processNextNumber();
+      }
+    }
+  }, [lastCalledNum, processNextNumber]);
+
+  // Clear when done
+  useEffect(() => {
+    if (done) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      queueRef.current = [];
+      isProcessingRef.current = false;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    }
+  }, [done]);
+
+  // Cleanup
   useEffect(() => {
     return () => {
-      if (processingTimeoutRef.current) clearTimeout(processingTimeoutRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
   const pct = Math.round((calledCount / 90) * 100);
-  const numColor = bigNum ? `linear-gradient(135deg, ${dc(bigNum).light}, ${dc(bigNum).base})` : null;
 
-  /* ── Sub-components ── */
+  /* ══ Sub-components ══ */
+
   const BoardGrid = ({ mobile = false }) => (
     <div style={{
-      display: "grid", gridTemplateColumns: "repeat(10, 1fr)",
-      gap: mobile ? 3 : isNarrow ? 5 : 7, width: "100%",
-      padding: mobile ? "6px" : isNarrow ? "8px" : "12px",
+      display: "grid", gridTemplateColumns: "repeat(10,1fr)",
+      gap: mobile ? 3 : isNarrow ? 5 : 7,
+      padding: mobile ? 6 : isNarrow ? 8 : 12,
+      width: "100%",
     }}>
       {Array.from({ length: 90 }, (_, i) => {
         const n = i + 1;
         return (
-          <div key={n} ref={el => { cellRefs.current[n] = el; }}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", aspectRatio: "1" }}>
-            <GridBall number={n} called={calledSet.has(n)} arriving={arrivingCell === n} size={GRID_BALL_SIZE} />
+          <div key={n} style={{ display: "flex", alignItems: "center", justifyContent: "center", aspectRatio: "1" }}>
+            <GridBall
+              number={n}
+              called={calledSet.has(n)}
+              size={GRID}
+            />
           </div>
         );
       })}
     </div>
   );
 
+  const TraySlot = ({ slotNum, label, vertical }) => (
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center",
+      gap: vertical ? 4 : 6,
+    }}>
+      <div style={{
+        width: TRAY_SLOT, height: TRAY_SLOT,
+        borderRadius: "50%",
+        background: "rgba(0,10,30,0.55)",
+        border: "1px solid rgba(251,239,164,0.10)",
+        boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0,
+      }}>
+        <TrayBall number={slotNum} size={TRAY} />
+      </div>
+      <span style={{
+        fontSize: 7, color: "rgba(251,239,164,0.25)",
+        letterSpacing: 1, whiteSpace: "nowrap",
+        fontFamily: "'Cinzel',serif",
+      }}>
+        {label}
+      </span>
+    </div>
+  );
+
   const TraySlots = ({ vertical = false }) => (
-    <div style={{ display: "flex", flexDirection: vertical ? "column" : "row", gap: 14, alignItems: "center" }}>
-      {[0, 1].map(i => (
-        <div key={i} ref={i === 0 ? slot0Ref : slot1Ref}
-          style={{
-            width: TRAY_SLOT_SIZE, height: TRAY_SLOT_SIZE, borderRadius: "50%",
-            background: "rgba(0,10,30,0.55)",
-            border: "1px solid rgba(251,239,164,0.10)",
-            boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5), 0 0 0 1px rgba(251,239,164,0.03)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0, position: "relative",
-          }}
-        >
-          <div style={{
-            position: "absolute", bottom: "-19px", left: "50%", transform: "translateX(-50%)",
-            fontSize: 7, color: "rgba(251,239,164,0.22)", letterSpacing: 1, whiteSpace: "nowrap",
-            fontFamily: "'Cinzel', serif",
-          }}>
-            {i === 0 ? "LATEST" : "PREV"}
-          </div>
-          {tray[i] !== null
-            ? <div key={trayKey[i]}><TrayBall number={tray[i]} size={TRAY_BALL_SIZE} isNew /></div>
-            : <div style={{
-              width: TRAY_BALL_SIZE * 0.4, height: TRAY_BALL_SIZE * 0.4,
-              borderRadius: "50%",
-              background: "rgba(251,239,164,0.03)",
-              border: "1px dashed rgba(251,239,164,0.09)",
-            }} />
-          }
-        </div>
-      ))}
+    <div style={{
+      display: "flex",
+      flexDirection: vertical ? "column" : "row",
+      gap: 18, alignItems: "center",
+    }}>
+      <TraySlot slotNum={latestNum} label="LATEST" vertical={vertical} />
+      <TraySlot slotNum={prevNum} label="PREV"   vertical={vertical} />
+    </div>
+  );
+
+  const BigBallArea = () => (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <BigBall number={latestNum} size={BIG} />
     </div>
   );
 
   const StatsBar = ({ compact = false }) => (
     <div style={{ display: "flex", gap: 8, width: "100%" }}>
       {[
-        { lbl: "CALLED", val: calledCount, accent: "#FBEFA4" },
-        { lbl: "LEFT", val: 90 - calledCount, accent: "#1abc9c" },
+        { lbl: "CALLED", val: calledCount,      color: "#FBEFA4" },
+        { lbl: "LEFT",   val: 90 - calledCount, color: "#1abc9c" },
       ].map(s => (
         <div key={s.lbl} style={{
           flex: 1, textAlign: "center",
-          padding: compact ? "6px 4px" : "10px 6px", borderRadius: 10,
+          padding: compact ? "5px 4px" : "9px 6px",
+          borderRadius: 10,
           background: "rgba(0,20,51,0.45)",
           border: "1px solid rgba(251,239,164,0.09)",
-          backdropFilter: "blur(8px)",
         }}>
-          <div style={{ fontSize: compact ? 17 : 22, fontWeight: 900, fontFamily: "'Cinzel',serif", color: s.accent, lineHeight: 1 }}>
+          <div style={{ fontSize: compact ? 16 : 22, fontWeight: 900, fontFamily: "'Cinzel',serif", color: s.color, lineHeight: 1 }}>
             {s.val}
           </div>
           <div style={{ fontSize: 7, color: "rgba(255,255,255,0.28)", letterSpacing: 2, marginTop: 3 }}>{s.lbl}</div>
@@ -749,11 +469,11 @@ export default function TambolaLive({
   );
 
   const ProgressBar = () => (
-    <div style={{ width: "100%", position: "relative" }}>
+    <div style={{ width: "100%" }}>
       <div style={{ width: "100%", height: 3, borderRadius: 2, background: "rgba(251,239,164,0.08)", overflow: "hidden" }}>
         <div style={{
           height: "100%", borderRadius: 2,
-          background: "linear-gradient(90deg, #004296, #b8860b, #FBEFA4)",
+          background: "linear-gradient(90deg,#004296,#b8860b,#FBEFA4)",
           width: `${pct}%`,
           transition: "width 0.8s cubic-bezier(0.4,0,0.2,1)",
           boxShadow: "0 0 8px rgba(251,239,164,0.55)",
@@ -767,176 +487,83 @@ export default function TambolaLive({
     </div>
   );
 
-  const StatusIndicator = () => (
+  const StatusDot = () => (
     <div style={{
       display: "flex", alignItems: "center", gap: 8,
       padding: "6px 14px", borderRadius: 20,
       background: "rgba(0,20,51,0.60)",
       border: "1px solid rgba(251,239,164,0.12)",
-      backdropFilter: "blur(8px)",
     }}>
       <div style={{
         width: 8, height: 8, borderRadius: "50%",
         background: connected ? (gameStatus === "started" ? "#1abc9c" : "#FBEFA4") : "#ff4444",
         boxShadow: connected ? `0 0 8px ${gameStatus === "started" ? "#1abc9c" : "#FBEFA4"}` : "0 0 8px #ff4444",
-        animation: connected && gameStatus === "started" ? "tl-breathe 2s ease-in-out infinite" : "none",
       }} />
       <span style={{ fontSize: 9, color: "rgba(255,255,255,0.70)", fontFamily: "'Cinzel',serif", letterSpacing: 1.5 }}>
-        {connected ? gameStatus.toUpperCase() : "OFFLINE MODE"}
+        {connected ? gameStatus.toUpperCase() : "OFFLINE"}
       </span>
     </div>
   );
 
+  /* ══════════════════════════════════════════
+     RENDER
+  ══════════════════════════════════════════ */
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Raleway:wght@300;400;600&display=swap');
-        @keyframes tl-ballReveal {
-          0%   { transform: rotate(0deg)   scale(0.2); opacity: 0; }
-          50%  { transform: rotate(360deg) scale(0.6); opacity: 0.8; }
-          100% { transform: rotate(360deg) scale(1);   opacity: 1; }
-        }
-        @keyframes tl-traySettle {
-          0%   { transform: scale(0.3) rotate(-180deg); opacity: 0; }
-          70%  { transform: scale(1.08) rotate(5deg); opacity: 1; }
-          100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-        @keyframes tl-gridArrive {
-          0%   { transform: scale(0.2); opacity: 0; filter: brightness(3); }
-          55%  { transform: scale(1.14); opacity: 1; filter: brightness(1.5); }
-          80%  { transform: scale(0.97); filter: brightness(1.1); }
-          100% { transform: scale(1.04); opacity: 1; filter: brightness(1); }
-        }
-        @keyframes tl-softPulse {
-          0%,100% { transform: scale(1); opacity: 0.7; }
-          50%     { transform: scale(1.55); opacity: 0; }
-        }
-        @keyframes tl-floatDrift {
-          0%,100% { transform: translateY(0px) rotate(0deg); }
-          33%     { transform: translateY(-8px) rotate(1deg); }
-          66%     { transform: translateY(-4px) rotate(-0.8deg); }
-        }
-        @keyframes tl-shimmerSweep {
-          0%   { background-position: -600px 0; }
-          100% { background-position:  600px 0; }
-        }
-        @keyframes tl-rotateSlow {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        @keyframes tl-breathe {
-          0%,100% { opacity: 0.4; }
-          50%     { opacity: 0.9; }
-        }
-        @keyframes tl-doneFade {
-          0%   { opacity: 0; transform: scale(0.92); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes tl-doneGlow {
-          0%,100% { text-shadow: 0 0 20px rgba(251,239,164,0.6),  0 0 40px  rgba(251,239,164,0.25); }
-          50%     { text-shadow: 0 0 50px rgba(251,239,164,0.95), 0 0 100px rgba(251,239,164,0.45); }
-        }
-        @keyframes tl-particle0 {
-          0%   { transform: translate(-50%,-50%) translate(0,0) scale(1); opacity: 1; }
-          100% { transform: translate(-50%,-50%) translate(var(--px),var(--py)) scale(0); opacity: 0; }
-        }
-        @keyframes tl-particle1 {
-          0%   { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-          100% { transform: translate(-50%,-50%) translate(calc(var(--px)*0.7),calc(var(--py)*1.2)) scale(0); opacity: 0; }
-        }
-        @keyframes tl-particle2 {
-          0%   { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-          100% { transform: translate(-50%,-50%) translate(calc(var(--px)*1.2),calc(var(--py)*0.6)) scale(0); opacity: 0; }
-        }
-        .tl-shimmer {
-          background: linear-gradient(90deg, #c9b86c 0%, #ffe066 28%, #FBEFA4 50%, #ffe066 72%, #c9b86c 100%);
+        
+        .tl-shimmer-text {
+          background: linear-gradient(90deg,#c9b86c 0%,#ffe066 28%,#FBEFA4 50%,#ffe066 72%,#c9b86c 100%);
           background-size: 600px 100%;
-          -webkit-background-clip: text;
+          -webkit-background-clip: text; 
           -webkit-text-fill-color: transparent;
           background-clip: text;
-          animation: tl-shimmerSweep 3.5s linear infinite;
         }
-        .tl-float   { animation: tl-floatDrift 4s ease-in-out infinite; }
-        .tl-breathe { animation: tl-breathe 2s ease-in-out infinite; }
+
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
       `}</style>
 
-      <div ref={containerRef} style={{
-        width: "100%", overflow: "hidden", borderRadius: 18,
-        background: `
-          radial-gradient(ellipse at 15% 0%,   rgba(0,66,150,0.35) 0%, transparent 55%),
-          radial-gradient(ellipse at 85% 100%,  rgba(251,239,164,0.07) 0%, transparent 50%),
-          linear-gradient(160deg, #002b66 0%, #001433 100%)
-        `,
-        border: "1px solid rgba(251,239,164,0.10)",
-        boxShadow: `0 0 0 1px rgba(0,66,150,0.40), 0 30px 80px rgba(0,8,25,0.85), inset 0 1px 0 rgba(251,239,164,0.06)`,
-        color: "#fff", position: "relative",
-        fontFamily: "'Raleway', sans-serif",
-      }}>
-
+      <div
+        ref={containerRef}
+        style={{
+          width: "100%", overflow: "hidden", borderRadius: 18,
+          background: `
+            radial-gradient(ellipse at 15% 0%,  rgba(0,66,150,0.35) 0%, transparent 55%),
+            radial-gradient(ellipse at 85% 100%,rgba(251,239,164,0.07) 0%, transparent 50%),
+            linear-gradient(160deg,#002b66 0%,#001433 100%)
+          `,
+          border: "1px solid rgba(251,239,164,0.10)",
+          boxShadow: "0 0 0 1px rgba(0,66,150,0.40), 0 30px 80px rgba(0,8,25,0.85)",
+          color: "#fff", position: "relative",
+          fontFamily: "'Raleway',sans-serif",
+        }}
+      >
+        {/* Status */}
         <div style={{ position: "absolute", top: 14, right: 14, zIndex: 20 }}>
-          <StatusIndicator />
+          <StatusDot />
         </div>
 
+        {/* Grid lines */}
         <div style={{
           position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
           backgroundImage: `
-            linear-gradient(rgba(251,239,164,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(251,239,164,0.025) 1px, transparent 1px)
+            linear-gradient(rgba(251,239,164,0.025) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(251,239,164,0.025) 1px,transparent 1px)
           `,
           backgroundSize: "52px 52px",
         }} />
-
-        {[
-          { s: 280, t: -90, l: -90, anim: "tl-rotateSlow 32s linear infinite", c: "rgba(0,66,150,0.18)" },
-          { s: 180, t: -50, l: -50, anim: "tl-rotateSlow 20s linear infinite reverse", c: "rgba(251,239,164,0.07)" },
-          { s: 240, b: -70, r: -70, anim: "tl-rotateSlow 28s linear infinite", c: "rgba(251,239,164,0.07)" },
-        ].map((ring, i) => (
-          <div key={i} style={{
-            position: "absolute", borderRadius: "50%",
-            pointerEvents: "none", zIndex: 0,
-            width: ring.s, height: ring.s,
-            top: ring.t, left: ring.l, bottom: ring.b, right: ring.r,
-            border: `1px solid ${ring.c}`,
-            animation: ring.anim,
-          }} />
-        ))}
-
-        {fly && !isMobileDevice && (
-          <FlyingBall
-            from={fly.from} to={fly.to} number={fly.number}
-            size={fly.size} targetSize={fly.targetSize}
-            onDone={handleFlyDone} duration={fly.duration}
-          />
-        )}
 
         {/* ══ MOBILE ══ */}
         {isMobile && (
           <div style={{ display: "flex", flexDirection: "column", padding: "14px 10px 20px", gap: 12, position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <h1 className="tl-shimmer" style={{ fontSize: 12, fontWeight: 900, letterSpacing: 3, flexShrink: 0, fontFamily: "'Cinzel',serif" }}>
-                TAMBOLA
-              </h1>
+              <h1 className="tl-shimmer-text" style={{ fontSize: 12, fontWeight: 900, letterSpacing: 3, flexShrink: 0, fontFamily: "'Cinzel',serif" }}>TAMBOLA</h1>
               <StatsBar compact />
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20 }}>
-              <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                {showPulse && bigNum && (<>
-                  {[0, 1, 2].map(k => (
-                    <div key={k} style={{
-                      position: "absolute", inset: -(6 * (k + 1) + 2), borderRadius: "50%",
-                      border: `${k < 1 ? "1.5" : "1"}px solid ${k === 0 ? dc(bigNum).light + "55" : dc(bigNum).base + (k === 1 ? "33" : "18")}`,
-                      animation: `tl-softPulse 2.2s ease-out ${k * 0.55}s infinite`,
-                    }} />
-                  ))}
-                  <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
-                </>)}
-                <div ref={bigBallRef} className={bigNum ? "tl-float" : ""}>
-                  <BigBall number={bigNum} animKey={bigKey} size={BIG_BALL_SIZE} />
-                </div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-                <TraySlots vertical />
-              </div>
+              <BigBallArea />
+              <TraySlots vertical />
             </div>
             <ProgressBar />
             <div style={{ background: "rgba(0,0,0,0.22)", borderRadius: 12, border: "1px solid rgba(251,239,164,0.05)" }}>
@@ -949,37 +576,22 @@ export default function TambolaLive({
         {!isMobile && isNarrow && (
           <div style={{ display: "flex", alignItems: "stretch", position: "relative", zIndex: 1, minHeight: 500 }}>
             <div style={{
-              flexShrink: 0, width: LEFT_PANEL_W,
+              flexShrink: 0, width: LEFT_W,
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: 18, padding: "20px 14px",
+              gap: 20, padding: "20px 14px",
               borderRight: "1px solid rgba(251,239,164,0.06)",
-              background: "rgba(0,0,0,0.20)",
+              background: "rgba(0,0,0,0.18)",
             }}>
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "rgba(251,239,164,0.38)", letterSpacing: 5, marginBottom: 5, fontFamily: "'Raleway',sans-serif" }}>✦ LIVE DRAW ✦</div>
-                <h1 className="tl-shimmer" style={{ fontSize: 13, fontWeight: 900, letterSpacing: 4, fontFamily: "'Cinzel',serif" }}>TAMBOLA</h1>
+                <div style={{ fontSize: 7, color: "rgba(251,239,164,0.38)", letterSpacing: 5, marginBottom: 5 }}>✦ LIVE DRAW ✦</div>
+                <h1 className="tl-shimmer-text" style={{ fontSize: 13, fontWeight: 900, letterSpacing: 4, fontFamily: "'Cinzel',serif" }}>TAMBOLA</h1>
               </div>
-              <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-                {showPulse && bigNum && (<>
-                  {[0, 1, 2].map(k => (
-                    <div key={k} style={{
-                      position: "absolute", borderRadius: "50%",
-                      inset: -(6 * (k + 1) + 2),
-                      border: `${k < 1 ? "1.5" : "1"}px solid ${k === 0 ? dc(bigNum).light + "55" : dc(bigNum).base + (k === 1 ? "33" : "18")}`,
-                      animation: `tl-softPulse 2.2s ease-out ${k * 0.55}s infinite`,
-                    }} />
-                  ))}
-                  <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
-                </>)}
-                <div ref={bigBallRef} className={bigNum ? "tl-float" : ""}>
-                  <BigBall number={bigNum} animKey={bigKey} size={BIG_BALL_SIZE} />
-                </div>
-              </div>
+              <BigBallArea />
               <TraySlots />
               <StatsBar />
               <ProgressBar />
             </div>
-            <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", padding: "16px 14px 14px 12px", gap: 12 }}>
+            <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", padding: "16px 14px 14px 12px" }}>
               <div style={{ flex: 1, background: "rgba(0,8,24,0.35)", borderRadius: 14, border: "1px solid rgba(251,239,164,0.05)", display: "flex", alignItems: "center", overflow: "hidden" }}>
                 <BoardGrid />
               </div>
@@ -991,34 +603,19 @@ export default function TambolaLive({
         {!isMobile && !isNarrow && (
           <div style={{ display: "flex", alignItems: "stretch", position: "relative", zIndex: 1, minHeight: 560 }}>
             <div style={{
-              flexShrink: 0, width: LEFT_PANEL_W,
+              flexShrink: 0, width: LEFT_W,
               display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: 26, padding: "30px 22px",
+              gap: 28, padding: "30px 22px",
               borderRight: "1px solid rgba(251,239,164,0.07)",
-              background: "rgba(0,0,0,0.18)",
+              background: "rgba(0,0,0,0.16)",
               backdropFilter: "blur(6px)",
             }}>
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 7, color: "rgba(251,239,164,0.40)", letterSpacing: 5, marginBottom: 6, fontFamily: "'Raleway',sans-serif" }}>✦ LIVE DRAW ✦</div>
-                <h1 className="tl-shimmer" style={{ fontSize: 18, fontWeight: 900, letterSpacing: 4, fontFamily: "'Cinzel',serif" }}>TAMBOLA</h1>
+                <div style={{ fontSize: 7, color: "rgba(251,239,164,0.40)", letterSpacing: 5, marginBottom: 6 }}>✦ LIVE DRAW ✦</div>
+                <h1 className="tl-shimmer-text" style={{ fontSize: 18, fontWeight: 900, letterSpacing: 4, fontFamily: "'Cinzel',serif" }}>TAMBOLA</h1>
                 <div style={{ fontSize: 7, color: "rgba(255,255,255,0.18)", letterSpacing: 3, marginTop: 4, fontFamily: "'Cinzel',serif" }}>90 BALL · LIVE DRAW</div>
               </div>
-              <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-                {showPulse && bigNum && (<>
-                  {[0, 1, 2].map(k => (
-                    <div key={k} style={{
-                      position: "absolute", borderRadius: "50%",
-                      inset: -(6 * (k + 1) + 2),
-                      border: `${k < 1 ? "1.5" : "1"}px solid ${k === 0 ? dc(bigNum).light + "55" : dc(bigNum).base + (k === 1 ? "33" : "18")}`,
-                      animation: `tl-softPulse 2.2s ease-out ${k * 0.55}s infinite`,
-                    }} />
-                  ))}
-                  <Particles active={showParticles} color={dc(bigNum).light} size={BIG_BALL_SIZE} />
-                </>)}
-                <div ref={bigBallRef} className={bigNum ? "tl-float" : ""}>
-                  <BigBall number={bigNum} animKey={bigKey} size={BIG_BALL_SIZE} />
-                </div>
-              </div>
+              <BigBallArea />
               <TraySlots />
               <StatsBar />
               <ProgressBar />
@@ -1029,8 +626,7 @@ export default function TambolaLive({
                   <div style={{ width: 2, height: 18, background: "linear-gradient(180deg,#FBEFA4,rgba(251,239,164,0))", borderRadius: 2 }} />
                   <span style={{ fontSize: 11, fontWeight: 600, fontFamily: "'Cinzel',serif", color: "rgba(251,239,164,0.35)", letterSpacing: 3 }}>FULL BOARD</span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 20, background: "rgba(0,20,51,0.50)", border: "1px solid rgba(251,239,164,0.08)", backdropFilter: "blur(8px)" }}>
-                  <div className="tl-breathe" style={{ width: 5, height: 5, borderRadius: "50%", background: pct === 100 ? "#1abc9c" : "#FBEFA4", boxShadow: pct === 100 ? "0 0 6px #1abc9c" : "0 0 6px #FBEFA4" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 14px", borderRadius: 20, background: "rgba(0,20,51,0.50)", border: "1px solid rgba(251,239,164,0.08)" }}>
                   <span style={{ fontSize: 8, color: "rgba(255,255,255,0.40)", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}>{calledCount} / 90</span>
                 </div>
               </div>
@@ -1041,25 +637,29 @@ export default function TambolaLive({
           </div>
         )}
 
-        {/* ══ DONE OVERLAY ══ */}
+        {/* ══ DONE ══ */}
         {done && (
           <div style={{
             position: "absolute", inset: 0, zIndex: 50,
             background: "rgba(0,8,25,0.92)", backdropFilter: "blur(14px)",
             borderRadius: 18,
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            gap: 16, animation: "tl-doneFade 0.8s ease forwards",
+            gap: 16,
           }}>
-            <div style={{ fontSize: isMobile ? 24 : 36, fontWeight: 900, fontFamily: "'Cinzel',serif", color: "#FBEFA4", animation: "tl-doneGlow 2s ease-in-out infinite", letterSpacing: 4 }}>
+            <div style={{
+              fontSize: isMobile ? 24 : 36, fontWeight: 900,
+              fontFamily: "'Cinzel',serif", color: "#FBEFA4",
+              letterSpacing: 4,
+            }}>
               FULL HOUSE
             </div>
-            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", letterSpacing: 4, fontFamily: "'Raleway',sans-serif" }}>ALL 90 NUMBERS CALLED</div>
+            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", letterSpacing: 4 }}>ALL 90 NUMBERS CALLED</div>
             <button
               onClick={() => window.location.reload()}
               style={{
                 marginTop: 12, padding: "12px 36px",
                 fontSize: 10, fontWeight: 700, fontFamily: "'Cinzel',serif", letterSpacing: 3,
-                background: "linear-gradient(135deg, #FBEFA4, #c9b86c)", color: "#001433",
+                background: "linear-gradient(135deg,#FBEFA4,#c9b86c)", color: "#001433",
                 border: "none", borderRadius: 30, cursor: "pointer",
                 boxShadow: "0 4px 24px rgba(251,239,164,0.38)",
               }}
