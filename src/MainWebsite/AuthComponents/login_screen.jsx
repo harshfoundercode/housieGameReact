@@ -1,10 +1,502 @@
-import React, { useState,useEffect } from "react";
+// import React, { useState,useEffect } from "react";
+// import { useNavigate, Link } from "react-router-dom";
+// import tambolaLogo from "../../assets/tambolaGame.jpeg";
+// import { sendOTP, verifyOTP, LoginUser } from "../../services/login_user"; // Import your API functions
+// import { getFeedbackVideos } from "../../services/user_feedback_services";
+// import { ROUTES } from "../../routes/routes";
+
+
+// const Login = () => {
+//     const navigate = useNavigate();
+//     const [formData, setFormData] = useState({
+//         phone: "",
+//         otp: "",
+//     });
+//     const [otpSent, setOtpSent] = useState(false);
+//     const [loading, setLoading] = useState(false);
+//     const [error, setError] = useState("");
+
+//     // Feedback videos state
+//     const [testimonials, setTestimonials] = useState([]);
+//     const [loadingVideos, setLoadingVideos] = useState(false);
+
+//     // Fetch feedback videos on component mount
+//     useEffect(() => {
+//         fetchFeedbackVideos();
+//     }, []);
+
+//     const fetchFeedbackVideos = async () => {
+//         setLoadingVideos(true);
+//         try {
+//             const response = await getFeedbackVideos();
+//             console.log("Feedback Videos Response:", response);
+
+//             if (response.data && response.data.length > 0) {
+//                 // Map API data to testimonials format
+//                 const formattedVideos = response.data
+//                     .filter(video => video.status === 'active') // Only show active videos
+//                     .map(video => ({
+//                         id: video.id,
+//                         title: video.name || video.description || "Player Feedback",
+//                         thumbnail: getYouTubeThumbnail(video.video_url),
+//                         videoUrl: video.video_url,
+//                         description: video.description || ""
+//                     }));
+
+//                 setTestimonials(formattedVideos);
+//             }
+//         } catch (error) {
+//             console.error("Error fetching feedback videos:", error);
+            
+//         } finally {
+//             setLoadingVideos(false);
+//         }
+//     };
+
+//     // Extract YouTube video ID and generate thumbnail URL
+//     const getYouTubeThumbnail = (url) => {
+//         if (!url) return "https://img.youtube.com/vi/default/mqdefault.jpg";
+
+//         try {
+//             // Handle different YouTube URL formats
+//             let videoId = "";
+
+//             // Format: https://www.youtube.com/watch?v=VIDEO_ID
+//             if (url.includes("watch?v=")) {
+//                 videoId = url.split("watch?v=")[1]?.split("&")[0];
+//             }
+//             // Format: https://youtu.be/VIDEO_ID
+//             else if (url.includes("youtu.be/")) {
+//                 videoId = url.split("youtu.be/")[1]?.split("?")[0];
+//             }
+//             // Format: https://www.youtube.com/embed/VIDEO_ID
+//             else if (url.includes("embed/")) {
+//                 videoId = url.split("embed/")[1]?.split("?")[0];
+//             }
+
+//             if (videoId) {
+//                 return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+//             }
+
+//             // If thumbnail URL is provided in API
+//             return url;
+//         } catch (e) {
+//             return "https://img.youtube.com/vi/default/mqdefault.jpg";
+//         }
+//     };
+
+
+//     const handlePhoneChange = (e) => {
+//         const value = e.target.value;
+//         if (value === '' || /^[0-9]+$/.test(value)) {
+//             setFormData({ ...formData, phone: value });
+//         }
+//         setError("");
+//     };
+
+//     const handleOTPChange = (e) => {
+//         const value = e.target.value;
+//         if (value === '' || /^[0-9]+$/.test(value)) {
+//             setFormData({ ...formData, otp: value });
+//         }
+//         setError("");
+//     };
+
+//     // Step 1: Send OTP API Call
+//     const handleSendOTP = async () => {
+//         if (!formData.phone || formData.phone.length < 10) {
+//             setError("Please enter a valid 10-digit phone number");
+//             return;
+//         }
+
+//         setLoading(true);
+//         setError("");
+
+//         try {
+//             // Call your send OTP API
+//             const response = await sendOTP(formData.phone);
+//             console.log("Send OTP Response:", response);
+
+//             // Check if API call was successful (status 200)
+//             if (response.status === 200 || response.success) {
+//                 setOtpSent(true);
+//                 alert(`OTP sent successfully to ${formData.phone}`);
+//             } else {
+//                 throw new Error(response.message || "Failed to send OTP");
+//             }
+//         } catch (err) {
+//             console.error("Send OTP Error:", err);
+//             setError(err.message || "Failed to send OTP. Please try again.");
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     // Step 2: Verify OTP and then call Login API
+//     const handleVerifyOTP = async () => {
+//         if (!formData.otp || formData.otp.length < 4) {
+//             setError("Please enter a valid OTP");
+//             return;
+//         }
+
+//         setLoading(true);
+//         setError("");
+
+//         try {
+//             // Step 2a: First verify OTP
+//             const verifyResponse = await verifyOTP(formData.phone, formData.otp);
+//             console.log("Verify OTP Response:", verifyResponse);
+
+//             // Check if OTP verification was successful (status 200)
+//             if (verifyResponse.status === 200 || verifyResponse.success) {
+//                 console.log("OTP verified successfully");
+
+//                 // Step 2b: Now call login API
+//                 const loginResponse = await LoginUser(formData.phone);
+//                 console.log("Login Response:", loginResponse);
+
+//                 // Check if login was successful (status 200)
+//                 if (loginResponse.status === 200 || loginResponse.success) {
+
+//                     // Extract data from login response (adjust based on your API structure)
+//                     const { data } = loginResponse;
+//                     const authToken = data?.token;
+//                     const userData = {
+//                         user_id: data?.user_id,
+//                         first_name: data?.first_name,
+//                         last_name: data?.last_name,
+//                         phone: data?.phone,
+//                         email: data?.email,
+//                         credits: data?.credits,
+//                         referral_code: data?.referral_code
+//                     };
+
+//                     // Save user data to localStorage
+//                     saveUserData(authToken, userData);
+
+//                     // Success message
+//                     alert(`Welcome back ${userData.first_name || 'User'}! Login successful!`);
+
+//                     // Navigate to home page
+//                     navigate("/");
+//                     window.location.reload(); // Refresh to update navbar
+//                 } else {
+//                     throw new Error(loginResponse.message || "Login failed");
+//                 }
+//             } else {
+//                 throw new Error(verifyResponse.message || "Invalid OTP. Please try again.");
+//             }
+//         } catch (err) {
+//             console.error("Verification/Login Error:", err);
+//             setError(err.message || "Verification failed. Please try again.");
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     // Save user data to localStorage
+//     const saveUserData = (token, userData) => {
+//         try {
+//             if (token) {
+//                 localStorage.setItem("token", token);
+//             }
+//             if (userData) {
+//                 localStorage.setItem("user", JSON.stringify(userData));
+//             }
+//             localStorage.setItem("isLoggedIn", "true");
+//             localStorage.setItem("loginTime", new Date().toISOString());
+
+//             // Save individual fields for quick access
+//             if (userData?.user_id) localStorage.setItem("userId", userData.user_id.toString());
+//             if (userData?.phone) localStorage.setItem("userPhone", userData.phone);
+//             if (userData?.credits) localStorage.setItem("credits", userData.credits.toString());
+
+//             console.log("User data saved successfully");
+//         } catch (error) {
+//             console.error("Error saving user data:", error);
+//         }
+//     };
+
+//     // Resend OTP
+//     const handleResendOTP = async () => {
+//         setLoading(true);
+//         try {
+//             const response = await sendOTP(formData.phone);
+//             if (response.status === 200 || response.success) {
+//                 alert("OTP resent successfully!");
+//             } else {
+//                 throw new Error(response.message || "Failed to resend OTP");
+//             }
+//         } catch (err) {
+//             console.error("Resend OTP Error:", err);
+//             setError(err.message || "Failed to resend OTP");
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     return (
+//         <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] flex flex-col lg:flex-row">
+
+//             {/* LEFT PANEL - Image with Content (Same as Register) */}
+//             <div className="hidden lg:flex lg:w-112.5 xl:w-137.5 2xl:w-150 h-screen sticky top-0 overflow-hidden">
+//                 {/* Background Pattern */}
+//                 <div className="absolute inset-0 opacity-10">
+//                     <div className="absolute inset-0" style={{
+//                         backgroundImage: `radial-gradient(circle at 2px 2px, #FBEFA4 1px, transparent 1px)`,
+//                         backgroundSize: '40px 40px'
+//                     }}></div>
+//                 </div>
+
+//                 {/* Glow Orbs */}
+//                 <div className="absolute top-20 left-10 w-64 h-64 bg-[#FBEFA4] rounded-full blur-3xl opacity-20"></div>
+//                 <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#FBEFA4] rounded-full blur-3xl opacity-10"></div>
+
+//                 {/* Content */}
+//                 <div className="relative z-10 flex flex-col justify-center px-8 xl:px-10 w-full">
+//                     <div className="text-center">
+//                         <div className="flex justify-center mb-6">
+//                             <div className="w-20 h-20 xl:w-24 xl:h-24 bg-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center border-2 border-[#FBEFA4]/50">
+//                                 <img src={tambolaLogo} alt="Tambola" className="w-12 h-12 xl:w-14 xl:h-14 object-cover rounded-xl" />
+//                             </div>
+//                         </div>
+//                         <h2 className="text-3xl xl:text-4xl 2xl:text-5xl font-bold text-white mb-3">
+//                             Welcome to <span className="text-[#FBEFA4]">Tambola</span>
+//                         </h2>
+//                         <p className="text-white/70 text-sm xl:text-base mb-6">
+//                             Sign in to play and win exciting prizes!
+//                         </p>
+
+//                         {/* Stats Cards */}
+//                         <div className="grid grid-cols-2 gap-1 bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-[#FBEFA4]/20">
+//                             <div className="text-center">
+//                                 <p className="text-[#FBEFA4] text-xl xl:text-2xl font-bold">10K+</p>
+//                                 <p className="text-white/60 text-[10px] xl:text-xs">Winners</p>
+//                             </div>
+//                             <div className="text-center">
+//                                 <p className="text-[#FBEFA4] text-xl xl:text-2xl font-bold">₹1Cr+</p>
+//                                 <p className="text-white/60 text-[10px] xl:text-xs">Prizes</p>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+
+//             {/* RIGHT PANEL - Login Form */}
+//             <div className="flex-1 flex items-center justify-center px-4 sm:px-6 py-6 sm:py-8 md:py-10 min-h-screen">
+//                 <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg">
+
+//                     {/* Mobile Logo */}
+//                     <div className="lg:hidden flex justify-center mb-6">
+//                         <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 border-[#FBEFA4]/50">
+//                             <img src={tambolaLogo} alt="Tambola" className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-xl" />
+//                         </div>
+//                     </div>
+
+//                     {/* Header */}
+//                     <div className="text-center mb-5 sm:mb-6">
+//                         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+//                             Sign In
+//                         </h2>
+//                         <p className="text-white/70 mt-1 sm:mt-2 text-xs sm:text-sm">
+//                             Enter your mobile number to continue
+//                         </p>
+//                     </div>
+
+//                     {/* Login Form Card - White with Yellow Border */}
+//                     <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 border-2 border-[#FBEFA4]/30">
+
+//                         {/* Error Message */}
+//                         {error && (
+//                             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs sm:text-sm flex items-center gap-2">
+//                                 <span>⚠️</span> {error}
+//                             </div>
+//                         )}
+
+//                         {/* Phone Number Field */}
+//                         <div className="mb-4">
+//                             <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
+//                                 Phone Number <span className="text-red-500">*</span>
+//                             </label>
+//                             <div className="relative">
+//                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">📱</span>
+//                                 <input
+//                                     type="tel"
+//                                     value={formData.phone}
+//                                     onChange={handlePhoneChange}
+//                                     placeholder="Enter 10-digit number"
+//                                     maxLength="10"
+//                                     disabled={otpSent}
+//                                     className={`w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 transition-all outline-none text-sm sm:text-base text-gray-800 ${otpSent
+//                                         ? 'bg-gray-100 border-gray-200 cursor-not-allowed'
+//                                         : 'border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20'
+//                                         }`}
+//                                 />
+//                             </div>
+//                             <p className="text-gray-400 text-[10px] sm:text-xs mt-1 ml-1">
+//                                 We'll send OTP to this number
+//                             </p>
+//                         </div>
+
+//                         {/* OTP Field */}
+//                         {otpSent && (
+//                             <div className="mb-4">
+//                                 <label className="block text-gray-700 font-medium mb-1.5 sm:mb-2 text-xs sm:text-sm">
+//                                     Enter OTP <span className="text-red-500">*</span>
+//                                 </label>
+//                                 <div className="relative">
+//                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔐</span>
+//                                     <input
+//                                         type="text"
+//                                         value={formData.otp}
+//                                         onChange={handleOTPChange}
+//                                         placeholder="Enter 4-digit OTP"
+//                                         maxLength="4"
+//                                         className="w-full pl-11 pr-4 py-3 sm:py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#004296] focus:ring-2 focus:ring-[#004296]/20 outline-none transition-all text-sm sm:text-base text-gray-800"
+//                                     />
+//                                 </div>
+//                                 <div className="flex justify-between mt-1">
+//                                     <p className="text-gray-400 text-[10px] sm:text-xs ml-1">
+//                                         OTP sent to +91 {formData.phone}
+//                                     </p>
+//                                     <button
+//                                         type="button"
+//                                         onClick={() => {
+//                                             setOtpSent(false);
+//                                             setFormData({ ...formData, otp: "" });
+//                                             setOtpSessionId("");
+//                                         }}
+//                                         className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium"
+//                                     >
+//                                         Change
+//                                     </button>
+//                                 </div>
+//                                 <p className="text-right mt-1">
+//                                     <button
+//                                         type="button"
+//                                         onClick={handleResendOTP}
+//                                         disabled={loading}
+//                                         className="text-[#004296] text-[10px] sm:text-xs hover:underline font-medium disabled:opacity-50"
+//                                     >
+//                                         Resend OTP
+//                                     </button>
+//                                 </p>
+//                             </div>
+//                         )}
+
+//                         {/* Action Button */}
+//                         {!otpSent ? (
+//                             <button
+//                                 type="button"
+//                                 onClick={handleSendOTP}
+//                                 disabled={loading}
+//                                 className="w-full py-3 sm:py-3.5 rounded-xl font-bold text-[#004296] bg-[#FBEFA4] hover:bg-[#FFE44D] shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50"
+//                             >
+//                                 {loading ? "Sending..." : "Send OTP →"}
+//                             </button>
+//                         ) : (
+//                             <button
+//                                 type="button"
+//                                 onClick={handleVerifyOTP}
+//                                 disabled={loading}
+//                                 className="w-full py-3 sm:py-3.5 rounded-xl font-bold text-white bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base disabled:opacity-50"
+//                             >
+//                                 {loading ? "Verifying..." : "Verify & Login →"}
+//                             </button>
+//                         )} 
+
+//                         {/* Divider */}
+//                         <div className="relative my-5">
+//                             <div className="absolute inset-0 flex items-center">
+//                                 <div className="w-full border-t border-gray-200"></div>
+//                             </div>
+//                             <div className="relative flex justify-center text-xs">
+//                                 <span className="bg-white px-3 text-gray-400">or</span>
+//                             </div>
+//                         </div> 
+ 
+//                         {/* Register Link */}
+//                         <p className="text-center text-gray-500 text-xs sm:text-sm mt-5">
+//                             Don't have an account?{" "}
+//                             <Link to={ROUTES.REGISTER} className="text-[#004296] font-semibold hover:underline">
+//                                 Create Account
+//                             </Link>
+//                         </p>
+//                     </div>
+
+//                     {/* Testimonial Videos */}
+//                     <div className="mt-6 sm:mt-8">
+//                         <h3 className="text-center text-white/90 font-semibold mb-3 sm:mb-4 flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
+//                             <span>🎥</span> What Players Say <span>🎥</span>
+//                         </h3>
+//                         {loadingVideos ? (
+//                             // Loading skeleton
+//                             <div className="grid grid-cols-3 gap-2 sm:gap-3">
+//                                 {[1, 2, 3].map((i) => (
+//                                     <div key={i} className="animate-pulse">
+//                                         <div className="bg-white/10 rounded-lg h-14 sm:h-16 md:h-20"></div>
+//                                         <div className="bg-white/10 h-3 rounded mt-1 w-3/4 mx-auto"></div>
+//                                     </div>
+//                                 ))}
+//                             </div>
+//                         ) : testimonials.length > 0 ? (
+//                             <div className="grid grid-cols-3 gap-2 sm:gap-3">
+//                                 {testimonials.slice(0, 3).map((video) => (
+//                                     <div
+//                                         key={video.id}
+//                                         onClick={() => window.open(video.videoUrl, '_blank')}
+//                                         className="cursor-pointer group"
+//                                     >
+//                                         <div className="relative rounded-lg overflow-hidden shadow-lg group-hover:shadow-xl transition-all border-2 border-white/20 group-hover:border-[#FBEFA4]/50">
+//                                             <img
+//                                                 src={video.thumbnail}
+//                                                 alt={video.title}
+//                                                 className="w-full h-14 sm:h-16 md:h-20 object-cover group-hover:scale-105 transition-transform duration-300"
+//                                                 onError={(e) => {
+//                                                     e.target.onerror = null;
+//                                                     e.target.src = "https://img.youtube.com/vi/default/mqdefault.jpg";
+//                                                 }}
+//                                             />
+//                                             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 flex items-center justify-center">
+//                                                 <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-[#FBEFA4] rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+//                                                     <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-[#004296] ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+//                                                         <path d="M8 5v14l11-7L8 5z" />
+//                                                     </svg>
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                         <p className="text-[9px] sm:text-[10px] md:text-xs text-white/80 mt-1 truncate text-center group-hover:text-[#FBEFA4] transition-colors">
+//                                             {video.title}
+//                                         </p>
+//                                     </div>
+//                                 ))}
+//                             </div>
+//                         ) : (
+//                             <p className="text-center text-white/50 text-xs">No testimonials available</p>
+//                         )}
+//                     </div>
+
+
+//                     {/* Terms Links */}
+//                     <div className="text-center mt-4 sm:mt-5 text-[10px] sm:text-xs text-white/50">
+//                         By continuing, you agree to our{" "}
+//                         <Link to={ROUTES.RULES} className="text-[#FBEFA4] hover:underline font-medium">Terms</Link>{" "}
+//                         and{" "}
+//                         <Link to={ROUTES.PRIVACYPOLICY} className="text-[#FBEFA4] hover:underline font-medium">Privacy Policy</Link>
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default Login;
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import tambolaLogo from "../../assets/tambolaGame.jpeg";
-import { sendOTP, verifyOTP, LoginUser } from "../../services/login_user"; // Import your API functions
+import { sendOTP, verifyOTP, LoginUser } from "../../services/login_user";
 import { getFeedbackVideos } from "../../services/user_feedback_services";
 import { ROUTES } from "../../routes/routes";
-
 
 const Login = () => {
     const navigate = useNavigate();
@@ -15,6 +507,7 @@ const Login = () => {
     const [otpSent, setOtpSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [otpSessionId, setOtpSessionId] = useState("");
 
     // Feedback videos state
     const [testimonials, setTestimonials] = useState([]);
@@ -32,9 +525,8 @@ const Login = () => {
             console.log("Feedback Videos Response:", response);
 
             if (response.data && response.data.length > 0) {
-                // Map API data to testimonials format
                 const formattedVideos = response.data
-                    .filter(video => video.status === 'active') // Only show active videos
+                    .filter(video => video.status === 'active')
                     .map(video => ({
                         id: video.id,
                         title: video.name || video.description || "Player Feedback",
@@ -47,7 +539,6 @@ const Login = () => {
             }
         } catch (error) {
             console.error("Error fetching feedback videos:", error);
-            
         } finally {
             setLoadingVideos(false);
         }
@@ -58,19 +549,13 @@ const Login = () => {
         if (!url) return "https://img.youtube.com/vi/default/mqdefault.jpg";
 
         try {
-            // Handle different YouTube URL formats
             let videoId = "";
 
-            // Format: https://www.youtube.com/watch?v=VIDEO_ID
             if (url.includes("watch?v=")) {
                 videoId = url.split("watch?v=")[1]?.split("&")[0];
-            }
-            // Format: https://youtu.be/VIDEO_ID
-            else if (url.includes("youtu.be/")) {
+            } else if (url.includes("youtu.be/")) {
                 videoId = url.split("youtu.be/")[1]?.split("?")[0];
-            }
-            // Format: https://www.youtube.com/embed/VIDEO_ID
-            else if (url.includes("embed/")) {
+            } else if (url.includes("embed/")) {
                 videoId = url.split("embed/")[1]?.split("?")[0];
             }
 
@@ -78,13 +563,11 @@ const Login = () => {
                 return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
             }
 
-            // If thumbnail URL is provided in API
             return url;
         } catch (e) {
             return "https://img.youtube.com/vi/default/mqdefault.jpg";
         }
     };
-
 
     const handlePhoneChange = (e) => {
         const value = e.target.value;
@@ -113,13 +596,16 @@ const Login = () => {
         setError("");
 
         try {
-            // Call your send OTP API
             const response = await sendOTP(formData.phone);
             console.log("Send OTP Response:", response);
 
-            // Check if API call was successful (status 200)
+            // Check if API call was successful
             if (response.status === 200 || response.success) {
                 setOtpSent(true);
+                // Store session ID if returned
+                if (response.data?.session_id) {
+                    setOtpSessionId(response.data.session_id);
+                }
                 alert(`OTP sent successfully to ${formData.phone}`);
             } else {
                 throw new Error(response.message || "Failed to send OTP");
@@ -147,47 +633,90 @@ const Login = () => {
             const verifyResponse = await verifyOTP(formData.phone, formData.otp);
             console.log("Verify OTP Response:", verifyResponse);
 
-            // Check if OTP verification was successful (status 200)
+            // Check if OTP verification was successful
             if (verifyResponse.status === 200 || verifyResponse.success) {
                 console.log("OTP verified successfully");
 
                 // Step 2b: Now call login API
-                const loginResponse = await LoginUser(formData.phone);
-                console.log("Login Response:", loginResponse);
+                try {
+                    const loginResponse = await LoginUser(formData.phone);
+                    console.log("Login Response:", loginResponse);
 
-                // Check if login was successful (status 200)
-                if (loginResponse.status === 200 || loginResponse.success) {
+                    // Check if login was successful
+                    if (loginResponse.status === 200 || loginResponse.success) {
+                        // Extract data from login response
+                        const { data } = loginResponse;
+                        const authToken = data?.token;
+                        const userData = {
+                            user_id: data?.user_id,
+                            first_name: data?.first_name,
+                            last_name: data?.last_name,
+                            phone: data?.phone,
+                            email: data?.email,
+                            credits: data?.credits,
+                            referral_code: data?.referral_code
+                        };
 
-                    // Extract data from login response (adjust based on your API structure)
-                    const { data } = loginResponse;
-                    const authToken = data?.token;
-                    const userData = {
-                        user_id: data?.user_id,
-                        first_name: data?.first_name,
-                        last_name: data?.last_name,
-                        phone: data?.phone,
-                        email: data?.email,
-                        credits: data?.credits,
-                        referral_code: data?.referral_code
-                    };
+                        // Save user data to localStorage
+                        saveUserData(authToken, userData);
 
-                    // Save user data to localStorage
-                    saveUserData(authToken, userData);
+                        // Success message
+                        alert(`Welcome back ${userData.first_name || 'User'}! Login successful!`);
 
-                    // Success message
-                    alert(`Welcome back ${userData.first_name || 'User'}! Login successful!`);
-
-                    // Navigate to home page
-                    navigate("/");
-                    window.location.reload(); // Refresh to update navbar
-                } else {
-                    throw new Error(loginResponse.message || "Login failed");
+                        // Navigate to home page
+                        navigate("/");
+                        window.location.reload();
+                    } else {
+                        // Check if user not found (status 404 or specific error message)
+                        if (loginResponse.status === 404 || 
+                            loginResponse.message?.toLowerCase().includes('not found') ||
+                            loginResponse.message?.toLowerCase().includes('user not found')) {
+                            
+                            // User not found - redirect to register page with phone number
+                            console.log("User not found, redirecting to register...");
+                            alert("User not found. Please create an account.");
+                            navigate(ROUTES.REGISTER, { 
+                                state: { phone: formData.phone } // Pass phone number to register page
+                            });
+                            return;
+                        }
+                        throw new Error(loginResponse.message || "Login failed");
+                    }
+                } catch (loginError) {
+                    // Handle login API errors (including user not found)
+                    console.error("Login API Error:", loginError);
+                    
+                    // Check if error indicates user not found
+                    if (loginError.response?.status === 404 ||
+                        loginError.message?.toLowerCase().includes('not found') ||
+                        loginError.message?.toLowerCase().includes('user not found')) {
+                        
+                        // Redirect to register
+                        alert("User not found. Please create an account.");
+                        navigate(ROUTES.REGISTER, { 
+                            state: { phone: formData.phone }
+                        });
+                        return;
+                    }
+                    
+                    throw loginError;
                 }
             } else {
                 throw new Error(verifyResponse.message || "Invalid OTP. Please try again.");
             }
         } catch (err) {
             console.error("Verification/Login Error:", err);
+            
+            // Final check for user not found error
+            if (err.message?.toLowerCase().includes('not found') ||
+                err.message?.toLowerCase().includes('user not found')) {
+                alert("User not found. Please create an account.");
+                navigate(ROUTES.REGISTER, { 
+                    state: { phone: formData.phone }
+                });
+                return;
+            }
+            
             setError(err.message || "Verification failed. Please try again.");
         } finally {
             setLoading(false);
@@ -206,7 +735,6 @@ const Login = () => {
             localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("loginTime", new Date().toISOString());
 
-            // Save individual fields for quick access
             if (userData?.user_id) localStorage.setItem("userId", userData.user_id.toString());
             if (userData?.phone) localStorage.setItem("userPhone", userData.phone);
             if (userData?.credits) localStorage.setItem("credits", userData.credits.toString());
@@ -224,6 +752,10 @@ const Login = () => {
             const response = await sendOTP(formData.phone);
             if (response.status === 200 || response.success) {
                 alert("OTP resent successfully!");
+                // Update session ID if provided
+                if (response.data?.session_id) {
+                    setOtpSessionId(response.data.session_id);
+                }
             } else {
                 throw new Error(response.message || "Failed to resend OTP");
             }
@@ -238,7 +770,7 @@ const Login = () => {
     return (
         <div className="min-h-screen bg-linear-to-br from-[#004296] via-[#002b66] to-[#001433] flex flex-col lg:flex-row">
 
-            {/* LEFT PANEL - Image with Content (Same as Register) */}
+            {/* LEFT PANEL - Image with Content */}
             <div className="hidden lg:flex lg:w-112.5 xl:w-137.5 2xl:w-150 h-screen sticky top-0 overflow-hidden">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
@@ -303,7 +835,7 @@ const Login = () => {
                         </p>
                     </div>
 
-                    {/* Login Form Card - White with Yellow Border */}
+                    {/* Login Form Card */}
                     <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 md:p-8 border-2 border-[#FBEFA4]/30">
 
                         {/* Error Message */}
@@ -418,7 +950,7 @@ const Login = () => {
                         {/* Register Link */}
                         <p className="text-center text-gray-500 text-xs sm:text-sm mt-5">
                             Don't have an account?{" "}
-                            <Link to="/register_screen" className="text-[#004296] font-semibold hover:underline">
+                            <Link to={ROUTES.REGISTER} className="text-[#004296] font-semibold hover:underline">
                                 Create Account
                             </Link>
                         </p>
@@ -430,7 +962,6 @@ const Login = () => {
                             <span>🎥</span> What Players Say <span>🎥</span>
                         </h3>
                         {loadingVideos ? (
-                            // Loading skeleton
                             <div className="grid grid-cols-3 gap-2 sm:gap-3">
                                 {[1, 2, 3].map((i) => (
                                     <div key={i} className="animate-pulse">
@@ -475,7 +1006,6 @@ const Login = () => {
                             <p className="text-center text-white/50 text-xs">No testimonials available</p>
                         )}
                     </div>
-
 
                     {/* Terms Links */}
                     <div className="text-center mt-4 sm:mt-5 text-[10px] sm:text-xs text-white/50">

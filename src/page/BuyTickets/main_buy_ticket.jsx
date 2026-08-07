@@ -1,4 +1,3 @@
-// // export default GamePage;
 // import React, { useState } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
 // import { ROUTES } from "../../routes/routes";
@@ -43,7 +42,7 @@
 
 //   // Custom Hooks
 //   const { isMobile, isTablet } = useScreenSize();
-//   const { tickets, loadingTickets, ticketError } = useTickets(gameId);
+//   const { tickets, loadingTickets, ticketError, apiPricing } = useTickets(gameId);
 //   const { agents, loadingAgents, selectedAgentData, setSelectedAgentData, fetchAndSelectAgent } = useAgents();
 
 //   // Modal Hooks
@@ -70,7 +69,7 @@
 //   // Calculate cart total with API pricing
 //   const calculateCartTotal = () => {
 //     if (!cartModal.cart || cartModal.cart.length === 0) return 0;
-    
+
 //     // Use the same grouping logic as TicketGroupDisplay
 //     const ticketNumbers = cartModal.cart.map(ticket => {
 //       const num = parseInt(ticket.ticketNumber || ticket.id || '0');
@@ -87,15 +86,15 @@
 //     });
 
 //     let total = 0;
-    
+
 //     Object.values(rows).forEach(rowTickets => {
 //       rowTickets.sort((a, b) => a.number - b.number);
-      
+
 //       let i = 0;
 //       while (i < rowTickets.length) {
 //         // Check for full sheet
-//         if (i + 5 < rowTickets.length && 
-//             rowTickets[i + 5].number - rowTickets[i].number === 5) {
+//         if (i + 5 < rowTickets.length &&
+//           rowTickets[i + 5].number - rowTickets[i].number === 5) {
 //           let isConsecutive = true;
 //           for (let j = 1; j < 6; j++) {
 //             if (rowTickets[i + j].number - rowTickets[i + j - 1].number !== 1) {
@@ -103,7 +102,7 @@
 //               break;
 //             }
 //           }
-          
+
 //           if (isConsecutive) {
 //             // Add full sheet price from API
 //             total += parseFloat(apiPricing?.full_sheet_price) || 0;
@@ -111,10 +110,10 @@
 //             continue;
 //           }
 //         }
-        
+
 //         // Check for half sheet
-//         if (i + 2 < rowTickets.length && 
-//             rowTickets[i + 2].number - rowTickets[i].number === 2) {
+//         if (i + 2 < rowTickets.length &&
+//           rowTickets[i + 2].number - rowTickets[i].number === 2) {
 //           let isConsecutive = true;
 //           for (let j = 1; j < 3; j++) {
 //             if (rowTickets[i + j].number - rowTickets[i + j - 1].number !== 1) {
@@ -122,7 +121,7 @@
 //               break;
 //             }
 //           }
-          
+
 //           if (isConsecutive) {
 //             // Add half sheet price from API
 //             total += parseFloat(apiPricing?.half_sheet_price) || 0;
@@ -130,13 +129,13 @@
 //             continue;
 //           }
 //         }
-        
+
 //         // Random - add individual ticket price
 //         total += rowTickets[i].ticket.price || 100;
 //         i++;
 //       }
 //     });
-    
+
 //     return total;
 //   };
 
@@ -158,10 +157,9 @@
 //     }
 
 //     if (checkoutModal.selectedPaymentMethod === 'direct') {
-
 //       // Call wallet payment with cart items
 //       checkoutModal.handleWalletPayment(
-//         cartModal.getCartTotal(),
+//         calculateCartTotal(), // Use the new pricing calculation
 //         cartModal.cart,
 //         () => {
 //           cartModal.clearCart();
@@ -175,7 +173,6 @@
 //     }
 //   };
 
-//   // Handle agent contact
 //   // Handle agent contact - FIXED with agent_id
 //   const handleAgentContact = (agent) => {
 //     console.log("Selected Agent:", agent);
@@ -213,13 +210,12 @@
 //       cartModal.cart,
 //       () => {
 //         // Send WhatsApp message after successful booking
-//         agentModal.handleContactViaWhatsApp(agent, cartModal.cart, cartModal.getCartTotal());
+//         agentModal.handleContactViaWhatsApp(agent, cartModal.cart, calculateCartTotal());
 //         cartModal.clearCart();
 //         agentModal.closeAgentModal();
 //       }
 //     );
 //   };
-
 
 //   // Handle booking submit
 //   const handleBookingSubmit = async (e) => {
@@ -299,6 +295,7 @@
 //               paginatedTickets={paginatedTickets}
 //               cart={cartModal.cart}
 //               addToCart={cartModal.addToCart}
+//               apiPricing={apiPricing}
 //             />
 
 //             <Pagination
@@ -314,35 +311,35 @@
 //       </div>
 
 //       {/* Modals */}
+
 //       <CartModal
 //         showCart={cartModal.showCart}
 //         setShowCart={cartModal.setShowCart}
 //         cart={cartModal.cart}
 //         removeFromCart={cartModal.removeFromCart}
-//         getCartTotal={cartModal.getCartTotal}
+//         getCartTotal={calculateCartTotal}
 //         getCartCount={cartModal.getCartCount}
 //         clearCart={cartModal.clearCart}
 //         handleProceedToCheckout={handleProceedToCheckout}
+//         apiPricing={apiPricing}  // Add this line
 //       />
-
 
 //       <CheckoutModal
 //         showCheckout={checkoutModal.showCheckout}
 //         setShowCheckout={checkoutModal.setShowCheckout}
 //         selectedPaymentMethod={checkoutModal.selectedPaymentMethod}
 //         setSelectedPaymentMethod={checkoutModal.selectPaymentMethod}
-//         getCartTotal={cartModal.getCartTotal}
+//         getCartTotal={calculateCartTotal}
 //         getCartCount={cartModal.getCartCount}
 //         handleDirectPayment={() => checkoutModal.handleDirectPayment(
-//           cartModal.getCartTotal(),
+//           calculateCartTotal(),
 //           cartModal.cart,
-//           () => cartModal.clearCart()  
+//           () => cartModal.clearCart()
 //         )}
 //         handleAgentPayment={() => checkoutModal.handleAgentPayment(
 //           () => agentModal.openAgentModal('agent')
 //         )}
 //       />
-
 
 //       <AgentModal
 //         showAgentModal={agentModal.showAgentModal}
@@ -359,7 +356,7 @@
 //         handleContactAgent={handleAgentContact}
 //         handleCallAgent={agentModal.handleCallAgent}
 //         cart={cartModal.cart}
-//         getCartTotal={cartModal.getCartTotal}
+//         getCartTotal={calculateCartTotal}
 //         setSelectedAgentData={setSelectedAgentData}
 //       />
 
@@ -384,7 +381,6 @@
 //   );
 // };
 
-// export default GamePage;
 // export default GamePage;
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -430,7 +426,15 @@ const GamePage = () => {
 
   // Custom Hooks
   const { isMobile, isTablet } = useScreenSize();
-  const { tickets, loadingTickets, ticketError, apiPricing } = useTickets(gameId);
+  const { 
+    tickets, 
+    loadingTickets, 
+    ticketError, 
+    apiPricing, 
+    refetchTickets,
+    updateTicketStatus,
+    removeTickets 
+  } = useTickets(gameId);
   const { agents, loadingAgents, selectedAgentData, setSelectedAgentData, fetchAndSelectAgent } = useAgents();
 
   // Modal Hooks
@@ -451,14 +455,12 @@ const GamePage = () => {
     getPageNumbers
   } = usePagination(tickets, search);
 
-  // Calculate available tickets
   const availableTickets = tickets.length;
 
   // Calculate cart total with API pricing
   const calculateCartTotal = () => {
     if (!cartModal.cart || cartModal.cart.length === 0) return 0;
     
-    // Use the same grouping logic as TicketGroupDisplay
     const ticketNumbers = cartModal.cart.map(ticket => {
       const num = parseInt(ticket.ticketNumber || ticket.id || '0');
       return { ticket, number: num };
@@ -480,7 +482,6 @@ const GamePage = () => {
       
       let i = 0;
       while (i < rowTickets.length) {
-        // Check for full sheet
         if (i + 5 < rowTickets.length && 
             rowTickets[i + 5].number - rowTickets[i].number === 5) {
           let isConsecutive = true;
@@ -492,14 +493,12 @@ const GamePage = () => {
           }
           
           if (isConsecutive) {
-            // Add full sheet price from API
             total += parseFloat(apiPricing?.full_sheet_price) || 0;
             i += 6;
             continue;
           }
         }
         
-        // Check for half sheet
         if (i + 2 < rowTickets.length && 
             rowTickets[i + 2].number - rowTickets[i].number === 2) {
           let isConsecutive = true;
@@ -511,20 +510,34 @@ const GamePage = () => {
           }
           
           if (isConsecutive) {
-            // Add half sheet price from API
             total += parseFloat(apiPricing?.half_sheet_price) || 0;
             i += 3;
             continue;
           }
         }
         
-        // Random - add individual ticket price
         total += rowTickets[i].ticket.price || 100;
         i++;
       }
     });
     
     return total;
+  };
+
+  // Handle add to cart with optimistic update
+  const handleAddToCart = (ticket) => {
+    if (cartModal.cart.some(item => item.id === ticket.id)) {
+      return;
+    }
+    
+    cartModal.addToCart(ticket);
+    updateTicketStatus([ticket.id], 'reserved');
+  };
+
+  // Handle remove from cart with optimistic update
+  const handleRemoveFromCart = (ticketId) => {
+    cartModal.removeFromCart(ticketId);
+    updateTicketStatus([ticketId], 'available');
   };
 
   // Handle proceed to checkout
@@ -537,7 +550,7 @@ const GamePage = () => {
     checkoutModal.openCheckout();
   };
 
-  // Handle checkout payment
+  // Handle checkout payment with immediate update
   const handleCheckoutPayment = () => {
     if (!checkoutModal.selectedPaymentMethod) {
       alert("Please select a payment method");
@@ -545,13 +558,15 @@ const GamePage = () => {
     }
 
     if (checkoutModal.selectedPaymentMethod === 'direct') {
-      // Call wallet payment with cart items
+      const ticketIds = cartModal.cart.map(item => item.id);
+      
       checkoutModal.handleWalletPayment(
-        calculateCartTotal(), // Use the new pricing calculation
+        calculateCartTotal(),
         cartModal.cart,
         () => {
+          updateTicketStatus(ticketIds, 'booked');
           cartModal.clearCart();
-          // Optionally refresh tickets
+          setTimeout(() => refetchTickets(), 500);
         }
       );
     } else if (checkoutModal.selectedPaymentMethod === 'agent') {
@@ -561,21 +576,17 @@ const GamePage = () => {
     }
   };
 
-  // Handle agent contact - FIXED with agent_id
+  // Handle agent contact with immediate update
   const handleAgentContact = (agent) => {
     console.log("Selected Agent:", agent);
     console.log("Cart items:", cartModal.cart);
 
-    // Check cart
     if (cartModal.cart.length === 0) {
       alert("Your cart is empty!");
       return;
     }
 
-    // Get agent ID - agent list mein agent_id aa raha hai
     const agentId = agent?.agent_id;
-
-    console.log("Agent ID:", agentId);
 
     if (!agentId) {
       console.error("Agent ID not found. Agent object:", agent);
@@ -583,24 +594,19 @@ const GamePage = () => {
       return;
     }
 
-    // Get ticket IDs from cart
     const ticketIds = cartModal.cart.map(item => {
-      // Check what field contains ticket ID in your cart
       return item.id || item.ticket_id || item.ticketId;
     });
 
-    console.log("Ticket IDs:", ticketIds);
-    console.log("Game ID:", gameId);
-
-    // Process agent booking through API
     checkoutModal.handleAgentBooking(
       agentId,
       cartModal.cart,
       () => {
-        // Send WhatsApp message after successful booking
+        updateTicketStatus(ticketIds, 'booked');
         agentModal.handleContactViaWhatsApp(agent, cartModal.cart, calculateCartTotal());
         cartModal.clearCart();
         agentModal.closeAgentModal();
+        setTimeout(() => refetchTickets(), 500);
       }
     );
   };
@@ -682,7 +688,7 @@ const GamePage = () => {
             <TicketsGrid
               paginatedTickets={paginatedTickets}
               cart={cartModal.cart}
-              addToCart={cartModal.addToCart}
+              addToCart={handleAddToCart}
               apiPricing={apiPricing}
             />
 
@@ -699,18 +705,17 @@ const GamePage = () => {
       </div>
 
       {/* Modals */}
-   
       <CartModal
-  showCart={cartModal.showCart}
-  setShowCart={cartModal.setShowCart}
-  cart={cartModal.cart}
-  removeFromCart={cartModal.removeFromCart}
-  getCartTotal={calculateCartTotal}
-  getCartCount={cartModal.getCartCount}
-  clearCart={cartModal.clearCart}
-  handleProceedToCheckout={handleProceedToCheckout}
-  apiPricing={apiPricing}  // Add this line
-/>
+        showCart={cartModal.showCart}
+        setShowCart={cartModal.setShowCart}
+        cart={cartModal.cart}
+        removeFromCart={handleRemoveFromCart}
+        getCartTotal={calculateCartTotal}
+        getCartCount={cartModal.getCartCount}
+        clearCart={cartModal.clearCart}
+        handleProceedToCheckout={handleProceedToCheckout}
+        apiPricing={apiPricing}
+      />
 
       <CheckoutModal
         showCheckout={checkoutModal.showCheckout}
@@ -722,7 +727,12 @@ const GamePage = () => {
         handleDirectPayment={() => checkoutModal.handleDirectPayment(
           calculateCartTotal(),
           cartModal.cart,
-          () => cartModal.clearCart()  
+          () => {
+            const ticketIds = cartModal.cart.map(item => item.id);
+            updateTicketStatus(ticketIds, 'booked');
+            cartModal.clearCart();
+            setTimeout(() => refetchTickets(), 500);
+          }
         )}
         handleAgentPayment={() => checkoutModal.handleAgentPayment(
           () => agentModal.openAgentModal('agent')
