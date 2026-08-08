@@ -758,6 +758,7 @@ const GamePage = () => {
         setSelectedAgentData={setSelectedAgentData}
       />
 
+    
       <BookingModal
         showBookingModal={bookingModal.showBookingModal}
         setShowBookingModal={bookingModal.setShowBookingModal}
