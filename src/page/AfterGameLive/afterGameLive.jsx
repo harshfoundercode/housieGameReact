@@ -808,7 +808,7 @@ const AfterGameLive = () => {
               {connected ? "LIVE" : "OFFLINE"}
             </span>
           </div>
-
+ 
         </div>
 
         {/* ── Game components ── */}

@@ -18,7 +18,7 @@ const HomeScreenWebsite = () => {
                 <Navbar />
             </section>
 
-
+ 
             {/* {BANNER} */}
             <Banner />
 

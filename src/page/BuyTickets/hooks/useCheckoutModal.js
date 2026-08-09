@@ -174,19 +174,47 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { bookTicket } from '../../../services/booking_services';
+import { getUserProfile } from '../../../services/profile_services';
 
 export const useCheckoutModal = (gameId) => {
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [walletLoading, setWalletLoading] = useState(false);
+  const [walletError, setWalletError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
 
 
 
+  const fetchWalletBalance = useCallback(async () => {
+    setWalletLoading(true);
+    setWalletError(null);
+
+    try {
+      const response = await getUserProfile();
+      if (response.success && response.data) {
+        const balance = Number(response.data.total_balance || response.data.wallet_balance || 0);
+        setWalletBalance(balance);
+        return balance;
+      }
+
+      throw new Error('Failed to load wallet balance');
+    } catch (error) {
+      console.error('Wallet balance error:', error);
+      setWalletBalance(0);
+      setWalletError(error.message || 'Unable to load balance');
+      return 0;
+    } finally {
+      setWalletLoading(false);
+    }
+  }, []);
+
   const openCheckout = useCallback(() => {
     setShowCheckout(true);
     setSelectedPaymentMethod(null);
-  }, []);
+    fetchWalletBalance();
+  }, [fetchWalletBalance]);
 
   const closeCheckout = useCallback(() => {
     setShowCheckout(false);
@@ -204,6 +232,12 @@ export const useCheckoutModal = (gameId) => {
     setIsProcessing(true);
     
     try {
+      const currentBalance = await fetchWalletBalance();
+      if (currentBalance < cartTotal) {
+        alert(`❌ Insufficient Balance!\n\nWallet Balance: ₹${currentBalance}\nCart Total: ₹${cartTotal}\n\nPlease add funds or choose agent payment.`);
+        return;
+      }
+
       const ticketIds = cartItems.map(item => {
         const ticketId = item.id || item.ticket_id || item.ticketId || item.number;
         return Number(ticketId);
@@ -217,17 +251,13 @@ export const useCheckoutModal = (gameId) => {
 
       console.log("Direct Booking Data:", bookingData);
 
-      // For now, just show message that payment gateway will open
-      // Later: Integrate Razorpay/PhonePe/Paytm
-      alert(`🔄 Payment Gateway\n\nPayment gateway will be integrated soon!\n\nBooking Details:\nGame ID: ${gameId}\nTickets: ${ticketIds.join(', ')}\nAmount: ₹${cartTotal}\n\nYour booking will be processed once payment is complete.`);
-      
-      // Temporary: Direct API call without payment
       const response = await bookTicket(bookingData);
 
       if (response.success) {
         setBookingSuccess(true);
         alert(`✅ Booking Successful!\n\nYour tickets ${ticketIds.join(', ')} have been booked!\nAmount: ₹${cartTotal}\n\nThank you for your purchase! 🎉`);
         
+        await fetchWalletBalance();
         closeCheckout();
         if (onSuccess) onSuccess();
       } else {
@@ -239,7 +269,7 @@ export const useCheckoutModal = (gameId) => {
     } finally {
       setIsProcessing(false);
     }
-  }, [gameId, closeCheckout]);
+  }, [gameId, closeCheckout, fetchWalletBalance]);
 
 
   // Agent Payment - Opens agent modal
@@ -248,6 +278,12 @@ export const useCheckoutModal = (gameId) => {
     setSelectedPaymentMethod('agent');
     if (onProceed) onProceed();
   }, []);
+
+  useEffect(() => {
+    if (showCheckout && selectedPaymentMethod === 'direct') {
+      fetchWalletBalance();
+    }
+  }, [showCheckout, selectedPaymentMethod, fetchWalletBalance]);
 
   
   const handleAgentBooking = useCallback(async (agentId, cartItems, onSuccess) => {
@@ -328,6 +364,9 @@ export const useCheckoutModal = (gameId) => {
     setShowCheckout,
     selectedPaymentMethod,
     setSelectedPaymentMethod,
+    walletBalance,
+    walletLoading,
+    walletError,
     isProcessing,
     bookingSuccess,
     
@@ -335,6 +374,7 @@ export const useCheckoutModal = (gameId) => {
     openCheckout,
     closeCheckout,
     selectPaymentMethod,
+    fetchWalletBalance,
     handleDirectPayment,    // Direct booking with payment gateway
     handleAgentPayment,      // Agent payment flow
     handleAgentBooking,      // Agent booking API
