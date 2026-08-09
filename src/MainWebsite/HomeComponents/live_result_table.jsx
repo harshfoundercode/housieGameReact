@@ -72,26 +72,23 @@ const LiveResultTable = ({ limit = 4, showViewAll = true }) => {
     // Get live games based on API status
     const liveGames = allGames.filter(game => game.status === 'live');
     
+    const GAME_STATE_KEY = "tambola_current_game_state";
+
     // Navigate to game based on API status
     const handleGameClick = (game) => {
+        const state = {
+            gameId: game.id,
+            gameName: game.gameName,
+            gameDate: game.gameDate,
+            roundTime: game.roundTime
+        };
+
+        sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(state));
+
         if (game.status === 'live' || game.status === 'completed' || game.status === 'ended') {
-            navigate(ROUTES.AFTERGAME, {
-                state: {
-                    gameId: game.id,
-                    gameName: game.gameName,
-                    gameDate: game.gameDate,
-                    roundTime: game.roundTime
-                }
-            });
+            navigate(ROUTES.AFTERGAME, { state });
         } else {
-            navigate(ROUTES.GAME, {
-                state: {
-                    gameId: game.id,
-                    gameName: game.gameName,
-                    gameDate: game.gameDate,
-                    roundTime: game.roundTime
-                }
-            });
+            navigate(ROUTES.GAME, { state });
         }
     };
 

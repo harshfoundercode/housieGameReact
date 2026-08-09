@@ -444,19 +444,42 @@ function dedupeWinners(winners) {
 /* ─────────────────────────────────────────────────────────────
    COMPONENT
 ───────────────────────────────────────────────────────────── */
+const GAME_STATE_KEY = "tambola_current_game_state";
+
 const AfterGameLive = () => {
   const navigate  = useNavigate();
   const location  = useLocation();
 
-  const gameData  = location.state;
+  const savedGameState = (() => {
+    try {
+      return JSON.parse(sessionStorage.getItem(GAME_STATE_KEY));
+    } catch {
+      return null;
+    }
+  })();
+
+  const routeState = location.state && Object.keys(location.state).length ? location.state : savedGameState;
+  const gameData = routeState || {};
   const gameId    = gameData?.gameId;
   const gameName  = gameData?.gameName;
   const gameDate  = gameData?.gameDate;
   const roundTime = gameData?.roundTime;
 
   useEffect(() => {
+    if (routeState?.gameId) {
+      sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(routeState));
+    }
+  }, [routeState]);
+
+  useEffect(() => {
     if (!gameId) navigate(ROUTES.HOME);
   }, [gameId, navigate]);
+
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem(GAME_STATE_KEY);
+    };
+  }, []);
 
   /* ── Core state ── */
   const [connected,      setConnected]      = useState(false);

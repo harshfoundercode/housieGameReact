@@ -187,28 +187,71 @@ export const useCheckoutModal = (gameId) => {
 
 
 
-  const fetchWalletBalance = useCallback(async () => {
-    setWalletLoading(true);
-    setWalletError(null);
+ const fetchWalletBalance = useCallback(async () => {
+  setWalletLoading(true);
+  setWalletError(null);
 
-    try {
-      const response = await getUserProfile();
-      if (response.success && response.data) {
-        const balance = Number(response.data.total_balance || response.data.wallet_balance || 0);
-        setWalletBalance(balance);
-        return balance;
-      }
-
-      throw new Error('Failed to load wallet balance');
-    } catch (error) {
-      console.error('Wallet balance error:', error);
-      setWalletBalance(0);
-      setWalletError(error.message || 'Unable to load balance');
-      return 0;
-    } finally {
-      setWalletLoading(false);
+  try {
+    const response = await getUserProfile();
+    console.log("Full API Response:", response); // Debug log
+    
+    // The balance is at response.data.data.main_balance
+    if (response.data && response.data.data) {
+      const balance = Number(
+        response.data.data.main_balance || 
+        response.data.data.total_balance || 
+        0
+      );
+      console.log('fetchWalletBalance: api balance ->', balance);
+      console.log('All balances:', {
+        main: response.data.data.main_balance,
+        winning: response.data.data.winning_balance,
+        total: response.data.data.total_balance
+      });
+      setWalletBalance(balance);
+      return balance;
     }
-  }, []);
+
+    // If API didn't return expected payload, try to use cached profile from localStorage
+    console.warn('fetchWalletBalance: API returned no data, falling back to cached profile');
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const cached = JSON.parse(userStr);
+        const cachedBalance = Number(cached.total_balance ?? cached.main_balance ?? cached.wallet_balance ?? 0);
+        console.log('fetchWalletBalance: cached balance ->', cachedBalance);
+        setWalletBalance(cachedBalance);
+        return cachedBalance;
+      } catch (e) {
+        console.warn('fetchWalletBalance: failed to parse cached user', e);
+      }
+    }
+
+    throw new Error('Failed to load wallet balance');
+  } catch (error) {
+    console.error('Wallet balance error:', error);
+    // Try cached profile as a final fallback
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const cached = JSON.parse(userStr);
+        const cachedBalance = Number(cached.total_balance ?? cached.main_balance ?? cached.wallet_balance ?? 0);
+        console.log('fetchWalletBalance: fallback cached balance ->', cachedBalance);
+        setWalletBalance(cachedBalance);
+        setWalletError(error.message || 'Unable to load balance (used cached)');
+        return cachedBalance;
+      } catch (e) {
+        console.warn('fetchWalletBalance: failed to parse cached user in catch', e);
+      }
+    }
+
+    setWalletBalance(0);
+    setWalletError(error.message || 'Unable to load balance');
+    return 0;
+  } finally {
+    setWalletLoading(false);
+  }
+}, []);
 
   const openCheckout = useCallback(() => {
     setShowCheckout(true);
@@ -229,6 +272,11 @@ export const useCheckoutModal = (gameId) => {
   // Wallet Payment - Direct Booking
 // Direct Payment - Payment Gateway (Future Implementation)
   const handleDirectPayment = useCallback(async (cartTotal, cartItems, onSuccess) => {
+    if (!cartItems || cartItems.length === 0) {
+      alert("Your cart is empty. Please add tickets before paying.");
+      return;
+    }
+
     setIsProcessing(true);
     
     try {

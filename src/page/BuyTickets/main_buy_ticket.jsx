@@ -27,15 +27,39 @@ import AgentModal from "./components/AgentModal";
 import BookingModal from "./components/BookingModal";
 import FloatingActionButtons from "./components/FloatingAction";
 
+const GAME_STATE_KEY = "tambola_current_game_state";
+
 const GamePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { gameId, gameName, gameDate, roundTime } = location.state || {
+
+  const savedGameState = (() => {
+    try {
+      return JSON.parse(sessionStorage.getItem(GAME_STATE_KEY));
+    } catch {
+      return null;
+    }
+  })();
+
+  const routeState = location.state && Object.keys(location.state).length ? location.state : savedGameState;
+  const { gameId, gameName, gameDate, roundTime } = routeState || {
     gameId: null,
     gameName: "Game",
     gameDate: null,
     roundTime: null
   };
+
+  useEffect(() => {
+    if (location.state && location.state.gameId) {
+      sessionStorage.setItem(GAME_STATE_KEY, JSON.stringify(location.state));
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (!gameId) {
+      navigate(ROUTES.HOME);
+    }
+  }, [gameId, navigate]);
 
   // UI States
   const [search, setSearch] = useState("");
@@ -98,7 +122,7 @@ const GamePage = () => {
           };
 
           if (active) {
-            navigate(ROUTES.AFTERGAME, { state: redirectState });
+            navigate(ROUTES.AFTERGAME, { replace: true, state: redirectState });
           }
         }
       } catch (error) {
@@ -381,20 +405,18 @@ const GamePage = () => {
         setSelectedPaymentMethod={checkoutModal.selectPaymentMethod}
         getCartTotal={calculateCartTotal}
         getCartCount={cartModal.getCartCount}
+        cartItems={cartModal.cart}
         walletBalance={checkoutModal.walletBalance}
         walletLoading={checkoutModal.walletLoading}
         walletError={checkoutModal.walletError}
         fetchWalletBalance={checkoutModal.fetchWalletBalance}
-        handleDirectPayment={() => checkoutModal.handleDirectPayment(
-          calculateCartTotal(),
-          cartModal.cart,
-          () => {
-            const ticketIds = cartModal.cart.map(item => item.id);
-            updateTicketStatus(ticketIds, 'booked');
-            cartModal.clearCart();
-            setTimeout(() => refetchTickets(), 500);
-          }
-        )}
+        handleDirectPayment={checkoutModal.handleDirectPayment}
+        onDirectPaymentSuccess={() => {
+          const ticketIds = cartModal.cart.map(item => item.id);
+          if (ticketIds.length) updateTicketStatus(ticketIds, 'booked');
+          cartModal.clearCart();
+          setTimeout(() => refetchTickets(), 500);
+        }}
         handleAgentPayment={() => checkoutModal.handleAgentPayment(
           () => agentModal.openAgentModal('agent')
         )}

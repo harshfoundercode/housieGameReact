@@ -7,11 +7,13 @@ const CheckoutModal = ({
   setSelectedPaymentMethod, 
   getCartTotal, 
   getCartCount, 
+  cartItems,
   walletBalance,
   walletLoading,
   walletError,
   fetchWalletBalance,
   handleDirectPayment,
+  onDirectPaymentSuccess,
   handleAgentPayment 
 }) => {
   if (!showCheckout) return null;
@@ -128,7 +130,7 @@ const CheckoutModal = ({
           <button
             onClick={() => {
               if (selectedPaymentMethod === 'direct') {
-                handleDirectPayment(getCartTotal(), null, () => {});
+                handleDirectPayment(getCartTotal(), cartItems, onDirectPaymentSuccess || (() => {}));
               } else if (selectedPaymentMethod === 'agent') {
                 handleAgentPayment();
               }
