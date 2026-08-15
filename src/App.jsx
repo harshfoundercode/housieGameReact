@@ -11,7 +11,7 @@ import { setServerErrorHandler, setLoggingOut } from "./ServerError/api_intercep
 
 
 // Lazy loaded — sirf jab zarurat ho
-const Home             = lazy(() => import("./page/Home"));
+// const Home             = lazy(() => import("./page/Home"));
 const GamePage         = lazy(() => import("./page/BuyTickets/main_buy_ticket"));
 const AfterGameLive    = lazy(() => import("./page/AfterGameLive/afterGameLive"));
 const MyTickets        = lazy(() => import("./MainWebsite/ProfileDrawerComponents/my_tickets"));
@@ -136,9 +136,9 @@ const AppContent = () => {
            <Route path={ROUTES.ALL_LIVE_RESULTS}  element={<AllLiveResults />} />
 
            {/* 🔒 Protected routes */}
-          <Route path={ROUTES.HOME} element={
+          {/* <Route path={ROUTES.HOME} element={
             <ProtectedRoute><Home /></ProtectedRoute>
-             }/>
+             }/> */}
           <Route path={ROUTES.GAME} element={
             <ProtectedRoute><GamePage /></ProtectedRoute>
           }/>

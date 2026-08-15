@@ -198,8 +198,7 @@ export const useCheckoutModal = (gameId) => {
     // The balance is at response.data.data.main_balance
     if (response.data && response.data.data) {
       const balance = Number(
-        response.data.data.main_balance || 
-        response.data.data.total_balance || 
+        response.data.data.total_balance ||
         0
       );
       console.log('fetchWalletBalance: api balance ->', balance);
@@ -218,7 +217,7 @@ export const useCheckoutModal = (gameId) => {
     if (userStr) {
       try {
         const cached = JSON.parse(userStr);
-        const cachedBalance = Number(cached.total_balance ?? cached.main_balance ?? cached.wallet_balance ?? 0);
+        const cachedBalance = Number(cached.total_balance ?? 0);
         console.log('fetchWalletBalance: cached balance ->', cachedBalance);
         setWalletBalance(cachedBalance);
         return cachedBalance;
@@ -235,7 +234,7 @@ export const useCheckoutModal = (gameId) => {
     if (userStr) {
       try {
         const cached = JSON.parse(userStr);
-        const cachedBalance = Number(cached.total_balance ?? cached.main_balance ?? cached.wallet_balance ?? 0);
+        const cachedBalance = Number(cached.total_balance ?? 0);
         console.log('fetchWalletBalance: fallback cached balance ->', cachedBalance);
         setWalletBalance(cachedBalance);
         setWalletError(error.message || 'Unable to load balance (used cached)');

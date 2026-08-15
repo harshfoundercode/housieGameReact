@@ -11,7 +11,6 @@ const GameHeader = ({ gameName, getCartCount, setShowCart }) => {
       {/* LOGO HEADER */}
       <div className="flex justify-center mb-2">
         <div
-          onClick={() => navigate(ROUTES.HOME)}
           className="relative group cursor-pointer"
         >
           <div className="absolute inset-0 bg-[#FBEFA4] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
