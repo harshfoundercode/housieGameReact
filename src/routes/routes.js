@@ -2,6 +2,7 @@ export const ROUTES = {
     // Website Routes
     HomeScreenWebsite: "/",
     ReferalGuide: "/referal_guide",
+    ReferralRedirect: "/ref/:referralCode", // ✅ New Route
     Credits: "/add_money",
     MyTickets: "/my_tickets",
     KYC: "/kyc",

@@ -1,7 +1,7 @@
 import { BrowserRouter , Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect, useCallback } from "react";
 import { ROUTES } from "./routes/routes";
-import ProtectedRoute from "./routes/protected_routes";
+import ProtectedRoute from "./routes/protected_routes"; 
 
 // Public pages — eagerly loaded (fast first paint)
 import HomeScreenWebsite from "./MainWebsite/homescreen_website";
@@ -9,6 +9,7 @@ import Login from "./MainWebsite/AuthComponents/login_screen";
 import Register from "./MainWebsite/AuthComponents/register_screen";
 import { setServerErrorHandler, setLoggingOut } from "./ServerError/api_interceptor"; // Import this
 
+import ReferralRedirect from "../src/services/referral_redirect";
 
 // Lazy loaded — sirf jab zarurat ho
 // const Home             = lazy(() => import("./page/Home"));
@@ -123,6 +124,8 @@ const AppContent = () => {
     <>
       <Suspense fallback={<PageLoader />}>
          <Routes>
+           {/* ✅ Referral Route - IMPORTANT: Pehle aana chahiye */}
+          <Route path={ROUTES.ReferralRedirect} element={<ReferralRedirect />} />
            {/* ✅ Public routes */}
            <Route path={ROUTES.HomeScreenWebsite} element={<HomeScreenWebsite />} />
            <Route path={ROUTES.LOGIN}             element={<Login />} />

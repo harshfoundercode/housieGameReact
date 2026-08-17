@@ -1106,7 +1106,7 @@ export default function TambolaLive({
               fontFamily: "'Cinzel',serif", color: "#FBEFA4",
               letterSpacing: 4,
             }}>
-              FULL HOUSE
+             GAME IS COMPLETED
             </div>
             <div style={{ fontSize: 9, color: "rgba(255,255,255,0.28)", letterSpacing: 4 }}>ALL 90 NUMBERS CALLED</div>
             <button

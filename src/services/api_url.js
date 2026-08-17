@@ -2,11 +2,12 @@ import { Upload } from "lucide-react";
 
 const API_BASE_URL = 'https://api.luckyfunda.com';
 
-
 const API_CONFIG_URL = `${API_BASE_URL}/api/`;
 
 
 export const API = {
+     
+    REFERAL_URL: 'https://luckyfunda.com',
     UPLOAD_URL: `${API_BASE_URL}`,
 
     REGISTER_URL: `${API_CONFIG_URL}auth/user_register`,
@@ -56,6 +57,7 @@ export const API = {
     WITHDRAWAL_HISTORY_URL: `${API_CONFIG_URL}wallet/withdraw-history`,
 
     REFER_AND_EARN_URL: `${API_CONFIG_URL}auth/referral-data`,
+    PROFILE_EDIT: `${API_CONFIG_URL}user/edit-profile`,
 
 
     ///Socket Url
