@@ -6,12 +6,23 @@ export const useCartModal = () => {
 
   const addToCart = useCallback((ticket) => {
     setCart(prev => {
+      // Check if ticket already exists in cart
       const existingTicket = prev.find(item => item.id === ticket.id);
       if (existingTicket) {
-        alert(`Ticket #${ticket.id} is already in your cart!`);
+        const ticketNumber = ticket.ticketNumber || ticket.ticket_number || ticket.id;
+        alert(`Ticket #${ticketNumber} is already in your cart!`);
         return prev;
       }
-      return [...prev, { ...ticket, quantity: 1 }];
+      
+      // Add ticket with necessary fields
+      return [...prev, { 
+        ...ticket, 
+        quantity: 1,
+        // Ensure required fields exist
+        ticketNumber: ticket.ticketNumber || ticket.ticket_number || ticket.id,
+        ticket_name: ticket.ticket_name || ticket.ticketName || ticket.name || `T-${ticket.id}`,
+        ticket_amount: ticket.ticket_amount || ticket.amount || ticket.price || 100
+      }];
     });
   }, []);
 
@@ -20,7 +31,11 @@ export const useCartModal = () => {
   }, []);
 
   const getCartTotal = useCallback(() => {
-    return cart.reduce((total, item) => total + (item.price || 100), 0);
+    return cart.reduce((total, item) => {
+      // Use ticket_amount if available, otherwise fallback to price
+      const amount = item.ticket_amount || item.amount || item.price || 100;
+      return total + parseFloat(amount);
+    }, 0);
   }, [cart]);
 
   const getCartCount = useCallback(() => {

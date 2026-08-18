@@ -6,7 +6,7 @@ import { getUserProfile } from "../../services/profile_services";
 
 const ReferAndEarn = () => {
     const navigate = useNavigate();
-    const [referralCode, setReferralCode] = useState("");
+    const [referralCode, setReferralCode] = useState(""); 
     const [usersRewardAmount, setUsersRewardAmount] = useState("");
     const [usersRewardCountText, setUsersRewardCountText] = useState("");
     const [isLoading, setIsLoading] = useState(true);

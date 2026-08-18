@@ -1,177 +1,3 @@
-// import { useState, useCallback , useEffect } from 'react';
-// import { bookTicket, getWalletBalance } from '../../../services/booking_services';
-
-// export const useCheckoutModal = () => {
-//   const [showCheckout, setShowCheckout] = useState(false);
-//   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-//   const [walletBalance, setWalletBalance] = useState(0);
-//   const [isProcessing, setIsProcessing] = useState(false);
-//   const [bookingSuccess, setBookingSuccess] = useState(false);
-
-//    // Fetch wallet balance
-//   useEffect(() => {
-//     fetchWalletBalance();
-//   }, []);
-
-//   const fetchWalletBalance = async () => {
-//     try {
-//       const response = await getWalletBalance();
-//       if (response.success && response.data) {
-//         setWalletBalance(response.data.total_balance || 0);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching wallet balance:", error);
-//     }
-//   };
-
-//   const openCheckout = useCallback(() => {
-//     setShowCheckout(true);
-//     setSelectedPaymentMethod(null);
-//     fetchWalletBalance(); // Refresh balance
-//   }, []);
-
-//   const closeCheckout = useCallback(() => {
-//     setShowCheckout(false);
-//     setSelectedPaymentMethod(null);
-//     setIsProcessing(false);
-//   }, []);
-
-//   const selectPaymentMethod = useCallback((methodId) => {
-//     setSelectedPaymentMethod(methodId);
-//   }, []);
-
-//     // Wallet Payment - Direct Booking
-//   const handleWalletPayment = useCallback(async (cartTotal, cartItems, onSuccess) => {
-//     if (walletBalance < cartTotal) {
-//       alert(`❌ Insufficient Balance!\n\nWallet Balance: ₹${walletBalance}\nCart Total: ₹${cartTotal}\n\nPlease add funds or choose agent payment.`);
-//       return;
-//     }
-
-//     setIsProcessing(true);
-    
-//     try {
-//       // Extract ticket IDs from cart
-//       const ticketIds = cartItems.map(item => item.id || item.ticket_id);
-      
-//       const bookingData = {
-//         game_id: gameId,
-//         type: "direct",
-//         ticket_ids: ticketIds
-//       };
-
-//       console.log("Booking Data (Direct):", bookingData);
-
-//       const response = await bookTicket(bookingData);
-
-//       if (response.success) {
-//         setBookingSuccess(true);
-//         alert(`✅ Payment Successful!\n\nAmount Deducted: ₹${cartTotal}\nRemaining Balance: ₹${walletBalance - cartTotal}\n\nYour tickets have been booked successfully!\n\nThank you for your purchase! 🎉`);
-        
-//         // Refresh wallet balance
-//         fetchWalletBalance();
-        
-//         closeCheckout();
-//         if (onSuccess) onSuccess();
-//       } else {
-//         throw new Error(response.message || 'Booking failed');
-//       }
-//     } catch (error) {
-//       console.error("Booking error:", error);
-//       alert(`❌ Booking Failed!\n\n${error.message}\n\nPlease try again or contact support.`);
-//     } finally {
-//       setIsProcessing(false);
-//     }
-//   }, [walletBalance, gameId, closeCheckout, fetchWalletBalance]);
-
-
-//   const handleAgentPayment = useCallback((onProceed) => {
-//     setShowCheckout(false);
-//     setSelectedPaymentMethod('agent');
-//     if (onProceed) onProceed();
-//   }, []);
-
-//   // Agent Booking - Called after agent selection
-//   const handleAgentBooking = useCallback(async (agentId, cartItems, onSuccess) => {
-//     setIsProcessing(true);
-    
-//     try {
-//       const ticketIds = cartItems.map(item => item.id || item.ticket_id);
-      
-//       const bookingData = {
-//         game_id: gameId,
-//         agent_id: agentId,
-//         type: "agent",
-//         ticket_ids: ticketIds
-//       };
-
-//       console.log("Booking Data (Agent):", bookingData);
-
-//       const response = await bookTicket(bookingData);
-
-//       if (response.success) {
-//         setBookingSuccess(true);
-//         alert(`✅ Booking Request Sent!\n\nThe agent will process your booking shortly.\n\nThank you for your patience! 🎉`);
-        
-//         closeCheckout();
-//         if (onSuccess) onSuccess();
-//       } else {
-//         throw new Error(response.message || 'Agent booking failed');
-//       }
-//     } catch (error) {
-//       console.error("Agent booking error:", error);
-//       alert(`❌ Booking Failed!\n\n${error.message}\n\nPlease try again or contact support.`);
-//     } finally {
-//       setIsProcessing(false);
-//     }
-//   }, [gameId, closeCheckout]);
-
-//   return {
-//     showCheckout,
-//     setShowCheckout,
-//     selectedPaymentMethod,
-//     setSelectedPaymentMethod,
-//     walletBalance,
-//     isProcessing,
-//     bookingSuccess,
-//     openCheckout,
-//     closeCheckout,
-//     selectPaymentMethod,
-//     handleWalletPayment,
-//     handleAgentPayment,
-//     handleAgentBooking,
-//     fetchWalletBalance
-//   };
-// };
-
-//   const validateAndProcessPayment = useCallback((cartTotal, cartCount) => {
-//     if (!selectedPaymentMethod) {
-//       alert("Please select a payment method");
-//       return false;
-//     }
-
-//     if (cartCount === 0) {
-//       alert("Your cart is empty!");
-//       return false;
-//     }
-
-//     return true;
-//   }, [selectedPaymentMethod]);
-
-//   return {
-//     showCheckout,
-//     setShowCheckout,
-//     selectedPaymentMethod,
-//     setSelectedPaymentMethod,
-//     walletBalance,
-//     isProcessing,
-//     openCheckout,
-//     closeCheckout,
-//     selectPaymentMethod,
-//     handleWalletPayment,
-//     handleAgentPayment,
-//     validateAndProcessPayment
-//   };
-
 import { useState, useCallback, useEffect } from 'react';
 import { bookTicket } from '../../../services/booking_services';
 import { getUserProfile } from '../../../services/profile_services';
@@ -185,72 +11,62 @@ export const useCheckoutModal = (gameId) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
 
+  const fetchWalletBalance = useCallback(async () => {
+    setWalletLoading(true);
+    setWalletError(null);
 
-
- const fetchWalletBalance = useCallback(async () => {
-  setWalletLoading(true);
-  setWalletError(null);
-
-  try {
-    const response = await getUserProfile();
-    console.log("Full API Response:", response); // Debug log
-    
-    // The balance is at response.data.data.main_balance
-    if (response.data && response.data.data) {
-      const balance = Number(
-        response.data.data.total_balance ||
-        0
-      );
-      console.log('fetchWalletBalance: api balance ->', balance);
-      console.log('All balances:', {
-        main: response.data.data.main_balance,
-        winning: response.data.data.winning_balance,
-        total: response.data.data.total_balance
-      });
-      setWalletBalance(balance);
-      return balance;
-    }
-
-    // If API didn't return expected payload, try to use cached profile from localStorage
-    console.warn('fetchWalletBalance: API returned no data, falling back to cached profile');
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        const cached = JSON.parse(userStr);
-        const cachedBalance = Number(cached.total_balance ?? 0);
-        console.log('fetchWalletBalance: cached balance ->', cachedBalance);
-        setWalletBalance(cachedBalance);
-        return cachedBalance;
-      } catch (e) {
-        console.warn('fetchWalletBalance: failed to parse cached user', e);
+    try {
+      const response = await getUserProfile();
+      console.log("Full API Response:", response);
+      
+      if (response.data && response.data.data) {
+        const balance = Number(
+          response.data.data.total_balance ||
+          0
+        );
+        console.log('fetchWalletBalance: api balance ->', balance);
+        setWalletBalance(balance);
+        return balance;
       }
-    }
 
-    throw new Error('Failed to load wallet balance');
-  } catch (error) {
-    console.error('Wallet balance error:', error);
-    // Try cached profile as a final fallback
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        const cached = JSON.parse(userStr);
-        const cachedBalance = Number(cached.total_balance ?? 0);
-        console.log('fetchWalletBalance: fallback cached balance ->', cachedBalance);
-        setWalletBalance(cachedBalance);
-        setWalletError(error.message || 'Unable to load balance (used cached)');
-        return cachedBalance;
-      } catch (e) {
-        console.warn('fetchWalletBalance: failed to parse cached user in catch', e);
+      console.warn('fetchWalletBalance: API returned no data, falling back to cached profile');
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const cached = JSON.parse(userStr);
+          const cachedBalance = Number(cached.total_balance ?? 0);
+          console.log('fetchWalletBalance: cached balance ->', cachedBalance);
+          setWalletBalance(cachedBalance);
+          return cachedBalance;
+        } catch (e) {
+          console.warn('fetchWalletBalance: failed to parse cached user', e);
+        }
       }
-    }
 
-    setWalletBalance(0);
-    setWalletError(error.message || 'Unable to load balance');
-    return 0;
-  } finally {
-    setWalletLoading(false);
-  }
-}, []);
+      throw new Error('Failed to load wallet balance');
+    } catch (error) {
+      console.error('Wallet balance error:', error);
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const cached = JSON.parse(userStr);
+          const cachedBalance = Number(cached.total_balance ?? 0);
+          console.log('fetchWalletBalance: fallback cached balance ->', cachedBalance);
+          setWalletBalance(cachedBalance);
+          setWalletError(error.message || 'Unable to load balance (used cached)');
+          return cachedBalance;
+        } catch (e) {
+          console.warn('fetchWalletBalance: failed to parse cached user in catch', e);
+        }
+      }
+
+      setWalletBalance(0);
+      setWalletError(error.message || 'Unable to load balance');
+      return 0;
+    } finally {
+      setWalletLoading(false);
+    }
+  }, []);
 
   const openCheckout = useCallback(() => {
     setShowCheckout(true);
@@ -268,9 +84,127 @@ export const useCheckoutModal = (gameId) => {
     setSelectedPaymentMethod(methodId);
   }, []);
 
-  // Wallet Payment - Direct Booking
-// Direct Payment - Payment Gateway (Future Implementation)
-  const handleDirectPayment = useCallback(async (cartTotal, cartItems, onSuccess) => {
+  // ✅ Fixed: Helper function to prepare ticket_ids with correct pricing
+  const prepareTicketIdsPayload = useCallback((cartItems, apiPricing) => {
+    if (!cartItems || cartItems.length === 0) return [];
+
+    console.log("📊 prepareTicketIdsPayload - cartItems:", cartItems);
+    console.log("📊 prepareTicketIdsPayload - apiPricing:", apiPricing);
+
+    // First, group tickets to determine their type
+    const ticketNumbers = cartItems.map(ticket => {
+      const num = parseInt(ticket.ticketNumber || ticket.ticket_number || ticket.id || '0');
+      return { ticket, number: num };
+    }).sort((a, b) => a.number - b.number);
+
+    const rows = {};
+    ticketNumbers.forEach(({ ticket, number }) => {
+      const rowNumber = Math.ceil(number / 6);
+      if (!rows[rowNumber]) {
+        rows[rowNumber] = [];
+      }
+      rows[rowNumber].push({ ticket, number });
+    });
+
+    const ticketDetails = [];
+
+    Object.values(rows).forEach(rowTickets => {
+      rowTickets.sort((a, b) => a.number - b.number);
+      
+      let i = 0;
+      while (i < rowTickets.length) {
+        // Check for full sheet (6 consecutive)
+        if (i + 5 < rowTickets.length && 
+            rowTickets[i + 5].number - rowTickets[i].number === 5) {
+          let isConsecutive = true;
+          for (let j = 1; j < 6; j++) {
+            if (rowTickets[i + j].number - rowTickets[i + j - 1].number !== 1) {
+              isConsecutive = false;
+              break;
+            }
+          }
+          
+          if (isConsecutive) {
+            const sheetTickets = rowTickets.slice(i, i + 6).map(t => t.ticket);
+            const ticketType = 'fullsheet';
+            // ✅ Get price from apiPricing with fallback
+            const groupPrice = apiPricing?.full_sheet_price || 10;
+            const perTicketPrice = parseFloat(groupPrice);
+            
+            console.log(`📊 Fullsheet - Group Price: ${groupPrice}, Per Ticket: ${perTicketPrice}`);
+            
+            sheetTickets.forEach(ticket => {
+              const ticketId = parseInt(ticket.id || ticket.ticket_id || ticket.ticketId || 0);
+              
+              ticketDetails.push({
+                ticket_id: ticketId,
+                ticket_name: ticketType,
+                ticket_amount: perTicketPrice
+              });
+            });
+            i += 6;
+            continue;
+          }
+        }
+        
+        // Check for half sheet (3 consecutive)
+        if (i + 2 < rowTickets.length && 
+            rowTickets[i + 2].number - rowTickets[i].number === 2) {
+          let isConsecutive = true;
+          for (let j = 1; j < 3; j++) {
+            if (rowTickets[i + j].number - rowTickets[i + j - 1].number !== 1) {
+              isConsecutive = false;
+              break;
+            }
+          }
+          
+          if (isConsecutive) {
+            const sheetTickets = rowTickets.slice(i, i + 3).map(t => t.ticket);
+            const ticketType = 'halfsheet';
+            // ✅ Get price from apiPricing with fallback
+            const groupPrice = apiPricing?.half_sheet_price || 5;
+            const perTicketPrice = parseFloat(groupPrice);
+            
+            console.log(`📊 Halfsheet - Group Price: ${groupPrice}, Per Ticket: ${perTicketPrice}`);
+            
+            sheetTickets.forEach(ticket => {
+              const ticketId = parseInt(ticket.id || ticket.ticket_id || ticket.ticketId || 0);
+              
+              ticketDetails.push({
+                ticket_id: ticketId,
+                ticket_name: ticketType,
+                ticket_amount: perTicketPrice
+              });
+            });
+            i += 3;
+            continue;
+          }
+        }
+        
+        // Random single ticket
+        const ticket = rowTickets[i].ticket;
+        const ticketType = 'random';
+        const ticketId = parseInt(ticket.id || ticket.ticket_id || ticket.ticketId || 0);
+        // ✅ Random ticket price - individual ticket price
+        const ticketPrice = parseFloat(ticket.price || ticket.ticket_amount || 15);
+        
+        console.log(`📊 Random - Ticket Price: ${ticketPrice}`);
+        
+        ticketDetails.push({
+          ticket_id: ticketId,
+          ticket_name: ticketType,
+          ticket_amount: ticketPrice
+        });
+        i++;
+      }
+    });
+
+    console.log("✅ Final Prepared Ticket Details:", JSON.stringify(ticketDetails, null, 2));
+    return ticketDetails;
+  }, []);
+
+  // Direct Payment - Wallet Booking with ticket details
+  const handleDirectPayment = useCallback(async (cartTotal, cartItems, onSuccess, ticketDetails) => {
     if (!cartItems || cartItems.length === 0) {
       alert("Your cart is empty. Please add tickets before paying.");
       return;
@@ -282,27 +216,26 @@ export const useCheckoutModal = (gameId) => {
       const currentBalance = await fetchWalletBalance();
       if (currentBalance < cartTotal) {
         alert(`❌ Insufficient Balance!\n\nWallet Balance: ₹${currentBalance}\nCart Total: ₹${cartTotal}\n\nPlease add funds or choose agent payment.`);
+        setIsProcessing(false);
         return;
       }
 
-      const ticketIds = cartItems.map(item => {
-        const ticketId = item.id || item.ticket_id || item.ticketId || item.number;
-        return Number(ticketId);
-      });
+      const finalTicketDetails = ticketDetails || prepareTicketIdsPayload(cartItems);
       
       const bookingData = {
         game_id: Number(gameId),
         type: "direct",
-        ticket_ids: ticketIds
+        ticket_ids: finalTicketDetails
       };
 
-      console.log("Direct Booking Data:", bookingData);
+      console.log("📤 Direct Booking Data with Ticket Details:", JSON.stringify(bookingData, null, 2));
 
       const response = await bookTicket(bookingData);
 
       if (response.success) {
         setBookingSuccess(true);
-        alert(`✅ Booking Successful!\n\nYour tickets ${ticketIds.join(', ')} have been booked!\nAmount: ₹${cartTotal}\n\nThank you for your purchase! 🎉`);
+        const ticketIds = finalTicketDetails.map(t => t.ticket_id).join(', ');
+        alert(`✅ Booking Successful!\n\nYour tickets (${ticketIds}) have been booked!\nAmount: ₹${cartTotal}\n\nThank you for your purchase! 🎉`);
         
         await fetchWalletBalance();
         closeCheckout();
@@ -311,13 +244,12 @@ export const useCheckoutModal = (gameId) => {
         throw new Error(response.message || 'Booking failed');
       }
     } catch (error) {
-      console.error("Booking error:", error);
+      console.error("❌ Booking error:", error);
       alert(`❌ Booking Failed!\n\n${error.message}\n\nPlease try again or contact support.`);
     } finally {
       setIsProcessing(false);
     }
-  }, [gameId, closeCheckout, fetchWalletBalance]);
-
+  }, [gameId, closeCheckout, fetchWalletBalance, prepareTicketIdsPayload]);
 
   // Agent Payment - Opens agent modal
   const handleAgentPayment = useCallback((onProceed) => {
@@ -332,8 +264,8 @@ export const useCheckoutModal = (gameId) => {
     }
   }, [showCheckout, selectedPaymentMethod, fetchWalletBalance]);
 
-  
-  const handleAgentBooking = useCallback(async (agentId, cartItems, onSuccess) => {
+  // Agent Booking with ticket details
+  const handleAgentBooking = useCallback(async (agentId, cartItems, onSuccess, ticketDetails) => {
     console.log("=== Agent Booking Debug ===");
     console.log("Agent ID:", agentId);
     console.log("Cart Items:", cartItems);
@@ -341,27 +273,24 @@ export const useCheckoutModal = (gameId) => {
     setIsProcessing(true);
     
     try {
-      const ticketIds = cartItems.map(item => {
-        const ticketId = item.id || item.ticket_id || item.ticketId || item.number;
-        console.log(`Cart Item:`, item, `Ticket ID:`, ticketId);
-        return Number(ticketId);
-      });
+      const finalTicketDetails = ticketDetails || prepareTicketIdsPayload(cartItems);
       
       const bookingData = {
         game_id: Number(gameId),
         agent_id: Number(agentId),
         type: "agent",
-        ticket_ids: ticketIds
+        ticket_ids: finalTicketDetails
       };
 
-      console.log("Agent Booking Data:", bookingData);
+      console.log("📤 Agent Booking Data with Ticket Details:", JSON.stringify(bookingData, null, 2));
 
       const response = await bookTicket(bookingData);
       console.log("Booking Response:", response);
 
       if (response.success) {
         setBookingSuccess(true);
-        alert(`✅ Booking Request Sent!\n\nYour tickets: ${ticketIds.join(', ')}\n\nThe agent will process your booking shortly.\n\nThank you for your patience! 🎉`);
+        const ticketIds = finalTicketDetails.map(t => t.ticket_id).join(', ');
+        alert(`✅ Booking Request Sent!\n\nYour tickets: ${ticketIds}\n\nThe agent will process your booking shortly.\n\nThank you for your patience! 🎉`);
         
         closeCheckout();
         if (onSuccess) onSuccess();
@@ -369,40 +298,16 @@ export const useCheckoutModal = (gameId) => {
         throw new Error(response.message || 'Agent booking failed');
       }
     } catch (error) {
-      console.error("Agent booking error:", error);
+      console.error("❌ Agent booking error:", error);
       alert(`❌ Booking Failed!\n\n${error.message}\n\nPlease try again or contact support.`);
     } finally {
       setIsProcessing(false);
     }
-  }, [gameId, closeCheckout]);
+  }, [gameId, closeCheckout, prepareTicketIdsPayload]);
 
   // Future: Payment gateway integration
   const initializePaymentGateway = useCallback((amount, tickets, onSuccess) => {
-    // TODO: Integrate payment gateway (Razorpay/PhonePe/Paytm)
     console.log("Payment Gateway - To be integrated");
-    
-    // Example Razorpay integration (future):
-    /*
-    const options = {
-      key: 'rzp_test_XXXXXXXXXX',
-      amount: amount * 100,
-      currency: 'INR',
-      name: 'Your App Name',
-      description: `Booking ${tickets.length} tickets`,
-      handler: function(response) {
-        handleDirectPayment(amount, tickets, onSuccess);
-      },
-      prefill: {
-        name: 'User Name',
-        email: 'user@example.com',
-      },
-      theme: {
-        color: '#004296'
-      }
-    };
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-    */
   }, []);
 
   return {
@@ -422,9 +327,10 @@ export const useCheckoutModal = (gameId) => {
     closeCheckout,
     selectPaymentMethod,
     fetchWalletBalance,
-    handleDirectPayment,    // Direct booking with payment gateway
-    handleAgentPayment,      // Agent payment flow
-    handleAgentBooking,      // Agent booking API
-    initializePaymentGateway // Future payment gateway
+    handleDirectPayment,
+    handleAgentPayment,
+    handleAgentBooking,
+    initializePaymentGateway,
+    prepareTicketIdsPayload
   };
 };

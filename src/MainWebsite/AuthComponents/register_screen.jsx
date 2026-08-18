@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
 import tambolaLogo from "../../assets/tambolaGame.jpeg";
 import { ROUTES } from "../../routes/routes";
 import { sendOTP, verifyOTP, registerUser } from "../../services/register_user";
+import { useNavigate, Link, useLocation, useSearchParams } from "react-router-dom";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -207,7 +207,7 @@ const Register = () => {
 
     // Resend OTP
     const handleResendOTP = async () => {
-        setLoading(true);
+        setLoading(true); 
         setError("");
         setSuccessMessage("");
 

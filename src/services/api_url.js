@@ -68,6 +68,8 @@ export const API = {
     BOOKING_ALL_TICKET_SOCKET_URL: `${API_CONFIG_URL}booking/all-tickets/`,
     ROUND_ID_SOCKET_URL: `${API_CONFIG_URL}game/status?round_id=`,
     WINNER_LIST_SOCKET_URL: `${API_CONFIG_URL}game/winners-list?round_id=`,
+    WINNER_LIST_BY_GAME_URL: `${API_CONFIG_URL}game/winners-list?game_id=`,  // ✅ NAYA — game complete hone par isse use karenge
+
 
 
 };

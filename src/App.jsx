@@ -9,7 +9,7 @@ import Login from "./MainWebsite/AuthComponents/login_screen";
 import Register from "./MainWebsite/AuthComponents/register_screen";
 import { setServerErrorHandler, setLoggingOut } from "./ServerError/api_interceptor"; // Import this
 
-import ReferralRedirect from "../src/services/referral_redirect";
+import ReferralRedirect from "../src/services/referral_redirect"; 
 
 // Lazy loaded — sirf jab zarurat ho
 // const Home             = lazy(() => import("./page/Home"));
