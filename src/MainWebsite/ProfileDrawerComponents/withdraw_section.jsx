@@ -92,7 +92,7 @@ const Withdraw = () => {
 
       if (result.success && result.data) {
         // Set wallet balance
-        const balance = parseFloat(result.data.total_balance) || 0;
+        const balance = parseFloat(result.data.winning_balance + result.data.bonus_balance) || 0;
         setWalletBalance(balance);
         
         // ✅ Set dynamic withdrawal settings from profile API
@@ -390,6 +390,9 @@ const Withdraw = () => {
                   <span>💰</span> Available Balance
                 </p>
                 <h2 className="text-3xl md:text-4xl font-bold">₹{walletBalance.toLocaleString()}</h2>
+                <p className="text-white/60 text-xs mt-2">
+                  Winning + Bonus Amount
+                </p>
                 <p className="text-white/60 text-xs mt-2">
                   Min: ₹{withdrawalSettings.minAmount.toLocaleString()} | Max per day: ₹{withdrawalSettings.maxAmount.toLocaleString()}
                 </p>
