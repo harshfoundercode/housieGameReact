@@ -84,7 +84,7 @@ export const useCheckoutModal = (gameId) => {
     setSelectedPaymentMethod(methodId);
   }, []);
 
-  // ✅ Fixed: Helper function to prepare ticket_ids with correct pricing
+  // ✅ Fixed: Helper function to prepare ticket_ids with per ticket pricing
   const prepareTicketIdsPayload = useCallback((cartItems, apiPricing) => {
     if (!cartItems || cartItems.length === 0) return [];
 
@@ -127,9 +127,16 @@ export const useCheckoutModal = (gameId) => {
           if (isConsecutive) {
             const sheetTickets = rowTickets.slice(i, i + 6).map(t => t.ticket);
             const ticketType = 'fullsheet';
-            // ✅ Get price from apiPricing with fallback
-            const groupPrice = apiPricing?.full_sheet_price || 10;
-            const perTicketPrice = parseFloat(groupPrice);
+            // ✅ Group price divided by 6 (per ticket price) - with proper fallback
+            let groupPrice = 0;
+            if (apiPricing && apiPricing.full_sheet_price) {
+              groupPrice = parseFloat(apiPricing.full_sheet_price);
+            } else {
+              // Fallback: try to get price from first ticket in the group
+              const firstTicket = sheetTickets[0];
+              groupPrice = parseFloat(firstTicket?.price || firstTicket?.ticket_amount || 10);
+            }
+            const perTicketPrice = parseFloat((groupPrice / 6).toFixed(2));
             
             console.log(`📊 Fullsheet - Group Price: ${groupPrice}, Per Ticket: ${perTicketPrice}`);
             
@@ -161,9 +168,16 @@ export const useCheckoutModal = (gameId) => {
           if (isConsecutive) {
             const sheetTickets = rowTickets.slice(i, i + 3).map(t => t.ticket);
             const ticketType = 'halfsheet';
-            // ✅ Get price from apiPricing with fallback
-            const groupPrice = apiPricing?.half_sheet_price || 5;
-            const perTicketPrice = parseFloat(groupPrice);
+            // ✅ Group price divided by 3 (per ticket price) - with proper fallback
+            let groupPrice = 0;
+            if (apiPricing && apiPricing.half_sheet_price) {
+              groupPrice = parseFloat(apiPricing.half_sheet_price);
+            } else {
+              // Fallback: try to get price from first ticket in the group
+              const firstTicket = sheetTickets[0];
+              groupPrice = parseFloat(firstTicket?.price || firstTicket?.ticket_amount || 5);
+            }
+            const perTicketPrice = parseFloat((groupPrice / 3).toFixed(2));
             
             console.log(`📊 Halfsheet - Group Price: ${groupPrice}, Per Ticket: ${perTicketPrice}`);
             
@@ -185,15 +199,15 @@ export const useCheckoutModal = (gameId) => {
         const ticket = rowTickets[i].ticket;
         const ticketType = 'random';
         const ticketId = parseInt(ticket.id || ticket.ticket_id || ticket.ticketId || 0);
-        // ✅ Random ticket price - individual ticket price
-        const ticketPrice = parseFloat(ticket.price || ticket.ticket_amount || 15);
+        // ✅ Random ticket price - individual ticket price with proper fallback
+        const perTicketPrice = parseFloat(ticket.price || ticket.ticket_amount || 15);
         
-        console.log(`📊 Random - Ticket Price: ${ticketPrice}`);
+        console.log(`📊 Random - Per Ticket Price: ${perTicketPrice}`);
         
         ticketDetails.push({
           ticket_id: ticketId,
           ticket_name: ticketType,
-          ticket_amount: ticketPrice
+          ticket_amount: perTicketPrice
         });
         i++;
       }
@@ -220,7 +234,8 @@ export const useCheckoutModal = (gameId) => {
         return;
       }
 
-      const finalTicketDetails = ticketDetails || prepareTicketIdsPayload(cartItems);
+      // ✅ Pass apiPricing to prepareTicketIdsPayload
+      const finalTicketDetails = ticketDetails || prepareTicketIdsPayload(cartItems, apiPricing);
       
       const bookingData = {
         game_id: Number(gameId),
@@ -273,7 +288,8 @@ export const useCheckoutModal = (gameId) => {
     setIsProcessing(true);
     
     try {
-      const finalTicketDetails = ticketDetails || prepareTicketIdsPayload(cartItems);
+      // ✅ Pass apiPricing to prepareTicketIdsPayload
+      const finalTicketDetails = ticketDetails || prepareTicketIdsPayload(cartItems, apiPricing);
       
       const bookingData = {
         game_id: Number(gameId),
