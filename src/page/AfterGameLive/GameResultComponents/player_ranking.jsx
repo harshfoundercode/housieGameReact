@@ -276,15 +276,15 @@ const PlayerRanking = ({
   const [selectedTicket,   setSelectedTicket]   = useState(null);
   const [showTicketSearch, setShowTicketSearch] = useState(false);
   const [searchQuery,      setSearchQuery]      = useState("");
-  const [renderKey, setRenderKey] = useState(0);
+  // const [renderKey, setRenderKey] = useState(0);
 
   // Force re-render when winners change
-  useEffect(() => {
-    console.log('🔄 Winners updated:', winners);
-    console.log('📊 Winners count:', winners?.length || 0);
-    // Force re-render to ensure UI updates
-    setRenderKey(prev => prev + 1);
-  }, [winners]);
+  // useEffect(() => {
+  //   console.log('🔄 Winners updated:', winners);
+  //   console.log('📊 Winners count:', winners?.length || 0);
+  //   // Force re-render to ensure UI updates
+  //   setRenderKey(prev => prev + 1);
+  // }, [winners]);
 
   /* ── Live ranking derived from props ── */
   const rankingData = useMemo(() => {
@@ -364,7 +364,8 @@ const PlayerRanking = ({
       `}</style>
 
       {/* ══ PLAYER RANKING ══ */}
-      <div className="w-full max-w-7xl mx-auto mt-8" key={`ranking-${renderKey}`}>
+      {/* <div className="w-full max-w-7xl mx-auto mt-8" key={`ranking-${renderKey}`}> */}
+        <div className="w-full max-w-7xl mx-auto mt-8">
         <div style={{
           background: "rgba(0,66,150,0.35)", backdropFilter: "blur(12px)",
           borderRadius: 28, border: `2px solid rgba(251,239,164,0.22)`,
@@ -516,7 +517,8 @@ const PlayerRanking = ({
       </div>
 
       {/* ══ WINNER LIST ══ */}
-      <div className="w-full max-w-7xl mx-auto mt-6" key={`winners-${renderKey}`}>
+      {/* <div className="w-full max-w-7xl mx-auto mt-6" key={`winners-${renderKey}`}> */}
+        <div className="w-full max-w-7xl mx-auto mt-6">
         <div style={{
           background: "rgba(0,66,150,0.35)", backdropFilter: "blur(12px)",
           borderRadius: 28, border: `2px solid rgba(251,239,164,0.22)`,

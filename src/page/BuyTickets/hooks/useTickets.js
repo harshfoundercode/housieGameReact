@@ -18,11 +18,11 @@
 
 //     setLoadingTickets(true);
 //     setTicketError(null);
-    
+
 //     try {
 //       const response = await getTicketsByGame(gameId);
 //       console.log("Fetched tickets:", response);
-      
+
 //       if (response.success) {
 //         const formattedTickets = formatTickets(response.data.tickets);
 //         setTickets(formattedTickets);
@@ -76,26 +76,33 @@ export const useTickets = (gameId) => {
 
     setLoadingTickets(true);
     setTicketError(null);
-    
+
     try {
       const response = await getTicketsByGame(gameId);
-      console.log("Fetched tickets:", response);
-      
+      console.log("📊 Full API Response:", response);
+
       if (response.success) {
         const formattedTickets = formatTickets(response.data.tickets);
         setTickets(formattedTickets);
-        
+
         if (response.data) {
-          setApiPricing({
-            half_sheet_price: response.data.half_sheet_price || "5.00",
-            full_sheet_price: response.data.full_sheet_price || "10.00"
-          });
+          // ✅ ticket_price top-level pe nahi hai — pehle ticket se lo
+          const derivedTicketPrice = response.data.tickets?.[0]?.price;
+
+          const pricing = {
+            ticket_price: derivedTicketPrice != null ? Number(derivedTicketPrice) : 15,
+            half_sheet_price: response.data.half_sheet_price ?? "5.00",
+            full_sheet_price: response.data.full_sheet_price ?? "10.00"
+          };
+
+          console.log("✅ apiPricing extracted:", pricing);
+          setApiPricing(pricing);
         }
       } else {
         throw new Error(response.message || "Failed to load tickets");
       }
     } catch (error) {
-      console.error("Error fetching tickets:", error);
+      console.error("❌ Error fetching tickets:", error);
       setTicketError(error.message || "Failed to load tickets");
       setTickets([]);
     } finally {
@@ -105,10 +112,10 @@ export const useTickets = (gameId) => {
 
   // Update specific ticket status (optimistic update)
   const updateTicketStatus = useCallback((ticketIds, newStatus) => {
-    setTickets(prevTickets => 
-      prevTickets.map(ticket => 
-        ticketIds.includes(ticket.id) 
-          ? { ...ticket, status: newStatus } 
+    setTickets(prevTickets =>
+      prevTickets.map(ticket =>
+        ticketIds.includes(ticket.id)
+          ? { ...ticket, status: newStatus }
           : ticket
       )
     );
@@ -116,7 +123,7 @@ export const useTickets = (gameId) => {
 
   // Remove tickets from list
   const removeTickets = useCallback((ticketIds) => {
-    setTickets(prevTickets => 
+    setTickets(prevTickets =>
       prevTickets.filter(ticket => !ticketIds.includes(ticket.id))
     );
   }, []);
@@ -128,7 +135,7 @@ export const useTickets = (gameId) => {
   // Auto-refresh every 30 seconds
   useEffect(() => {
     if (!gameId) return;
-    
+
     const intervalId = setInterval(() => {
       fetchTickets();
     }, 30000);
