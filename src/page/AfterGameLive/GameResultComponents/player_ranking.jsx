@@ -11,6 +11,29 @@
 //   3: { bg: "linear-gradient(135deg, #CD7F32 0%, #8B4513 100%)", text: "#fff",    glow: "rgba(205,127,50,0.45)",  medal: "🥉", shadow: "0 0 18px rgba(205,127,50,0.35)" },
 // };
 
+// // ─── API Function to fetch winner tickets ───
+// const fetchWinnerTickets = async (roundId, prizeId, userId, winType) => {
+//   try {
+//     const params = new URLSearchParams({
+//       round_id: roundId,
+//       prize_id: prizeId,
+//       user_id: userId,
+//       win_type: winType
+//     });
+    
+//     const response = await fetch(`https://api.luckyfunda.com/api/game/winner-tickets?${params}`);
+//     const data = await response.json();
+    
+//     if (data.success && data.data && data.data.length > 0) {
+//       return data.data; // Return all tickets
+//     }
+//     return [];
+//   } catch (error) {
+//     console.error("Error fetching winner tickets:", error);
+//     return [];
+//   }
+// };
+
 // /* ─── Ticket grid parser ─── */
 // function parseTicketGrid(ticket) {
 //   if (!ticket || !ticket.ticket_data) {
@@ -75,11 +98,37 @@
 //   );
 // }
 
-// /* ─── Winner / Ticket detail modal ─── */
-// function TicketDetailModal({ ticket, calledNumbers, onClose }) {
-//   if (!ticket) return null;
-//   const { matched, matchedCount, total } = getMatchData(ticket, calledNumbers);
+// /* ─── Updated TicketDetailModal to handle multiple tickets ─── */
+// function TicketDetailModal({ tickets, calledNumbers: propCalledNumbers, onClose }) {
+//   const [loading, setLoading] = useState(false);
+//   const [allTickets, setAllTickets] = useState([]);
+//   const [selectedTicketIndex, setSelectedTicketIndex] = useState(0);
+
+//   // If tickets were passed as a single ticket, convert to array
+//   useEffect(() => {
+//     if (tickets) {
+//       const ticketArray = Array.isArray(tickets) ? tickets : [tickets];
+//       setAllTickets(ticketArray);
+//       setSelectedTicketIndex(0);
+//     }
+//   }, [tickets]);
+
+//   // If no tickets, show nothing
+//   if (!allTickets || allTickets.length === 0) return null;
+
+//   const currentTicket = allTickets[selectedTicketIndex];
+//   const calledNumbers = currentTicket?.called_numbers || propCalledNumbers || [];
+//   const { matched, matchedCount, total } = getMatchData(currentTicket, calledNumbers);
 //   const pct = total > 0 ? Math.round((matchedCount / total) * 100) : 0;
+
+//   // Handle navigation between tickets
+//   const handlePrevTicket = () => {
+//     setSelectedTicketIndex(prev => (prev > 0 ? prev - 1 : allTickets.length - 1));
+//   };
+
+//   const handleNextTicket = () => {
+//     setSelectedTicketIndex(prev => (prev < allTickets.length - 1 ? prev + 1 : 0));
+//   };
 
 //   return (
 //     <div onClick={onClose} style={{
@@ -106,52 +155,110 @@
 //         }}>✕</button>
 
 //         <div style={{ textAlign: "center", marginBottom: 20 }}>
-//           <div style={{ fontSize: 9, letterSpacing: 5, color: `${GOLD}66`, marginBottom: 6, fontFamily: "'Cinzel',serif" }}>TICKET DETAILS</div>
+//           <div style={{ fontSize: 9, letterSpacing: 5, color: `${GOLD}66`, marginBottom: 6, fontFamily: "'Cinzel',serif" }}>
+//             TICKET DETAILS {allTickets.length > 1 ? `(${selectedTicketIndex + 1}/${allTickets.length})` : ""}
+//           </div>
 //           <h2 style={{ fontSize: 20, fontWeight: 900, fontFamily: "'Cinzel',serif", color: GOLD, marginBottom: 4 }}>
-//             {ticket.prize_name || ticket.win_type || `Ticket #${ticket.ticket_number}`}
+//             {currentTicket.prize_name || currentTicket.win_type || `Ticket #${currentTicket.ticket_number}`}
 //           </h2>
 //           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", fontFamily: "'Raleway',sans-serif" }}>
-//             {ticket.user_name || "Unknown Player"} · Ticket #{ticket.ticket_number}
-//             {ticket.amount ? ` · ₹${ticket.amount}` : ""}
+//             {currentTicket.user_name || "Unknown Player"} · Ticket #{currentTicket.ticket_number}
+//             {currentTicket.amount ? ` · ₹${currentTicket.amount}` : ""}
 //           </div>
 //         </div>
 
-//         <div style={{ display: "flex", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
-//           {[
-//             { label: "PLAYER",  val: ticket.user_name || "Unknown" },
-//             { label: "MATCHED", val: `${matchedCount}/${total}` },
-//             { label: "FILLED",  val: `${pct}%` },
-//           ].map(m => (
-//             <div key={m.label} style={{
-//               flex: 1, minWidth: 80, textAlign: "center",
-//               padding: "10px 8px", borderRadius: 12,
-//               background: "rgba(0,20,51,0.5)", border: `1px solid rgba(251,239,164,0.10)`,
-//             }}>
-//               <div style={{ fontSize: 16, fontWeight: 900, fontFamily: "'Cinzel',serif", color: GOLD }}>{m.val}</div>
-//               <div style={{ fontSize: 7, color: "rgba(255,255,255,0.3)", letterSpacing: 2, marginTop: 3 }}>{m.label}</div>
+//         {loading ? (
+//           <div style={{ textAlign: "center", padding: "40px 20px" }}>
+//             <div style={{ fontSize: 30, marginBottom: 12 }}>🔄</div>
+//             <div style={{ fontFamily: "'Cinzel',serif", fontSize: 14, color: GOLD }}>
+//               Loading ticket details...
 //             </div>
-//           ))}
-//         </div>
+//           </div>
+//         ) : (
+//           <>
+//             {/* Navigation for multiple tickets */}
+//             {allTickets.length > 1 && (
+//               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginBottom: 16 }}>
+//                 <button
+//                   onClick={handlePrevTicket}
+//                   style={{
+//                     padding: "6px 16px",
+//                     borderRadius: 20,
+//                     background: `rgba(251,239,164,0.10)`,
+//                     border: `1px solid ${GOLD}40`,
+//                     color: GOLD,
+//                     cursor: "pointer",
+//                     fontSize: 12,
+//                     fontFamily: "'Cinzel',serif",
+//                   }}
+//                 >
+//                   ← Previous
+//                 </button>
+//                 <div style={{
+//                   fontSize: 11,
+//                   color: "rgba(255,255,255,0.4)",
+//                   fontFamily: "'Raleway',sans-serif",
+//                   display: "flex",
+//                   alignItems: "center",
+//                 }}>
+//                   Ticket {selectedTicketIndex + 1} of {allTickets.length}
+//                 </div>
+//                 <button
+//                   onClick={handleNextTicket}
+//                   style={{
+//                     padding: "6px 16px",
+//                     borderRadius: 20,
+//                     background: `rgba(251,239,164,0.10)`,
+//                     border: `1px solid ${GOLD}40`,
+//                     color: GOLD,
+//                     cursor: "pointer",
+//                     fontSize: 12,
+//                     fontFamily: "'Cinzel',serif",
+//                   }}
+//                 >
+//                   Next →
+//                 </button>
+//               </div>
+//             )}
 
-//         <div style={{ background: "rgba(0,8,24,0.5)", borderRadius: 16, padding: 14, border: "1px solid rgba(251,239,164,0.08)" }}>
-//           <div style={{ fontSize: 8, color: `${GOLD}44`, letterSpacing: 3, marginBottom: 10, fontFamily: "'Cinzel',serif", textAlign: "center" }}>TICKET GRID</div>
-//           <TicketMiniGrid ticket={ticket} calledNumbers={calledNumbers} size="lg" />
-//         </div>
-
-//         {matched.length > 0 && (
-//           <div style={{ marginTop: 14, textAlign: "center" }}>
-//             <div style={{ fontSize: 8, color: `${GOLD}55`, letterSpacing: 2, marginBottom: 8, fontFamily: "'Cinzel',serif" }}>MATCHED NUMBERS</div>
-//             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
-//               {matched.map(n => (
-//                 <span key={n} style={{
-//                   padding: "4px 10px", borderRadius: 20,
-//                   background: `linear-gradient(135deg, ${NAVY}, #1a5fb4)`,
-//                   border: `1px solid ${GOLD}55`,
-//                   fontSize: 10, fontWeight: 700, fontFamily: "'Cinzel',serif", color: GOLD,
-//                 }}>{n}</span>
+//             <div style={{ display: "flex", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
+//               {[
+//                 { label: "PLAYER", val: currentTicket.user_name || "Unknown" },
+//                 { label: "MATCHED", val: `${matchedCount}/${total}` },
+//                 { label: "FILLED", val: `${pct}%` },
+//               ].map(m => (
+//                 <div key={m.label} style={{
+//                   flex: 1, minWidth: 80, textAlign: "center",
+//                   padding: "10px 8px", borderRadius: 12,
+//                   background: "rgba(0,20,51,0.5)", border: `1px solid rgba(251,239,164,0.10)`,
+//                 }}>
+//                   <div style={{ fontSize: 16, fontWeight: 900, fontFamily: "'Cinzel',serif", color: GOLD }}>{m.val}</div>
+//                   <div style={{ fontSize: 7, color: "rgba(255,255,255,0.3)", letterSpacing: 2, marginTop: 3 }}>{m.label}</div>
+//                 </div>
 //               ))}
 //             </div>
-//           </div>
+
+//             <div style={{ background: "rgba(0,8,24,0.5)", borderRadius: 16, padding: 14, border: "1px solid rgba(251,239,164,0.08)" }}>
+//               <div style={{ fontSize: 8, color: `${GOLD}44`, letterSpacing: 3, marginBottom: 10, fontFamily: "'Cinzel',serif", textAlign: "center" }}>TICKET GRID</div>
+//               <TicketMiniGrid ticket={currentTicket} calledNumbers={calledNumbers} size="lg" />
+//             </div>
+
+//             {matched.length > 0 && (
+//               <div style={{ marginTop: 14, textAlign: "center" }}>
+//                 <div style={{ fontSize: 8, color: `${GOLD}55`, letterSpacing: 2, marginBottom: 8, fontFamily: "'Cinzel',serif" }}>MATCHED NUMBERS</div>
+//                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
+//                   {matched.map(n => (
+//                     <span key={n} style={{
+//                       padding: "4px 10px", borderRadius: 20,
+//                       background: `linear-gradient(135deg, ${NAVY}, #1a5fb4)`,
+//                       border: `1px solid ${GOLD}55`,
+//                       fontSize: 10, fontWeight: 700, fontFamily: "'Cinzel',serif", color: GOLD,
+//                     }}>{n}</span>
+//                   ))}
+//                 </div>
+//               </div>
+//             )}
+//           </>
 //         )}
 //       </div>
 //     </div>
@@ -334,6 +441,45 @@
 
 //   // Ensure winners is always an array
 //   const winnersArray = Array.isArray(winners) ? winners : [];
+
+//   // ─── Updated handler for winner card click ───
+//   const handleWinnerClick = async (winner) => {
+//     // First, try to find tickets in allTickets
+//     const existingTickets = allTickets.filter(t => t.round_id === winner.round_id);
+    
+//     if (existingTickets.length > 0 && existingTickets.some(t => t.ticket_data)) {
+//       // If we already have tickets with full data, use them
+//       setSelectedTicket(existingTickets);
+//       return;
+//     }
+    
+//     // Otherwise, fetch from API
+//     try {
+//       const winnerTickets = await fetchWinnerTickets(
+//         winner.round_id, 
+//         winner.prize_id, 
+//         winner.user_id || 11, 
+//         winner.win_type || winner.prize_name
+//       );
+      
+//       if (winnerTickets && winnerTickets.length > 0) {
+//         // Merge winner data with fetched tickets
+//         const mergedTickets = winnerTickets.map(ticket => ({
+//           ...winner,
+//           ...ticket,
+//           prize_name: winner.prize_name || winner.win_type,
+//           user_name: winner.user_name || "Winner",
+//         }));
+//         setSelectedTicket(mergedTickets);
+//       } else {
+//         // Fallback: use existing winner data
+//         setSelectedTicket([winner]);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching winner tickets:", error);
+//       setSelectedTicket([winner]);
+//     }
+//   };
 
 //   return (
 //     <>
@@ -565,26 +711,11 @@
 //                 gap: 16,
 //               }}>
 //                 {winnersArray.map((winner, idx) => {
-//                   // Create a ticket object with all necessary data
-//                   const ticketForModal = {
-//                     // Use winner data first
-//                     ...winner,
-//                     // Override with ticket data if found in allTickets
-//                     ...(allTickets.find(t => t.ticket_number === winner.ticket_number) || {}),
-//                     // Ensure we have these required fields
-//                     ticket_number: winner.ticket_number,
-//                     prize_name: winner.prize_name || winner.win_type,
-//                     user_name: winner.user_name || "Winner",
-//                     ticket_id: winner.ticket_id || winner.winner_id,
-//                   };
-                  
 //                   return (
 //                     <div
 //                       key={`winner-${winner.winner_id || winner.ticket_number || idx}-${idx}`}
 //                       className="pr-winner-card"
-//                       onClick={() => {
-//                         setSelectedTicket(ticketForModal);
-//                       }}
+//                       onClick={() => handleWinnerClick(winner)}
 //                       style={{
 //                         borderRadius: 20, overflow: "hidden",
 //                         cursor: "pointer",
@@ -660,7 +791,7 @@
 //       {/* ─── Modals ─── */}
 //       {selectedTicket && !showTicketSearch && (
 //         <TicketDetailModal
-//           ticket={selectedTicket}
+//           tickets={selectedTicket}
 //           calledNumbers={calledNumbers}
 //           onClose={() => setSelectedTicket(null)}
 //         />
@@ -787,15 +918,22 @@ function TicketDetailModal({ tickets, calledNumbers: propCalledNumbers, onClose 
   useEffect(() => {
     if (tickets) {
       const ticketArray = Array.isArray(tickets) ? tickets : [tickets];
-      setAllTickets(ticketArray);
+      // Ensure each ticket has called_numbers
+      const processedTickets = ticketArray.map(ticket => ({
+        ...ticket,
+        // Make sure called_numbers is available
+        called_numbers: ticket.called_numbers || propCalledNumbers || []
+      }));
+      setAllTickets(processedTickets);
       setSelectedTicketIndex(0);
     }
-  }, [tickets]);
+  }, [tickets, propCalledNumbers]);
 
   // If no tickets, show nothing
   if (!allTickets || allTickets.length === 0) return null;
 
   const currentTicket = allTickets[selectedTicketIndex];
+  // Use called_numbers from current ticket or from props
   const calledNumbers = currentTicket?.called_numbers || propCalledNumbers || [];
   const { matched, matchedCount, total } = getMatchData(currentTicket, calledNumbers);
   const pct = total > 0 ? Math.round((matchedCount / total) * 100) : 0;
@@ -957,7 +1095,7 @@ function TicketSearchModal({ tickets, calledNumbers, onClose }) {
     : tickets;
 
   if (selected) {
-    return <TicketDetailModal ticket={selected} calledNumbers={calledNumbers} onClose={() => setSelected(null)} />;
+    return <TicketDetailModal tickets={[selected]} calledNumbers={calledNumbers} onClose={() => setSelected(null)} />;
   }
 
   return (
@@ -1123,17 +1261,8 @@ const PlayerRanking = ({
 
   // ─── Updated handler for winner card click ───
   const handleWinnerClick = async (winner) => {
-    // First, try to find tickets in allTickets
-    const existingTickets = allTickets.filter(t => t.round_id === winner.round_id);
-    
-    if (existingTickets.length > 0 && existingTickets.some(t => t.ticket_data)) {
-      // If we already have tickets with full data, use them
-      setSelectedTicket(existingTickets);
-      return;
-    }
-    
-    // Otherwise, fetch from API
     try {
+      // Fetch from API
       const winnerTickets = await fetchWinnerTickets(
         winner.round_id, 
         winner.prize_id, 
@@ -1141,17 +1270,13 @@ const PlayerRanking = ({
         winner.win_type || winner.prize_name
       );
       
+      console.log("API Response:", winnerTickets);
+      
       if (winnerTickets && winnerTickets.length > 0) {
-        // Merge winner data with fetched tickets
-        const mergedTickets = winnerTickets.map(ticket => ({
-          ...winner,
-          ...ticket,
-          prize_name: winner.prize_name || winner.win_type,
-          user_name: winner.user_name || "Winner",
-        }));
-        setSelectedTicket(mergedTickets);
+        // Use the exact data from API
+        setSelectedTicket(winnerTickets);
       } else {
-        // Fallback: use existing winner data
+        // Fallback: use the winner data
         setSelectedTicket([winner]);
       }
     } catch (error) {
