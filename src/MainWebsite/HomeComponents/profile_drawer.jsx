@@ -548,8 +548,8 @@ const ProfileDrawer = ({ isOpen, onClose }) => {
     const moreItems = [
         { icon: "✏️", label: "Edit Profile", action: () => setShowEditModal(true) }, // New edit option
         { icon: "💰", label: "Withdraw", path: ROUTES.WITHDRAW },
-        { icon: "💳", label: "My KYC", path: ROUTES.KYC_VIEW },
-        { icon: "🪪", label: "Add KYC", path: ROUTES.KYC_ADD },
+        { icon: "💳", label: "My UPI", path: ROUTES.KYC_VIEW },
+        { icon: "🪪", label: "Add UPI ID", path: ROUTES.KYC_ADD },
         { icon: "⚙️", label: "Settings", path: ROUTES.SETTINGS },
         { icon: "📰", label: "News & Media", path: ROUTES.MEDIA },
         { icon: "🏅", label: "Results", path: ROUTES.AllResults },

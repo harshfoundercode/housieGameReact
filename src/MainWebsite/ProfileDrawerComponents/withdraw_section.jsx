@@ -65,7 +65,7 @@ const Withdraw = () => {
         setKycData(result.data);
         setError("");
       } else {
-        setError("Please complete your KYC to withdraw funds");
+        setError("Please complete your UPI Id to withdraw funds");
       }
     } catch (error) {
       console.error("Error fetching KYC data:", error);
@@ -431,7 +431,7 @@ const Withdraw = () => {
                   {isKYCRejected && (
                     <div className="mt-2">
                       <p className="text-xs opacity-80 mb-2">
-                        Your KYC was rejected. Please update your KYC details and resubmit for verification.
+                        Your KYC was rejected. Please update your UPI ID details and resubmit for verification.
                       </p>
                       <button
                         onClick={() => navigate('/kyc')}
@@ -479,7 +479,7 @@ const Withdraw = () => {
                 <div className="text-center py-8">
                   <span className="text-4xl block mb-3">⚠️</span>
                   <p className="text-gray-500 text-sm">No withdrawal methods found</p>
-                  <p className="text-gray-400 text-xs mt-1">Please complete your KYC with bank account or UPI details</p>
+                  <p className="text-gray-400 text-xs mt-1">Please complete your UPI ID with bank account or UPI details</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -738,7 +738,7 @@ const Withdraw = () => {
                   {withdrawalMethods.length === 0 ? (
                     <div className="text-center p-4 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-500">No withdrawal methods available</p>
-                      <p className="text-xs text-gray-400 mt-1">Please complete your KYC with bank account or UPI details</p>
+                      <p className="text-xs text-gray-400 mt-1">Please complete your UPI ID with bank account or UPI details</p>
                     </div>
                   ) : (
                     withdrawalMethods.map((method) => (
